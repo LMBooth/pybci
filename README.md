@@ -1,2 +1,2 @@
 # pybci
-A Python interface to create a BCI with the Lab Streaming Layer, sciK#kit-learn and TensorFlow packages.
+A Python interface to create a BCI with the Lab Streaming Layer, scikit-learn and TensorFlow packages.
