@@ -116,6 +116,7 @@ class PyBCI:
         """allows globalWindowSettings to be modified, customWindowSettings is a dict with value names for marker strings which will appear on avalable markerStreams """
         valid = False
         for key in customEpochSettings.keys():
+            print(customEpochSettings[key])
             if isinstance(customEpochSettings[key], IndividualEpochSetting()):
                 valid = True
             else:

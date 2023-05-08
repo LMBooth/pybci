@@ -139,31 +139,33 @@ class DataReceiverThread(threading.Thread):
         fifoLength = int(self.dataStreamInlet.info().nominal_srate()*maxTime)
         dataFIFOs = [deque(maxlen=fifoLength) for ch in range(chCount - len(self.streamChsDropDict))]
         while not self.closeEvent.is_set():
-            sample, timestamp = self.dataStreamInlet.pull_sample()
-            for index in sorted(self.streamChsDropDict, reverse=True):
-                del sample[index] # remove the desired channels from the sample
-            for i,fifo in enumerate(dataFIFOs):
-                fifo.append(sample[i])
-            if self.trainTestEvent.is_set(): # We're training!
-                if self.startCounting:
+            sample, timestamp = self.dataStreamInlet.pull_sample(timeout = 1)
+            if sample != None:
+                for index in sorted(self.streamChsDropDict, reverse=True):
+                    del sample[index] # remove the desired channels from the sample
+                for i,fifo in enumerate(dataFIFOs):
+                    fifo.append(sample[i])
+                if self.trainTestEvent.is_set(): # We're training!
+                    if self.startCounting:
+                        posCount+=1
+                        if posCount >= self.desiredCount:
+                            # slice data fifo based on currentMarker tmin + tmax times    
+                            if len(self.customEpochSettings.keys())>0: #  custom marker received
+                                sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.customEpochSettings[self.currentMarker].tmax+self.customEpochSettings[self.currentMarker].tmin) * self.sr), fifoLength))for d in dataFIFOs]
+                            else:
+                                sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.globalEpochSettings.tmin+self.globalEpochSettings.tmax) * self.sr), fifoLength)) for d in dataFIFOs]
+                            self.dataQueue.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType])
+                            # reset flags and counters
+                            self.startCounting = False
+                            posCount = 0
+                else:
                     posCount+=1
-                    if posCount >= self.desiredCount:
-                        # slice data fifo based on currentMarker tmin + tmax times    
-                        if len(self.customEpochSettings.keys())>0: #  custom marker received
-                            sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.customEpochSettings[self.currentMarker].tmax+self.customEpochSettings[self.currentMarker].tmin) * self.sr), fifoLength))for d in dataFIFOs]
-                        else:
-                            sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.globalEpochSettings.tmin+self.globalEpochSettings.tmax) * self.sr), fifoLength)) for d in dataFIFOs]
-                        self.dataQueue.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType])
-                        print("putting data on the queue")
-                        # reset flags and counters
-                        self.startCounting = False
+                    if posCount >= int(self.globalEpochSettings.windowLength * self.sr):
                         posCount = 0
+                    # ooooooo this is gonna be interesting, how do i slice... i think i need a universal window size...
+                        self.dataQueue.put([sliceDataFIFOs, self.sr, self.dataType])
             else:
-                posCount+=1
-                if posCount >= int(self.globalEpochSettings.windowLength * self.sr):
-                    posCount = 0
-                # ooooooo this is gonna be interesting, how do i slice... i think i need a universal window size...
-                    self.dataQueue.put([sliceDataFIFOs, self.sr, self.dataType])
+                print("PyBCI: LSL pull_sample timed out, no data on stream...")
 
     def ReceiveMarker(self, marker):
         print(marker)
@@ -194,8 +196,11 @@ class MarkerReceiverThread(threading.Thread):
 
     def run(self):
         while not self.closeEvent.is_set():
-            marker, timestamp = self.markerStreamInlet.pull_sample()
-            marker = marker[0]
-            for thread in self.dataThreads:
-                thread.ReceiveMarker(marker)
-            self.featureThread.ReceiveMarker(marker)
+            marker, timestamp = self.markerStreamInlet.pull_sample(timeout = 1)
+            if marker != None:
+                marker = marker[0]
+                for thread in self.dataThreads:
+                    thread.ReceiveMarker(marker)
+                self.featureThread.ReceiveMarker(marker)
+            else:
+                print("PyBCI: LSL pull_sample timed out, no marker on stream...")
