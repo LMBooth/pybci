@@ -1,29 +1,47 @@
-# .readthedocs.yaml
-# Read the Docs configuration file
-# See https://docs.readthedocs.io/en/stable/config-file/v2.html for details
+# Configuration file for the Sphinx documentation builder.
 
-# Required
-version: 2
+# -- Project information -----------------------------------------------------
 
-# Set the version of Python and other tools you might need
-build:
-  os: ubuntu-22.04
-  tools:
-    python: "3.11"
-    # You can also specify other tool versions:
-    # nodejs: "19"
-    # rust: "1.64"
-    # golang: "1.19"
+project = 'PyBCI'
+copyright = '2023, Liam Booth'
+author = 'Liam Booth'
 
-# Build documentation in the docs/ directory with Sphinx
-sphinx:
-   configuration: docs/conf.py
+# The full version, including alpha/beta/rc tags
+release = '1.13'
 
-# If using Sphinx, optionally build your docs in additional formats such as PDF
-# formats:
-#    - pdf
+# -- General configuration ---------------------------------------------------
+extensions = [
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.extlinks',
+]
 
-# Optionally declare the Python requirements required to build your docs
-python:
-   install:
-   - requirements: docs/requirements.txt
+templates_path = ['_templates']
+exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
+master_doc = 'index'  # for Sphinx < 2.0
+
+# -- Options for HTML output -------------------------------------------------
+
+html_theme_options = {
+#    'logo': 'logo.png',
+    'github_user': 'LMBooth',
+    'github_repo': 'PyBCI',
+    'github_button': 'true',
+    }
+
+# Add any paths that contain custom static files (such as style sheets) here,
+# relative to this directory. They are copied after the builtin static files,
+# so a file named "default.css" will overwrite the builtin "default.css".
+html_static_path = ['_static']
+
+
+# intersphinx
+intersphinx_mapping = {
+    'liblsl': ('https://labstreaminglayer.readthedocs.io/projects/liblsl', None),
+    'cmake': ('https://cmake.org/cmake/help/latest', None),
+}
+
+extlinks = {
+        'repo': ('https://github.com/%s', ''),
+        'lslrepo': ('https://github.com/labstreaminglayer/App-%s', ''),
+        'lslrelease': ('https://github.com/labstreaminglayer/App-%s/releases', 'Download '),
+        }
