@@ -3,20 +3,35 @@ import numpy as np
 from scipy.signal import welch
 from scipy.integrate import simpson
 import warnings
-
-# Filter out UserWarning messages from the scipy package
-warnings.filterwarnings("ignore", category=UserWarning, module="scipy")
+from Configuration.FeatureSettings import FeatureChoices
+# Filter out UserWarning messages from the scipy package, could be worth moving to init and applying printdebug print levels?
+warnings.filterwarnings("ignore", category=UserWarning, module="scipy") # used to reduce print statements from constant signals being applied
+warnings.filterwarnings("ignore", category=UserWarning, module="antropy") # used to reduce print statements from constant signals being applied
+warnings.filterwarnings("ignore", category=RuntimeWarning, module="antropy") # used to reduce print statements from constant signals being applied
+#warnings.filterwarnings("ignore", category=RuntimeWarning, module="pybci") # used to reduce print statements from constant signals being applied
 
 class FeatureExtractor():
-    freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]] # delta (1–3 Hz), theta (4–7 Hz), alpha (8–12 Hz), beta (13–30 Hz)
-    featureChoices = [True, True, True,True, True, True, True,True, True, True, True,True, True, True] # first is freqbands mean power
 
-    def __init__(self, freqbands = None, featureChoices = None):
+    def __init__(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices()):
         super().__init__()
-        if freqbands != None:
-            self.freqbands = freqbands
-        if featureChoices != None:    
-            self.featureChoices = featureChoices
+        self.freqbands = freqbands
+        self.featureChoices = featureChoices
+        for key, value in self.featureChoices.__dict__.items():
+            print(f"{key} = {value}")
+        selFeats = sum([self.featureChoices.appr_entropy,
+        self.featureChoices.perm_entropy,
+        self.featureChoices.spec_entropy,
+        self.featureChoices.svd_entropy,
+        self.featureChoices.samp_entropy,
+        self.featureChoices.rms,
+        self.featureChoices.meanPSD,
+        self.featureChoices.medianPSD,
+        self.featureChoices.variance,
+        self.featureChoices.meanAbs,
+        self.featureChoices.waveformLength,
+        self.featureChoices.zeroCross,
+        self.featureChoices.slopeSignChange])
+        self.numFeatures = (len(self.freqbands)*self.featureChoices.psdBand)+selFeats
 
     def ProcessPupilFeatures(self, epoch):
         pass
@@ -38,10 +53,10 @@ class FeatureExtractor():
             target = same as input target
         NOTE: Any channels with a constant value will generate warnings in any frequency based features (constant level == no frequency components).
         """
-        features = np.zeros(( len(epoch) ,(len(self.freqbands)*self.featureChoices[0])+sum(self.featureChoices[1:])))
-        print(features.shape)
+        features = np.zeros((len(epoch),self.numFeatures))
+        #print(features.shape)
         for k, ch in enumerate(epoch):
-            if self.featureChoices[0]: # get custom average power within given frequency band from freqbands
+            if self.featureChoices.psdBand: # get custom average power within given frequency band from freqbands
                 for l, band in enumerate(self.freqbands):
                     #bp = bandpower(ch, sr, band, method='multitaper', window_sec=None, relative=False)  
                     nperseg = (2 / band[0]) * sr
@@ -55,33 +70,33 @@ class FeatureExtractor():
                     features[k][l] = bp
             else:
                 l = -1 # accounts for no freqbands being selected
-            if self.featureChoices[1]:  # Approximate entorpy(X,M,R) X = data, M is , R is 30% standard deviation of X 
+            if self.featureChoices.appr_entropy:  # Approximate entorpy(X,M,R) X = data, M is , R is 30% standard deviation of X 
                 l += 1
                 features[k][l] = ant.app_entropy(ch) # 
-            if self.featureChoices[2]: # permutation_entropy
+            if self.featureChoices.perm_entropy: # permutation_entropy
                 l += 1
                 features[k][l] = ant.perm_entropy(ch,normalize=True)
-            if self.featureChoices[3]:  # spectral Entropy
+            if self.featureChoices.spec_entropy:  # spectral Entropy
                 l += 1
                 features[k][l] = ant.spectral_entropy(ch, sf=sr, method='welch', nperseg = len(ch), normalize=True)
-            if self.featureChoices[4]:# svd Entropy
+            if self.featureChoices.svd_entropy:# svd Entropy
                 l += 1
                 features[k][l] = ant.svd_entropy(ch, normalize=True)
-            if self.featureChoices[5]: # sample Entropy
+            if self.featureChoices.samp_entropy: # sample Entropy
                 l += 1
                 features[k][l] = ant.sample_entropy(ch)
-            if self.featureChoices[6]: # rms
+            if self.featureChoices.rms: # rms
                 l += 1
                 features[k][l] = np.sqrt(np.mean(np.array(ch)**2))
-            if self.featureChoices[7] or self.featureChoices[8]:
+            if self.featureChoices.meanPSD or self.featureChoices.medianPSD:
                 freqs, psd = welch(ch, sr)
                 #with warnings.catch_warnings():
                 #    warnings.filterwarnings('error')
                 #    try:
-                if self.featureChoices[7]: # mean power
+                if self.featureChoices.meanPSD: # mean power
                     l += 1
                     features[k][l] = sum(freqs*psd)/sum(psd)
-                if self.featureChoices[8]: # median Power
+                if self.featureChoices.medianPSD: # median Power
                     l += 1   
                     features[k][l] = sum(psd)/2
                 #    except Warning as e:
@@ -90,19 +105,19 @@ class FeatureExtractor():
                 #        print(psd)
                 #        print('error found:', e)
 
-            if self.featureChoices[9]: # variance
+            if self.featureChoices.variance: # variance
                 l += 1    
                 features[k][l] =  np.var(ch)
-            if self.featureChoices[10]: # Mean Absolute Value 
+            if self.featureChoices.meanAbs: # Mean Absolute Value 
                 l += 1
                 features[k][l] = sum([np.linalg.norm(c) for c in ch])/len(ch)
-            if self.featureChoices[11]: # waveformLength
+            if self.featureChoices.waveformLength: # waveformLength
                 l += 1
                 features[k][l] = sum([np.linalg.norm(c-ch[inum]) for inum, c in enumerate(ch[1:])])
-            if self.featureChoices[12]: # zeroCross
+            if self.featureChoices.zeroCross: # zeroCross
                 l += 1
                 features[k][l] = sum([1 if c*ch[inum+1]<0 else 0 for inum, c in enumerate(ch[:-1])])
-            if self.featureChoices[13]: # slopeSignChange
+            if self.featureChoices.slopeSignChange: # slopeSignChange
                 l += 1    
                 ssc = sum([1 if (c-ch[inum+1])*(c-ch[inum+1])>=0.1 else 0 for inum, c in enumerate(ch[:-1])])
                 features[k][l] = ssc

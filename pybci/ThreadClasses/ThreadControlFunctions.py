@@ -6,6 +6,7 @@ from Utils.Classifier import Classifier
 import numpy as np
 import queue
 from Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
+from Configuration.FeatureSettings import FeatureChoices
 # need to add configurable number of desired epochs of each condition before including, if not set defaults from minimum viable (2???)
 # self.epochCounts has total counts of each epoch available
 class ClassifierThread(threading.Thread):
@@ -13,13 +14,14 @@ class ClassifierThread(threading.Thread):
     targets = []
     mode = "train"
     
-    def __init__(self, closeEvent,trainTestEvent, featureQueue, minRequiredEpochs = 10, clf = None, model = None):
+    def __init__(self, closeEvent,trainTestEvent, featureQueue, lock, minRequiredEpochs = 10, clf = None, model = None):
         super().__init__()
         self.trainTestEvent = trainTestEvent # responsible for tolling between train and test mode
         self.closeEvent = closeEvent # responsible for cosing threads
         self.featureQueue = featureQueue # gets feature data from feature processing thread
         self.classifier = Classifier(clf = clf, model = model) # sets classifier class, if clf and model passed, defaults to clf and sklearn
         self.minRequiredEpochs = minRequiredEpochs # the minimum number of epochs required for classifier attempt
+        self.lock = lock
 
     def run(self):
         while not self.closeEvent.is_set():
@@ -47,14 +49,14 @@ class ClassifierThread(threading.Thread):
 
 
 class FeatureProcessorThread(threading.Thread):
-    def __init__(self, closeEvent, trainTestEvent, dataQueue, featureQueue,  totalDevices, lock, customEpochSettings = {}, GlobalEpochSettings = GlobalEpochSettings(),freqbands = None, featureChoices = None):
+    def __init__(self, closeEvent, trainTestEvent, dataQueue, featureQueue,  totalDevices, customEpochSettings = {}, 
+                 globalEpochSettings = GlobalEpochSettings(),freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices()):
         super().__init__()
         self.trainTestEvent = trainTestEvent
         self.closeEvent = closeEvent
         self.dataQueue = dataQueue
         self.featureQueue = featureQueue
-        self.lock = lock
-        self.ufp = FeatureExtractor(freqbands = None, featureChoices = None)
+        self.ufp = FeatureExtractor(freqbands = freqbands, featureChoices = featureChoices)
         self.totalDevices = totalDevices
         self.epochCounts = {}
         self.customEpochSettings = customEpochSettings
@@ -65,11 +67,6 @@ class FeatureProcessorThread(threading.Thread):
             if self.trainTestEvent.is_set(): # We're training!
                 try:
                     dataFIFOs, currentMarker, sr, dataType = self.dataQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
-                    # This is where epoch slice setting should be implemented
-                    with self.lock:
-                        print([currentMarker, sr, dataType])
-                        print(np.array(dataFIFOs).shape)
-                    print(dataType)
                     target = self.epochCounts[currentMarker][0]
                     # could maybe allow custom dataType dict to select epoch processing pipeline. This is where new libraries will be added
                     if (dataType == "EEG" or dataType == "EMG"): # found the same can be used for EMG
@@ -100,7 +97,7 @@ class FeatureProcessorThread(threading.Thread):
     def ReceiveMarker(self, marker):
         """ Tracks count of epoch markers in dict self.epochCounts - used for syncing data between multiple devices in function self.run() """
         if len(self.customEpochSettings.keys())>0: #  custom marker received
-            if marker[0] in self.customEpochSettings.keys():
+            if marker in self.customEpochSettings.keys():
                 if marker in self.epochCounts:
                     self.epochCounts[marker][1] += 1
                 else:
@@ -149,6 +146,8 @@ class DataReceiverThread(threading.Thread):
                     if self.startCounting:
                         posCount+=1
                         if posCount >= self.desiredCount:
+                            ##############################
+                            # Update required here!!!
                             # slice data fifo based on currentMarker tmin + tmax times    
                             if len(self.customEpochSettings.keys())>0: #  custom marker received
                                 sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.customEpochSettings[self.currentMarker].tmax+self.customEpochSettings[self.currentMarker].tmin) * self.sr), fifoLength))for d in dataFIFOs]
@@ -163,12 +162,13 @@ class DataReceiverThread(threading.Thread):
                     if posCount >= int(self.globalEpochSettings.windowLength * self.sr):
                         posCount = 0
                     # ooooooo this is gonna be interesting, how do i slice... i think i need a universal window size...
+                    # relates to required update above too
                         self.dataQueue.put([sliceDataFIFOs, self.sr, self.dataType])
             else:
                 print("PyBCI: LSL pull_sample timed out, no data on stream...")
 
     def ReceiveMarker(self, marker):
-        print(marker)
+        #print(marker)
         if self.startCounting == False: # only one marker at a time allow, other in windowed timeframe ignored
             self.currentMarker = marker
             if len(self.customEpochSettings.keys())>0: #  custom marker received
@@ -178,7 +178,7 @@ class DataReceiverThread(threading.Thread):
             else: # no custom markers set, use global settings
                 self.desiredCount = int(self.globalEpochSettings.tmax * self.sr) # find number of samples after tmax to finish counting
                 self.startCounting = True
-            print(self.desiredCount)
+            #print(self.desiredCount)
 
 
 class MarkerReceiverThread(threading.Thread):
@@ -196,7 +196,7 @@ class MarkerReceiverThread(threading.Thread):
 
     def run(self):
         while not self.closeEvent.is_set():
-            marker, timestamp = self.markerStreamInlet.pull_sample(timeout = 1)
+            marker, timestamp = self.markerStreamInlet.pull_sample(timeout = 10)
             if marker != None:
                 marker = marker[0]
                 for thread in self.dataThreads:

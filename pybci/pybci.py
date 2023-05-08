@@ -3,6 +3,7 @@ from ThreadClasses.ThreadControlFunctions import DataReceiverThread, MarkerRecei
 import queue
 import threading
 from Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
+from Configuration.FeatureSettings import FeatureChoices
 
 class PyBCI:
     """The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
@@ -25,15 +26,30 @@ class PyBCI:
     dataStreams = []
     markerStream = None
     connected = False
+    epochCounts = {} # holds markers received, their target ids and number received of each
 
-    def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True):
+    def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
+                 globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
+                 freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices ()):
+        self.freqbands = freqbands
+        self.featureChoices = featureChoices
+        self.globalEpochSettings = globalEpochSettings
+        self.customEpochSettings = customEpochSettings
+        self.streamChsDropDict = streamChsDropDict
         self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes)
         self.printDebug = printDebug
-        self.ConfigureEpochWindowSettings()
         self.Connect()
 
-    def __enter__(self): # with bci
-        self.ConfigureEpochWindowSettings()
+    def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
+                 globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
+                 freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices ()): # with bci
+        self.freqbands = freqbands
+        self.featureChoices = featureChoices
+        self.globalEpochSettings = globalEpochSettings
+        self.customEpochSettings = customEpochSettings
+        self.streamChsDropDict = streamChsDropDict
+        self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes)
+        self.printDebug = printDebug
         self.Connect()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -66,6 +82,20 @@ class PyBCI:
         else:
             self.Connect()
 
+    def ReceiveMarker(self, marker):
+        """ Tracks count of epoch markers in dict self.epochCounts - used for syncing data between multiple devices in function self.run() """
+        if len(self.customEpochSettings.keys())>0: #  custom marker received
+            if marker in self.customEpochSettings.keys():
+                if marker in self.epochCounts:
+                    self.epochCounts[marker][1] += 1
+                else:
+                    self.epochCounts[marker] = [len(self.epochCounts.keys()),1]
+        else: # no custom markers set, use global settings
+            if marker in self.epochCounts:
+                self.epochCounts[marker][1] += 1
+            else:
+                self.epochCounts[marker] = [len(self.epochCounts.keys()),1]
+
     def __StartThreads(self):
         self.featureQueue = queue.Queue()
         self.dataQueue = queue.Queue()
@@ -86,13 +116,14 @@ class PyBCI:
             dt.start()
             self.dataThreads.append(dt)
         # setup feature processing thread, reduces time series data down to statisitical features
-        self.featureThread = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueue, self.featureQueue, totalDevices, lock, self.customEpochSettings)
+        self.featureThread = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueue, self.featureQueue, totalDevices, 
+                                                    globalEpochSettings = self.globalEpochSettings, customEpochSettings = self.customEpochSettings)
         self.featureThread.start()
         # marker thread requires data and feature threads to push new markers too
         self.markerThread = MarkerReceiverThread(self.closeEvent,self.trainTestEvent, self.markerStream,self.dataThreads, self.featureThread)
         self.markerThread.start()
         #closeEvent,trainTestEvent, featureQueue, minRequiredEpochs = 10, clf = None, model = None
-        self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueue, self.minimumEpochsRequired)
+        self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueue, lock, self.minimumEpochsRequired)
         self.classifierThread.start()
 
     def StopThreads(self):
@@ -108,7 +139,6 @@ class PyBCI:
             print("PyBCI: Threads stopped.")
 
     def ConfigureMachineLearning(self, minimumEpochsRequired = 10, clf = None, model = None):
-
         self.minimumEpochsRequired = minimumEpochsRequired
 
     # Could move all configures to a configuration class, might make options into more descriptive classes?
@@ -116,8 +146,7 @@ class PyBCI:
         """allows globalWindowSettings to be modified, customWindowSettings is a dict with value names for marker strings which will appear on avalable markerStreams """
         valid = False
         for key in customEpochSettings.keys():
-            print(customEpochSettings[key])
-            if isinstance(customEpochSettings[key], IndividualEpochSetting()):
+            if isinstance(customEpochSettings[key], IndividualEpochSetting):
                 valid = True
             else:
                 valid = False
@@ -135,12 +164,12 @@ class PyBCI:
                 self.globalWindowglobalEpochSettingsSettings = globalEpochSettings
                 self.ResetThreadsAfterConfigs()
 
-    def ConfigureFeatures(self,freqbands = None, featureChoices = None ):
+    def ConfigureFeatures(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices ()):
         # potentially should move configuration to generic class which can be used for both test and train
         if freqbands != None:
-            self.featureThread.freqbands = freqbands
+            self.freqbands = freqbands
         if featureChoices != None:    
-            self.featureThread.featureChoices = featureChoices
+            self.featureChoices = featureChoices
         self.ResetThreadsAfterConfigs()
 
     def ConfigureDataStreamChannels(self,streamChsDropDict = {}):
