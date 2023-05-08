@@ -57,11 +57,8 @@ class FeatureProcessorThread(threading.Thread):
         while not self.closeEvent.is_set():
             if self.trainTestEvent.is_set(): # We're training!
                 try:
-
                     dataFIFOs, currentMarker, sr, dataType = self.dataQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
-
                     # This is where epoch slice setting should be implemented
-
                     with self.lock:
                         print([currentMarker, sr, dataType])
                         print(np.array(dataFIFOs).shape)
@@ -74,9 +71,13 @@ class FeatureProcessorThread(threading.Thread):
                         features = self.ufp.ProcessECGFeatures(dataFIFOs, sr)
                     elif (dataType == "Gaze"):
                         features = self.ufp.ProcessPupilFeatures(dataFIFOs)
+
                     # add logic to ensure all devices epoch data has been received (totalDevices)
-                    #self.epochCountsdata[1]
-                    self.featureQueue.put( [features, target, self.epochCounts] )
+                    if self.totalDevices == 1:
+                        #self.epochCountsdata[1]
+                        self.featureQueue.put( [features, target, self.epochCounts] )
+
+
                 except queue.Empty:
                     break
             else:
@@ -122,9 +123,9 @@ class DataReceiverThread(threading.Thread):
         posCount = 0
         chCount = self.dataStreamInlet.info().channel_count()
         if len(self.customWindowSettings.keys())>0:
-            maxTime = max([self.customWindowSettings[x][2] + self.customWindowSettings[x][3] for x in self.customWindowSettings])
+            maxTime = max([self.customWindowSettings[x].tmin + self.customWindowSettings[x].tmax for x in self.customWindowSettings])
         else:
-            maxTime = self.globalWindowSettings[2] + self.globalWindowSettings[3]
+            maxTime = self.globalWindowSettings.tmin + self.globalWindowSettings.tmax
         fifoLength = int(self.dataStreamInlet.info().nominal_srate()*maxTime)
         dataFIFOs = [deque(maxlen=fifoLength) for ch in range(chCount - len(self.streamChsDropDict))]
         while not self.closeEvent.is_set():
@@ -139,9 +140,9 @@ class DataReceiverThread(threading.Thread):
                     if posCount >= self.desiredCount:
                         # slice data fifo based on currentMarker tmin + tmax times    
                         if len(self.customWindowSettings.keys())>0: #  custom marker received
-                            sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.customWindowSettings[self.currentMarker][2]+self.customWindowSettings[self.currentMarker][3]) * self.sr), fifoLength))for d in dataFIFOs]
+                            sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.customWindowSettings[self.currentMarker].tmax+self.customWindowSettings[self.currentMarker].tmin) * self.sr), fifoLength))for d in dataFIFOs]
                         else:
-                            sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.globalWindowSettings[2]+self.globalWindowSettings[3]) * self.sr), fifoLength)) for d in dataFIFOs]
+                            sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.globalWindowSettings.tmin+self.globalWindowSettings.tmax) * self.sr), fifoLength)) for d in dataFIFOs]
                         self.dataQueue.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType])
                         # reset flags and counters
                         self.startCounting = False
@@ -156,10 +157,10 @@ class DataReceiverThread(threading.Thread):
             self.currentMarker = marker
             if len(self.customWindowSettings.keys())>0: #  custom marker received
                 if marker in self.customWindowSettings.keys():
-                    self.desiredCount = int(self.customWindowSettings[marker][3] * self.sr) # find number of samples after tmax to finish counting
+                    self.desiredCount = int(self.customWindowSettings[marker].tmax * self.sr) # find number of samples after tmax to finish counting
                     self.startCounting = True
             else: # no custom markers set, use global settings
-                self.desiredCount = int(self.globalWindowSettings[3] * self.sr) # find number of samples after tmax to finish counting
+                self.desiredCount = int(self.globalWindowSettings.tmax * self.sr) # find number of samples after tmax to finish counting
                 self.startCounting = True
 
 class MarkerReceiverThread(threading.Thread):

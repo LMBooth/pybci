@@ -1,7 +1,8 @@
 from Utils.LSLScanner import LSLScanner
-from ThreadClasses.ThreadControlFunctions import DataReceiverThread, MarkerReceiverThread, FeatureProcessorThread
+from ThreadClasses.ThreadControlFunctions import DataReceiverThread, MarkerReceiverThread, FeatureProcessorThread, ClassifierThread
 import queue
 import threading
+from Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
 
 class PyBCI:
     """The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
@@ -15,15 +16,7 @@ class PyBCI:
         printDebug = boolean, if true prints LSLScanner debug information
     """
     printDebug = True   # boolean, used to toggle print statements from LSLScanner class
-    globalWindowSettings = [
-        True,   #addcheck,  checks whether or not to include the epoch
-        False,  #splitcheck, checks whether or not subdivide epochs
-        0,      #tmins, time in seconds to capture samples before trigger
-        1,      #tmaxs, time in seconds to capture samples after trigger
-        0.5,    #window_lengths, if splitcheck true - time in seconds to split epoch
-        0.5     #overlaps, percentage value > 0 and < 1, example if epoch has tmin of 0 and tmax of 1 with window 
-        # length of 0.5 we have 1 epoch between t 0 and t0.5 another at 0.25 to 0.75, 0.5 to 1
-     ] 
+    globalEpochSettings = GlobalEpochSettings()
     markerThread = []
     dataThreads = []
     streamChsDropDict= {}
@@ -85,9 +78,9 @@ class PyBCI:
         self.dataThreads = []
         for stream in self.dataStreams:
             if stream.info().name() in self.streamChsDropDict.keys():
-                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customWindowSettings, self.globalWindowSettings, self.streamChsDropDict[stream.info().name()])
+                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customWindowSettings, self.globalEpochSettings, self.streamChsDropDict[stream.info().name()])
             else:
-                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customWindowSettings, self.globalWindowSettings)
+                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customWindowSettings, self.globalEpochSettings)
             dt.start()
             self.dataThreads.append(dt)
         # setup feature processing thread, reduces time series data down to statisitical features
@@ -97,9 +90,13 @@ class PyBCI:
         self.markerThread = MarkerReceiverThread(self.closeEvent,self.trainTestEvent, self.markerStream,self.dataThreads, self.featureThread)
         self.markerThread.start()
 
+        self.classifierThread = ClassifierThread()
+        self.classifierThread.start()
+
     def StopThreads(self):
         self.closeEvent.set()
         self.markerThread.join()
+        self.classifierThread.join()
         # wait for all threads to finish processing, probably worth pulling out finalised classifier information stored for later use.
         for dt in self.dataThreads:
             dt.join()
@@ -109,12 +106,27 @@ class PyBCI:
             print("PyBCI: Threads stopped.")
 
     # Could move all configures to a configuration class, might make options into more descriptive classes?
-    def ConfigureEpochWindowSettings(self, globalWindowSettings = None, customWindowSettings = {}):
+    def ConfigureEpochWindowSettings(self, globalEpochSettings = GlobalEpochSettings(), customWindowSettings = {}):
         """allows globalWindowSettings to be modified, customWindowSettings is a dict with value names for marker strings which will appear on avalable markerStreams """
-        self.customWindowSettings = customWindowSettings
-        if globalWindowSettings != None:
-            self.globalWindowSettings = globalWindowSettings
-        self.ResetThreadsAfterConfigs()
+        valid = False
+        for key in customWindowSettings.keys():
+            if isinstance(customWindowSettings[key], IndividualEpochSetting()):
+                valid = True
+            else:
+                valid = False
+                if self.printDebug:
+                    print("PyBCI: Error - Invalid datatype passed for customWindowSettings, create dict of wanted markers \
+                          using class bci.IndividualEpochSetting() as value to configure individual epoch window settings.")
+                    break
+        #if isinstance(customWindowSettings[key], GlobalEpochSettings()):
+        if valid:   
+            self.customWindowSettings = customWindowSettings
+            if globalEpochSettings.windowLength > globalEpochSettings.tmax + globalEpochSettings.tmin:
+                if self.printDebug:
+                    print("PyBCI: Error - windowLength < (tmin+tmax), pass vaid settings to ConfigureEpochWindowSettings")
+            else:
+                self.globalWindowglobalEpochSettingsSettings = globalEpochSettings
+                self.ResetThreadsAfterConfigs()
 
     def ConfigureFeatures(self,freqbands = None, featureChoices = None ):
         # potentially should move configuration to generic class which can be used for both test and train
