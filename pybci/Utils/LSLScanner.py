@@ -68,7 +68,7 @@ class LSLScanner:
             if len(self.dataStreams) == 0:
                 print("PyBCI: Error - No data streams available, make sure your streamTypes have been set in bci.lslScanner.dataStream correctly.")
             if len(self.dataStreams) > 0 and len(self.markerStreams) == 1:
-                print("PyBCI: Success - data streams found, 1 marker stream found")
+                print("PyBCI: Success - ",len(self.dataStreams)," data stream(s) found, 1 marker stream found")
         if len(self.dataStreams) > 0 and len(self.markerStreams) == 1:
             self.parent.dataStreams = self.dataStreams
             self.parent.markerStream = self.markerStreams[0]

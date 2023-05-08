@@ -17,6 +17,8 @@ class PyBCI:
     """
     printDebug = True   # boolean, used to toggle print statements from LSLScanner class
     globalEpochSettings = GlobalEpochSettings()
+    customEpochSettings = {}
+    minimumEpochsRequired = 10
     markerThread = []
     dataThreads = []
     streamChsDropDict= {}
@@ -78,39 +80,43 @@ class PyBCI:
         self.dataThreads = []
         for stream in self.dataStreams:
             if stream.info().name() in self.streamChsDropDict.keys():
-                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customWindowSettings, self.globalEpochSettings, self.streamChsDropDict[stream.info().name()])
+                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customEpochSettings, self.globalEpochSettings, self.streamChsDropDict[stream.info().name()])
             else:
-                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customWindowSettings, self.globalEpochSettings)
+                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customEpochSettings, self.globalEpochSettings)
             dt.start()
             self.dataThreads.append(dt)
         # setup feature processing thread, reduces time series data down to statisitical features
-        self.featureThread = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueue, self.featureQueue, totalDevices, lock, self.customWindowSettings)
+        self.featureThread = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueue, self.featureQueue, totalDevices, lock, self.customEpochSettings)
         self.featureThread.start()
         # marker thread requires data and feature threads to push new markers too
         self.markerThread = MarkerReceiverThread(self.closeEvent,self.trainTestEvent, self.markerStream,self.dataThreads, self.featureThread)
         self.markerThread.start()
-
-        self.classifierThread = ClassifierThread()
+        #closeEvent,trainTestEvent, featureQueue, minRequiredEpochs = 10, clf = None, model = None
+        self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueue, self.minimumEpochsRequired)
         self.classifierThread.start()
 
     def StopThreads(self):
         self.closeEvent.set()
         self.markerThread.join()
-        self.classifierThread.join()
         # wait for all threads to finish processing, probably worth pulling out finalised classifier information stored for later use.
         for dt in self.dataThreads:
             dt.join()
         self.featureThread.join()
+        self.classifierThread.join()
         self.connected = False
         if self.printDebug:
             print("PyBCI: Threads stopped.")
 
+    def ConfigureMachineLearning(self, minimumEpochsRequired = 10, clf = None, model = None):
+
+        self.minimumEpochsRequired = minimumEpochsRequired
+
     # Could move all configures to a configuration class, might make options into more descriptive classes?
-    def ConfigureEpochWindowSettings(self, globalEpochSettings = GlobalEpochSettings(), customWindowSettings = {}):
+    def ConfigureEpochWindowSettings(self, globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}):
         """allows globalWindowSettings to be modified, customWindowSettings is a dict with value names for marker strings which will appear on avalable markerStreams """
         valid = False
-        for key in customWindowSettings.keys():
-            if isinstance(customWindowSettings[key], IndividualEpochSetting()):
+        for key in customEpochSettings.keys():
+            if isinstance(customEpochSettings[key], IndividualEpochSetting()):
                 valid = True
             else:
                 valid = False
@@ -120,7 +126,7 @@ class PyBCI:
                     break
         #if isinstance(customWindowSettings[key], GlobalEpochSettings()):
         if valid:   
-            self.customWindowSettings = customWindowSettings
+            self.customEpochSettings = customEpochSettings
             if globalEpochSettings.windowLength > globalEpochSettings.tmax + globalEpochSettings.tmin:
                 if self.printDebug:
                     print("PyBCI: Error - windowLength < (tmin+tmax), pass vaid settings to ConfigureEpochWindowSettings")
