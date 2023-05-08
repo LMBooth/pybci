@@ -1,0 +1,6 @@
+pylsl
+scipy
+numpy
+antropy
+tensorflow
+scikit-learn
