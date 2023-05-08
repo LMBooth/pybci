@@ -6,7 +6,7 @@ Usage
 Installation
 ------------
 
-To use LiMaPy, first install it using pip:
+To use PyBCI, first install it using pip:
 
 .. code-block:: console
 
