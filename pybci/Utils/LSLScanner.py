@@ -62,13 +62,13 @@ class LSLScanner:
         self.ScanStreams()
         if (self.parent.printDebug):
             if len(self.markerStreams) == 0:
-                print("PyLSL-BCI: No Markers streams available, make sure your streamTypes have been set in bci.lslScanner.dataStreams correctly")
+                print("PyBCI: Error - No Marker streams available, make sure your accepted marker data Type have been set in bci.lslScanner.markerTypes correctly.")
             elif len(self.markerStreams) > 1:
-                print("PyLSL-BCI: Too many Marker streams available, set markerStreams in  bci.lslScanner.dataStreams correctly")
+                print("PyBCI: Error - Too many Marker streams available, set single desired markerStream in  bci.lslScanner.markerStream correctly.")
             if len(self.dataStreams) == 0:
-                print("PyLSL-BCI: No data streams available, make sure your streamTypes have been set in bci.lslScanner.markerStreams correctly")
+                print("PyBCI: Error - No data streams available, make sure your streamTypes have been set in bci.lslScanner.dataStream correctly.")
             if len(self.dataStreams) > 0 and len(self.markerStreams) == 1:
-                print("PyLSL-BCI: data streams found, 1 marker stream found")
+                print("PyBCI: Success - data streams found, 1 marker stream found")
         if len(self.dataStreams) > 0 and len(self.markerStreams) == 1:
             self.parent.dataStreams = self.dataStreams
             self.parent.markerStream = self.markerStreams[0]

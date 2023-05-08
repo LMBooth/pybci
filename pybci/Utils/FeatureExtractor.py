@@ -2,9 +2,7 @@ import antropy as ant
 import numpy as np
 from scipy.signal import welch
 from scipy.integrate import simpson
-import logging
 import warnings
-import scipy
 
 # Filter out UserWarning messages from the scipy package
 warnings.filterwarnings("ignore", category=UserWarning, module="scipy")
@@ -20,13 +18,13 @@ class FeatureExtractor():
         if featureChoices != None:    
             self.featureChoices = featureChoices
 
-    def ProcessPupilFeatures(self, epoch, target):
+    def ProcessPupilFeatures(self, epoch):
         pass
 
-    def ProcessECGFeatures(self, epoch, target):
+    def ProcessECGFeatures(self, epoch):
         pass
 
-    def ProcessGeneralEpoch(self, epoch, target, sr):
+    def ProcessGeneralEpoch(self, epoch, sr):
         """Allows 2D time series data to be passed with given sample rate to get various time+frequency based features.
         Best for EEG, EMG, EOG, or other consistent data with a consistent sample rate (pupil labs does not)
         Which features are chosen is based on self.featureChoices with initialisation. self.freqbands sets the limits for
@@ -38,6 +36,7 @@ class FeatureExtractor():
         Returns:
             features = 2D numpy array of size (chs, (len(freqbands) + sum(True in self.featureChoices)))
             target = same as input target
+        NOTE: Any channels with a constant value will generate warnings in any frequency based features (constant level == no frequency components).
         """
         features = np.zeros(( len(epoch) ,(len(self.freqbands)*self.featureChoices[0])+sum(self.featureChoices[1:])))
         print(features.shape)
@@ -64,7 +63,7 @@ class FeatureExtractor():
                 features[k][l] = ant.perm_entropy(ch,normalize=True)
             if self.featureChoices[3]:  # spectral Entropy
                 l += 1
-                features[k][l] = ant.spectral_entropy(ch, sf=sr, method='welch', normalize=True)
+                features[k][l] = ant.spectral_entropy(ch, sf=sr, method='welch', nperseg = len(ch), normalize=True)
             if self.featureChoices[4]:# svd Entropy
                 l += 1
                 features[k][l] = ant.svd_entropy(ch, normalize=True)
@@ -76,12 +75,21 @@ class FeatureExtractor():
                 features[k][l] = np.sqrt(np.mean(np.array(ch)**2))
             if self.featureChoices[7] or self.featureChoices[8]:
                 freqs, psd = welch(ch, sr)
+                #with warnings.catch_warnings():
+                #    warnings.filterwarnings('error')
+                #    try:
                 if self.featureChoices[7]: # mean power
                     l += 1
                     features[k][l] = sum(freqs*psd)/sum(psd)
                 if self.featureChoices[8]: # median Power
                     l += 1   
                     features[k][l] = sum(psd)/2
+                #    except Warning as e:
+                #        print(k)
+                #        print(freqs)
+                #        print(psd)
+                #        print('error found:', e)
+
             if self.featureChoices[9]: # variance
                 l += 1    
                 features[k][l] =  np.var(ch)
@@ -98,4 +106,4 @@ class FeatureExtractor():
                 l += 1    
                 ssc = sum([1 if (c-ch[inum+1])*(c-ch[inum+1])>=0.1 else 0 for inum, c in enumerate(ch[:-1])])
                 features[k][l] = ssc
-        return features,target
+        return features

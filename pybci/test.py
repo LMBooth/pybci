@@ -2,18 +2,18 @@ import time, sys
 sys.path.append('../')  # add the parent directory of 'utils' to sys.path, whilst in beta build.
 from pybci import PyBCI
 
-validMarkerStream = ["Markers"]
-validDataStreams = ["UoHExGStream"]#Liam's EMG device"]
+validMarkerStream = "UoHDataOffsetStream" #"Markers" "UoHDataOffsetStream"
+validDataStreams = ["EEGStream"]#Liam's EMG device"]
 
-bci = PyBCI()   #dataStreams = validDataStreams, markerStream = validMarkerStream)
-connected = False
-#while(not connected):
-#    if bci.lslScanner.CheckAvilableLSL():
-#        connected = True
+bci = PyBCI(dataStreams = validDataStreams, markerStream = validMarkerStream)
+streamChsDropDict = {"EEGStream": [19,20,21,22,23]}
+bci.ConfigureDataStreamChannels(streamChsDropDict = streamChsDropDict)
 
-#while(connected):
+while not bci.connected:
+    bci.Connect()
+    time.sleep(1)
 
-#with PyBCI() as bci:
-    #time.sleep(1)
-    #if bci.lslScanner.CheckAvilableLSL():
-    #    bci.StartTraining()
+bci.TrainMode()
+
+# Need some way of relaying sufficient number of epochs ascertained in each version to notify testmode
+#bci.TestMode()

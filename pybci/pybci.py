@@ -5,7 +5,7 @@ import threading
 
 class PyBCI:
     """The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
-     and holds a configerable number of samples based on lsl marker strings.
+     and holds a configurable number of samples based on lsl marker strings.
      If no marker strings are available on the LSL the class will close and return an error.
      Optional Inputs:
         dataStreams = List of strings, allows user to set custom acceptable EEG stream definitions, if None defaults to streamTypes scan
@@ -29,37 +29,47 @@ class PyBCI:
     streamChsDropDict= {}
     dataStreams = []
     markerStream = None
+    connected = False
 
     def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True):
         self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes)
         self.printDebug = printDebug
-        if self.lslScanner.CheckAvailableLSL() == True:
-            self.ConfigureEpochWindowSettings() 
-            self.__StartThreads()
+        self.ConfigureEpochWindowSettings()
+        self.Connect()
 
     def __enter__(self): # with bci
-        if self.lslScanner.CheckAvailableLSL():
-            self.ConfigureEpochWindowSettings()
-            self.__StartThreads()
+        self.ConfigureEpochWindowSettings()
+        self.Connect()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.StopThreads()
 
-    def StartTraining(self):
+    def Connect(self): # Checks valid data and markers streams are present, controls dependant functions by setting self.connected
         if self.lslScanner.CheckAvailableLSL():
-            pass
+            self.__StartThreads()
+            self.connected = True
+            return True # uses return statements so user can check if connected with bool returned
+        else:
+            self.connected = False
+            return False
+
+    def TrainMode(self):
+        if self.connected:
+            if self.printDebug:
+                print("PyBCI: Started training...")
+            self.trainTestEvent.set()
+        else:
+            self.Connect()
             #self.trainer.StartTraining()
 
-    def StopTraining(self):
-        pass
-        #self.trainer.StopTraining()
-
-    def StartTesting(self):
-        if self.lslScanner.CheckAvailableLSL():
-            pass
-
-    def StopTesting(self):
-        pass
+    def TestMode(self):
+        # probably need to add check that enough valid epochs are present
+        if self.connected:
+            if self.printDebug:
+                print("PyBCI: Started testing...")
+            self.trainTestEvent.clear()
+        else:
+            self.Connect()
 
     def __StartThreads(self):
         self.featureQueue = queue.Queue()
@@ -67,31 +77,36 @@ class PyBCI:
         totalDevices = len(self.dataStreams)
         lock = threading.Lock() # used for printing in threads
         self.closeEvent = threading.Event() # used for closing threads
+        self.trainTestEvent = threading.Event()
+        self.trainTestEvent.set() # if set we're in train mode, if not we're in test mode
         if self.printDebug:
-            print("PyLSL-BCI: Starting threads initialisation...")
-        self.featureThread = FeatureProcessorThread(self.closeEvent, self.dataQueue, self.featureQueue, totalDevices, lock, self.customWindowSettings)
-        self.featureThread.start()
+            print("PyBCI: Starting threads initialisation...")
+        # setup data thread
         self.dataThreads = []
         for stream in self.dataStreams:
             if stream.info().name() in self.streamChsDropDict.keys():
-                dt = DataReceiverThread(self.closeEvent, self.dataQueue, stream,  self.customWindowSettings, self.globalWindowSettings, self.streamChsDropDict[stream.info().name()])
+                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customWindowSettings, self.globalWindowSettings, self.streamChsDropDict[stream.info().name()])
             else:
-                dt = DataReceiverThread(self.closeEvent, self.dataQueue, stream,  self.customWindowSettings, self.globalWindowSettings)
+                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customWindowSettings, self.globalWindowSettings)
             dt.start()
             self.dataThreads.append(dt)
-        self.markerThread = MarkerReceiverThread(self.closeEvent, self.markerStream,self.dataThreads, self.featureThread)
+        # setup feature processing thread, reduces time series data down to statisitical features
+        self.featureThread = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueue, self.featureQueue, totalDevices, lock, self.customWindowSettings)
+        self.featureThread.start()
+        # marker thread requires data and feature threads to push new markers too
+        self.markerThread = MarkerReceiverThread(self.closeEvent,self.trainTestEvent, self.markerStream,self.dataThreads, self.featureThread)
         self.markerThread.start()
-
 
     def StopThreads(self):
         self.closeEvent.set()
+        self.markerThread.join()
         # wait for all threads to finish processing, probably worth pulling out finalised classifier information stored for later use.
         for dt in self.dataThreads:
-            dt.thread.join()
-        self.markerThread.join()
+            dt.join()
         self.featureThread.join()
-
-
+        self.connected = False
+        if self.printDebug:
+            print("PyBCI: Threads stopped.")
 
     # Could move all configures to a configuration class, might make options into more descriptive classes?
     def ConfigureEpochWindowSettings(self, globalWindowSettings = None, customWindowSettings = {}):
@@ -99,6 +114,7 @@ class PyBCI:
         self.customWindowSettings = customWindowSettings
         if globalWindowSettings != None:
             self.globalWindowSettings = globalWindowSettings
+        self.ResetThreadsAfterConfigs()
 
     def ConfigureFeatures(self,freqbands = None, featureChoices = None ):
         # potentially should move configuration to generic class which can be used for both test and train
@@ -106,7 +122,16 @@ class PyBCI:
             self.featureThread.freqbands = freqbands
         if featureChoices != None:    
             self.featureThread.featureChoices = featureChoices
+        self.ResetThreadsAfterConfigs()
 
     def ConfigureDataStreamChannels(self,streamChsDropDict = {}):
         # potentially should move configuration to generic class which can be used for both test and train
         self.streamChsDropDict = streamChsDropDict 
+        self.ResetThreadsAfterConfigs()
+
+    def ResetThreadsAfterConfigs(self):
+        if self.connected:
+            if self.printDebug:
+                print("PyBCI: Resetting threads after BCI reconfiguration...")
+            self.StopThreads()
+            self.Connect()
