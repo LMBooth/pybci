@@ -1,7 +1,7 @@
 import antropy as ant
 import numpy as np
 from scipy.signal import welch
-from scipy.integrate import simpson
+from scipy.integrate import simps
 import warnings
 from Configuration.FeatureSettings import FeatureChoices
 # Filter out UserWarning messages from the scipy package, could be worth moving to init and applying printdebug print levels?
@@ -54,25 +54,35 @@ class FeatureExtractor():
         NOTE: Any channels with a constant value will generate warnings in any frequency based features (constant level == no frequency components).
         """
         features = np.zeros((len(epoch),self.numFeatures))
-        #print(features.shape)
         for k, ch in enumerate(epoch):
             if self.featureChoices.psdBand: # get custom average power within given frequency band from freqbands
+                freqs, psd = welch(ch, sr)
                 for l, band in enumerate(self.freqbands):
-                    #bp = bandpower(ch, sr, band, method='multitaper', window_sec=None, relative=False)  
-                    nperseg = (2 / band[0]) * sr
-                    freqs, psd = welch(ch, sr)#, nperseg=len(ch)-1)
-                    freq_res = freqs[1] - freqs[0]
-                    idx_band = np.logical_and(freqs >= band[0], freqs <= band[1])
-                    if len(psd[idx_band]) == 1: # if freq band is only in one field just pass single value instead of calculating average
-                        bp = psd[idx_band]
+                    if len(freqs) > 0: # len(freqs) can be 0 if signal is all DC
+                        idx_band = np.logical_and(freqs >= band[0], freqs <= band[1])
+                        #if len(psd[idx_band]) == 1: # if freq band is only in one field just pass single value instead of calculating average
+                        #print(ch)
+                        bp = np.mean(psd[idx_band])
+                        #else:
+                        #    bp = simps(psd[idx_band], dx=(freqs[1]-freqs[0])) / (band[1] - band[0])
+                            #bp = simpson(psd[idx_band], dx=freq_res)
+                        features[k][l] = bp
                     else:
-                        bp = simpson(psd[idx_band], dx=freq_res)
-                    features[k][l] = bp
+                        features[k][l] = 0
             else:
+                freqs, psd = welch(ch, sr)# calculate for mean and median
                 l = -1 # accounts for no freqbands being selected
+            if self.featureChoices.meanPSD: # mean power
+                l += 1
+                if len(freqs) > 0: features[k][l] = np.mean(psd) # len(freqs) can be 0 if signal is all DC
+                else: features[k][l] = 0
+            if self.featureChoices.medianPSD: # median Power
+                l += 1   
+                if len(freqs) > 0: features[k][l] = np.median(psd) # len(freqs) can be 0 if signal is all DC
+                else: features[k][l] = 0
             if self.featureChoices.appr_entropy:  # Approximate entorpy(X,M,R) X = data, M is , R is 30% standard deviation of X 
                 l += 1
-                features[k][l] = ant.app_entropy(ch) # 
+                features[k][l] = ant.app_entropy(ch) 
             if self.featureChoices.perm_entropy: # permutation_entropy
                 l += 1
                 features[k][l] = ant.perm_entropy(ch,normalize=True)
@@ -88,23 +98,6 @@ class FeatureExtractor():
             if self.featureChoices.rms: # rms
                 l += 1
                 features[k][l] = np.sqrt(np.mean(np.array(ch)**2))
-            if self.featureChoices.meanPSD or self.featureChoices.medianPSD:
-                freqs, psd = welch(ch, sr)
-                #with warnings.catch_warnings():
-                #    warnings.filterwarnings('error')
-                #    try:
-                if self.featureChoices.meanPSD: # mean power
-                    l += 1
-                    features[k][l] = sum(freqs*psd)/sum(psd)
-                if self.featureChoices.medianPSD: # median Power
-                    l += 1   
-                    features[k][l] = sum(psd)/2
-                #    except Warning as e:
-                #        print(k)
-                #        print(freqs)
-                #        print(psd)
-                #        print('error found:', e)
-
             if self.featureChoices.variance: # variance
                 l += 1    
                 features[k][l] =  np.var(ch)

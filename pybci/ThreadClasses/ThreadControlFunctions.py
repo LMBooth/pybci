@@ -38,6 +38,7 @@ class ClassifierThread(threading.Thread):
                         self.classifier.CompileModel(self.features, self.targets)
                     else:
                         self.classifier.UpdateModel(featuresSingle,target)
+                        self.classifier.TestModel(featuresSingle) # maybe make this toggleable?
                 except queue.Empty:
                     pass
             else: # We're testing!
@@ -49,21 +50,25 @@ class ClassifierThread(threading.Thread):
 
 
 class FeatureProcessorThread(threading.Thread):
-    def __init__(self, closeEvent, trainTestEvent, dataQueue, featureQueue,  totalDevices, customEpochSettings = {}, 
+    def __init__(self, closeEvent, trainTestEvent, dataQueue, featureQueue,  totalDevices,markerCountRetrieveEvent,markerCountQueue, customEpochSettings = {}, 
                  globalEpochSettings = GlobalEpochSettings(),freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices()):
         super().__init__()
+        self.markerCountQueue = markerCountQueue
         self.trainTestEvent = trainTestEvent
         self.closeEvent = closeEvent
         self.dataQueue = dataQueue
         self.featureQueue = featureQueue
         self.ufp = FeatureExtractor(freqbands = freqbands, featureChoices = featureChoices)
         self.totalDevices = totalDevices
+        self.markerCountRetrieveEvent = markerCountRetrieveEvent
         self.epochCounts = {}
         self.customEpochSettings = customEpochSettings
         self.globalWindowSettings = GlobalEpochSettings
         
     def run(self):
         while not self.closeEvent.is_set():
+            if self.markerCountRetrieveEvent.is_set():
+                self.markerCountQueue.put(self.epochCounts)
             if self.trainTestEvent.is_set(): # We're training!
                 try:
                     dataFIFOs, currentMarker, sr, dataType = self.dataQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
@@ -129,11 +134,12 @@ class DataReceiverThread(threading.Thread):
     def run(self):
         posCount = 0
         chCount = self.dataStreamInlet.info().channel_count()
+        maxTime = (self.globalEpochSettings.tmin + self.globalEpochSettings.tmax)
         if len(self.customEpochSettings.keys())>0:
-            maxTime = max([self.customEpochSettings[x].tmin + self.customEpochSettings[x].tmax for x in self.customEpochSettings])
-        else:
-            maxTime = self.globalEpochSettings.tmin + self.globalEpochSettings.tmax
+            if  max([self.customEpochSettings[x].tmin + self.customEpochSettings[x].tmax for x in self.customEpochSettings]) > maxTime:
+                maxTime = max([self.customEpochSettings[x].tmin + self.customEpochSettings[x].tmax for x in self.customEpochSettings])
         fifoLength = int(self.dataStreamInlet.info().nominal_srate()*maxTime)
+        #print(fifoLength)
         dataFIFOs = [deque(maxlen=fifoLength) for ch in range(chCount - len(self.streamChsDropDict))]
         while not self.closeEvent.is_set():
             sample, timestamp = self.dataStreamInlet.pull_sample(timeout = 1)

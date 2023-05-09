@@ -23,6 +23,12 @@ class Classifier():
             self.classifierLibrary = "tensor"
 
     def CompileModel(self, features, targets):
+        if (len(np.array(features).shape) ==3):
+            features  = np.array(features).reshape(np.array(features).shape[0], -1)
+        else:
+            self.features = np.array(features)
+        features = np.where(np.isnan(features), 0, features)
+        self.targets = targets
         x_train, x_test, y_train, y_test = train_test_split(features, targets, shuffle = True, test_size=0.2)
         self.x_test, self.y_test = x_test, y_test # get calidation sets
         if self.classifierLibrary == "sklearn":
@@ -37,9 +43,14 @@ class Classifier():
             pass
 
     def UpdateModel(self, featuresSingle, target):
+        featuresSingle = np.where(np.isnan(featuresSingle), 0, featuresSingle)
+        if (len(np.array(features).shape) ==3):
+            features  = np.array(features).reshape(np.array(features).shape[0], -1)
+        self.features = np.vstack([self.features, featuresSingle])
+        self.targets = np.hstack([self.targets, target])
         if self.classifierLibrary == "sklearn":
             # Update the model with new data using partial_fit
-            self.clf.partial_fit(featuresSingle, target, classes=np.unique(target))
+            self.clf.fit(self.features, self.targets) #, classes=np.unique(target))
             self.accuracy = self.clf.score(self.x_test, self.y_test)
         elif self.classifierLibrary == "tensor":
             self.model.fit(featuresSingle, target, epochs=1, batch_size=32)

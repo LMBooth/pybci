@@ -82,19 +82,10 @@ class PyBCI:
         else:
             self.Connect()
 
-    def ReceiveMarker(self, marker):
-        """ Tracks count of epoch markers in dict self.epochCounts - used for syncing data between multiple devices in function self.run() """
-        if len(self.customEpochSettings.keys())>0: #  custom marker received
-            if marker in self.customEpochSettings.keys():
-                if marker in self.epochCounts:
-                    self.epochCounts[marker][1] += 1
-                else:
-                    self.epochCounts[marker] = [len(self.epochCounts.keys()),1]
-        else: # no custom markers set, use global settings
-            if marker in self.epochCounts:
-                self.epochCounts[marker][1] += 1
-            else:
-                self.epochCounts[marker] = [len(self.epochCounts.keys()),1]
+    def ReceivedMarkerCount(self, marker):
+        self.markerCountQueue.set
+        return self.markerCountQueue.get(self.epochCounts)
+    
 
     def __StartThreads(self):
         self.featureQueue = queue.Queue()
@@ -103,6 +94,7 @@ class PyBCI:
         lock = threading.Lock() # used for printing in threads
         self.closeEvent = threading.Event() # used for closing threads
         self.trainTestEvent = threading.Event()
+        self.markerCountRetrieveEvent = threading.Event()
         self.trainTestEvent.set() # if set we're in train mode, if not we're in test mode
         if self.printDebug:
             print("PyBCI: Starting threads initialisation...")
@@ -116,7 +108,10 @@ class PyBCI:
             dt.start()
             self.dataThreads.append(dt)
         # setup feature processing thread, reduces time series data down to statisitical features
-        self.featureThread = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueue, self.featureQueue, totalDevices, 
+        self.markerCountQueue = queue.Queue()
+        self.featureThread = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueue,
+                                                    self.featureQueue, totalDevices,
+                                                    self.markerCountRetrieveEvent, self.markerCountQueue,
                                                     globalEpochSettings = self.globalEpochSettings, customEpochSettings = self.customEpochSettings)
         self.featureThread.start()
         # marker thread requires data and feature threads to push new markers too
