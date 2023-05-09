@@ -30,7 +30,8 @@ class PyBCI:
 
     def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
-                 freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices ()):
+                 freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices (),
+                 minimumEpochsRequired = 10, clf= None, model = None):
         self.freqbands = freqbands
         self.featureChoices = featureChoices
         self.globalEpochSettings = globalEpochSettings
@@ -38,8 +39,9 @@ class PyBCI:
         self.streamChsDropDict = streamChsDropDict
         self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes)
         self.printDebug = printDebug
+        self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model) # configure first, connect second
         self.Connect()
-
+       
     def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
                  freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices ()): # with bci
@@ -82,10 +84,18 @@ class PyBCI:
         else:
             self.Connect()
 
-    def ReceivedMarkerCount(self, marker):
-        self.markerCountQueue.set
-        return self.markerCountQueue.get(self.epochCounts)
-    
+    def ReceivedMarkerCount(self):
+        if self.connected:
+            #try:
+            self.markerCountRetrieveEvent.set()
+            markers = self.markerCountQueue.get()
+            self.markerCountRetrieveEvent.clear()
+            return markers
+            #except queue.Empty:
+            #    return None
+        else:
+            # add debug print?
+            self.Connect()
 
     def __StartThreads(self):
         self.featureQueue = queue.Queue()

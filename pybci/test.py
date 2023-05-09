@@ -21,8 +21,8 @@ customEpochSettings = {"Baseline": baselineInd,
                 "Dropped 1 samples": ind,
                 "Dropped 2 samples": ind,}
 
-bci = PyBCI(dataStreams = validDataStreams, markerStream = validMarkerStream, streamChsDropDict = streamChsDropDict, 
-            globalEpochSettings = generalEpochSettings, customEpochSettings = customEpochSettings)
+bci = PyBCI( streamChsDropDict = streamChsDropDict, #dataStreams = validDataStreams, markerStream = validMarkerStream,
+            minimumEpochsRequired = 3, globalEpochSettings = generalEpochSettings)#, customEpochSettings = customEpochSettings)
 
 #    def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
 #                 globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
@@ -33,7 +33,10 @@ while not bci.connected:
     time.sleep(1)
 
 bci.TrainMode()
-
+while(True):
+    currentMarkers = bci.ReceivedMarkerCount()
+    print(currentMarkers)
+    time.sleep(1)
 #### Other function examples
 #bci.ConfigureDataStreamChannels(streamChsDropDict = streamChsDropDict)
 #bci.ConfigureEpochWindowSettings(globalEpochSettings = generalEpochSettings, customEpochSettings = customEpochSettings)

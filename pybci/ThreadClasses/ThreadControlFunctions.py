@@ -30,15 +30,16 @@ class ClassifierThread(threading.Thread):
                     featuresSingle, target, epochCounts = self.featureQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
                     self.targets.append(target)
                     self.features.append(featuresSingle)
-                    print(epochCounts)
-                    minNumKeyEpochs = min([epochCounts[key][1] for key in epochCounts])
-                    if minNumKeyEpochs < self.minRequiredEpochs:
-                        pass
-                    elif minNumKeyEpochs == self.minRequiredEpochs:
-                        self.classifier.CompileModel(self.features, self.targets)
-                    else:
-                        self.classifier.UpdateModel(featuresSingle,target)
-                        self.classifier.TestModel(featuresSingle) # maybe make this toggleable?
+                    #print("in class thread")
+                    #print(epochCounts)
+                    if len(epochCounts) > 1: # check if there is more then one test condition
+                        minNumKeyEpochs = min([epochCounts[key][1] for key in epochCounts]) # check minimum viable number of training eochs have been obtained
+                        #print("minNumKeyEpochs"+str(minNumKeyEpochs))
+                        if minNumKeyEpochs < self.minRequiredEpochs:
+                            pass
+                        else: 
+                            self.classifier.TrainModel(self.features, self.targets)
+                            #self.classifier.TestModel(featuresSingle) # maybe make this toggleable?
                 except queue.Empty:
                     pass
             else: # We're testing!
@@ -63,7 +64,7 @@ class FeatureProcessorThread(threading.Thread):
         self.markerCountRetrieveEvent = markerCountRetrieveEvent
         self.epochCounts = {}
         self.customEpochSettings = customEpochSettings
-        self.globalWindowSettings = GlobalEpochSettings
+        self.globalWindowSettings = globalEpochSettings
         
     def run(self):
         while not self.closeEvent.is_set():
