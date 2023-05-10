@@ -3,8 +3,7 @@ A Python interface to create a BCI with the [Lab Streaming Layer](https://github
 
 Basic implementation:
 ```python
-import time, sys
-sys.path.append('../')  # add the parent directory of 'utils' to sys.path, whilst in beta build.
+import time
 from PyBCI.pybci import PyBCI
 from PyBCI.Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
 
