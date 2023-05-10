@@ -23,7 +23,7 @@ while(True):
         break
 
 while(True):
-    # polls in testing
+    # polls in training, needs function adding to pull guessed received markers
     time.sleep(1)
 
 ```
