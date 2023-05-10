@@ -39,7 +39,7 @@ class Classifier():
                 y_predictions = self.clf.predict(x_test)
                 print(y_predictions)
                 self.accuracy = sklearn.metrics.accuracy_score(y_test, y_predictions)
-                print(self.accuracy)
+                print("Classification accuracy:" +str(self.accuracy))
         elif self.classifierLibrary == "tensor":
             if all(item == y_train[0] for item in y_train):
                 pass
@@ -51,7 +51,11 @@ class Classifier():
             pass
 
     def TestModel(self, x):
-        print(np.array(x).shape)
+        if (len(np.array(x).shape) ==3):
+            x = np.array(x).reshape(np.array(x).shape[0], -1)
+        else:
+            x = np.array(x)
+        print(x.shape)
         if self.classifierLibrary == "sklearn":
             y_pred = self.clf.predict(x)
             print("we predict it's: "+str(y_pred))

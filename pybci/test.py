@@ -23,11 +23,11 @@ customEpochSettings = {"Baseline": baselineInd,
 
 bci = PyBCI( streamChsDropDict = streamChsDropDict, #dataStreams = validDataStreams, markerStream = validMarkerStream,
             minimumEpochsRequired = 3, globalEpochSettings = generalEpochSettings)#, customEpochSettings = customEpochSettings)
-
+# minimumEpochsRequired set how many epochs are required before classificaiton attempted, if testtrainsplit (sklearn) contains only one target value classification is
 #    def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
 #                 globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
 #                 freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices ()):
-
+# could add marker and dataoutlet timeouts as options 
 while not bci.connected:
     bci.Connect()
     time.sleep(1)
@@ -37,6 +37,19 @@ while(True):
     currentMarkers = bci.ReceivedMarkerCount()
     print(currentMarkers)
     time.sleep(1)
+    if len(currentMarkers) > 1:   
+        print("waddup")
+        print(currentMarkers)
+        if min([currentMarkers[key][1] for key in currentMarkers]) > 10:
+            print("we're starting test mode!!")
+            bci.TestMode()
+            break
+
+while(True):
+    time.sleep(1)
+    # add method to retrieve marker in main pybci class instead of pritning constantly 
+
+
 #### Other function examples
 #bci.ConfigureDataStreamChannels(streamChsDropDict = streamChsDropDict)
 #bci.ConfigureEpochWindowSettings(globalEpochSettings = generalEpochSettings, customEpochSettings = customEpochSettings)
