@@ -23,8 +23,10 @@ while(True):
     
 ```
 
+For an example with no required LSL available hardware, a psuedo time-series signal across 8 channels on an LSL stream with a StreamType "EMG" can be created with the  
 
-[ReadTheDocs!](https://pybci.readthedocs.io/en/latest/) (In development)
+
+[ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/) (In development)
 
 
 ToDo!
