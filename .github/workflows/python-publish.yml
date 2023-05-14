@@ -1,30 +1,66 @@
-author: !!python/tuple
-- Liam Booth
-author_email: !!python/tuple
-- liambooth123@hotmail.co.uk
-bdist_wheel: null
-classifiers: '['
-cmdclass: '{'
-description: !!python/tuple
-- A Python interface to create a BCI with the Lab Streaming Layer, scikit-learn and
-  tensorflow packages
-here: path.abspath(path.dirname(__name__))
-install_requires: '['
-keywords: !!python/tuple
-- machine learning and data synchronisation on the Lab Streaming Layer
-license: !!python/tuple
-- MIT
-long_description: long_description,
-long_description_content_type: !!python/tuple
-- text/markdown
-name: !!python/tuple
-- pybci
-package_data: !!python/tuple
-- {}
-packages: !!python/tuple
-- - pybci
-python_requires: !!python/tuple
-- '>=3.11'
-url: !!python/tuple
-- https://github.com/lmbooth/pybci
-version: version['__version__'],
+name: pypi publish
+
+on:
+  release:
+    types: [published]
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  deploy:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+          - name: "ubuntu-22.04"
+            os: "ubuntu-latest"
+            pyarch: "x64"
+          - name: "windows-x64"
+            os: "windows-latest"
+            arch: "amd64"
+            pyarch: "x64"
+          - name: "windows-x86"
+            os: "windows-latest"
+            arch: "i386"
+            pyarch: "x86"
+    steps:
+      - uses: actions/checkout@master
+      - name: Set up Python 3.x
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.x"
+          architecture: ${{ matrix.config.pyarch }}
+      - name: Install pypa/build
+        run: |
+          python -m pip install --upgrade pip
+          pip install build twine
+      - name: Build package
+        run: |
+          python -m build --wheel --outdir dist/
+
+      - name: Publish using Twine (Windows)
+        if: matrix.config.os == 'windows-latest'
+        run: |
+          python -m twine upload dist/*
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+
+# This fails because I don't have access to `pylsl` project there.
+#      - name: Publish distribution 📦 to Test PyPI
+#        if: (github.event.release.prerelease && (matrix.config.os != 'windows-latest'))
+#        uses: pypa/gh-action-pypi-publish@unstable/v1
+#        with:
+#          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+#          repository_url: https://test.pypi.org/legacy/
+#          skip_existing: true
+#
+      - name: Publish distribution 📦 to PyPI
+        if: ((matrix.config.os != 'windows-latest') && !github.event.release.prerelease)
+        uses: pypa/gh-action-pypi-publish@unstable/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
