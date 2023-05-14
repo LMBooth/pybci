@@ -22,7 +22,7 @@ except ImportError:
     bdist_wheel = None
 
 
-here = path.abspath(path.dirname(__file__))
+here = path.abspath(path.dirname(__name__))
 
 
 # Get the long description from the relevant file
@@ -44,7 +44,7 @@ setup(
 
     version=version['__version__'],
 
-    description='Python interface to create a BCI with the Lab Streaming Layer, scikit-learn and tensorflow packages',
+    description='A Python interface to create a BCI with the Lab Streaming Layer, scikit-learn and tensorflow packages',
     long_description=long_description,
     long_description_content_type="text/markdown",
 
@@ -94,7 +94,7 @@ setup(
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
-    packages=['pybci'],
+    packages=['pybci'], #, 'pybci.examples'
 
     # List run-time dependencies here.  These will be installed by pip when
     # your project is installed. For an analysis of "install_requires" vs pip's

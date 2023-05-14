@@ -1,0 +1,14 @@
+LICENSE
+MANIFEST.in
+README.md
+setup.py
+pybci/__init__.py
+pybci/pybci.py
+pybci/simpleExample.py
+pybci/test.py
+pybci/version.py
+pybci.egg-info/PKG-INFO
+pybci.egg-info/SOURCES.txt
+pybci.egg-info/dependency_links.txt
+pybci.egg-info/requires.txt
+pybci.egg-info/top_level.txt

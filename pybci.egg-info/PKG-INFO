@@ -1,0 +1,59 @@
+Metadata-Version: 2.1
+Name: pybci
+Version: 0.0.1
+Summary: A Python interface to create a BCI with the Lab Streaming Layer, scikit-learn and tensorflow packages
+Home-page: https://github.com/lmbooth/pybci
+Author: Liam Booth
+Author-email: liambooth123@hotmail.co.uk
+License: MIT
+Keywords: machine learning and data synchronisation on the Lab Streaming Layer
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: Intended Audience :: Science/Research
+Classifier: Topic :: System :: Networking
+Classifier: Topic :: Scientific/Engineering
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Operating System :: MacOS
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.11
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+License-File: LICENSE
+
+# PyBCI
+A Python interface to create a BCI with the [Lab Streaming Layer](https://github.com/sccn/labstreaminglayer), [scikit-learn](https://scikit-learn.org/stable/#) and [TensorFlow](https://www.tensorflow.org/install) packages, leveraging packages like [Antropy](https://github.com/raphaelvallat/antropy), [SciPy](https://scipy.org/) and [NumPy](https://numpy.org/) for time and/or frequency based feature extraction.
+
+Basic implementation:
+```python
+import time
+from pybci import PyBCI
+
+bci = PyBCI()
+while not bci.connected:
+    bci.Connect()
+    time.sleep(1)
+bci.TrainMode()
+while(True):
+    currentMarkers = bci.ReceivedMarkerCount()
+    time.sleep(1) # wait for marker updates
+    if len(currentMarkers) > 1:  # check there is more then one marker type received
+        if min([currentMarkers[key][1] for key in currentMarkers]) > 10:
+            bci.TestMode()
+            break
+while(True):
+    time.sleep(1)
+    
+```
+
+For an example with no required LSL available hardware, a psuedo time-series signal across 8 channels on an LSL stream with a StreamType "EMG" can be created with the  
+
+
+[ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/) (In development)
+
+
+ToDo!
+Implement split epoch window settings to allow one marker to signify long period of data which can be split in to multiple epochs for training.
+
+## Curently in Alpha, come back in a few days for updates!
