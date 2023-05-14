@@ -40,7 +40,7 @@ with open("pybci/version.py") as fp:
 
 
 setup(
-    name='pybci',
+    name='PyBCI',
 
     version=version['__version__'],
 
