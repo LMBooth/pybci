@@ -3,7 +3,8 @@ from ThreadClasses.ThreadControlFunctions import DataReceiverThread, MarkerRecei
 import queue
 import threading
 from Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
-from Configuration.FeatureSettings import FeatureChoices
+from Configuration.FeatureSettings import GeneralFeatureChoices
+import tensorflow as tf
 
 class PyBCI:
     """The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
@@ -30,7 +31,7 @@ class PyBCI:
 
     def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
-                 freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices (),
+                 freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices(),
                  minimumEpochsRequired = 10, clf= None, model = None):
         self.freqbands = freqbands
         self.featureChoices = featureChoices
@@ -44,7 +45,7 @@ class PyBCI:
        
     def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
-                 freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices ()): # with bci
+                 freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()): # with bci
         self.freqbands = freqbands
         self.featureChoices = featureChoices
         self.globalEpochSettings = globalEpochSettings
@@ -127,8 +128,7 @@ class PyBCI:
         # marker thread requires data and feature threads to push new markers too
         self.markerThread = MarkerReceiverThread(self.closeEvent,self.trainTestEvent, self.markerStream,self.dataThreads, self.featureThread)
         self.markerThread.start()
-        #closeEvent,trainTestEvent, featureQueue, minRequiredEpochs = 10, clf = None, model = None
-        self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueue, lock, self.minimumEpochsRequired)
+        self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueue, lock, self.minimumEpochsRequired, clf = self.clf, model = self.model)
         self.classifierThread.start()
 
     def StopThreads(self):
@@ -144,7 +144,20 @@ class PyBCI:
             print("PyBCI: Threads stopped.")
 
     def ConfigureMachineLearning(self, minimumEpochsRequired = 10, clf = None, model = None):
+        from sklearn.base import ClassifierMixin
         self.minimumEpochsRequired = minimumEpochsRequired
+        if isinstance(clf, ClassifierMixin):
+            self.clf = clf
+        else:
+            self.clf = None
+            if self.printDebug:
+                print("PyBCI: Error - Invalid sklearn classifier passed to clf, setting to None.")
+        if isinstance(model, tf.keras.Model):
+            self.model = model
+        else:
+            self.model = None
+            if self.printDebug:
+                print("PyBCI: Error - Invalid tensorflow model passed to model, setting to None.")
 
     # Could move all configures to a configuration class, might make options into more descriptive classes?
     def ConfigureEpochWindowSettings(self, globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}):
@@ -169,7 +182,7 @@ class PyBCI:
                 self.globalWindowglobalEpochSettingsSettings = globalEpochSettings
                 self.ResetThreadsAfterConfigs()
 
-    def ConfigureFeatures(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices ()):
+    def ConfigureFeatures(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices ()):
         # potentially should move configuration to generic class which can be used for both test and train
         if freqbands != None:
             self.freqbands = freqbands

@@ -1,4 +1,4 @@
-class FeatureChoices:
+class GeneralFeatureChoices:
     psdBand = True
     appr_entropy = True
     perm_entropy = True

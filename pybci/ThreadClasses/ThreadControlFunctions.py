@@ -6,7 +6,7 @@ from Utils.Classifier import Classifier
 import numpy as np
 import queue
 from Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
-from Configuration.FeatureSettings import FeatureChoices
+from Configuration.FeatureSettings import GeneralFeatureChoices
 # need to add configurable number of desired epochs of each condition before including, if not set defaults from minimum viable (2???)
 # self.epochCounts has total counts of each epoch available
 class ClassifierThread(threading.Thread):
@@ -52,7 +52,7 @@ class ClassifierThread(threading.Thread):
 
 class FeatureProcessorThread(threading.Thread):
     def __init__(self, closeEvent, trainTestEvent, dataQueue, featureQueue,  totalDevices,markerCountRetrieveEvent,markerCountQueue, customEpochSettings = {}, 
-                 globalEpochSettings = GlobalEpochSettings(),freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices()):
+                 globalEpochSettings = GlobalEpochSettings(),freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
         super().__init__()
         self.markerCountQueue = markerCountQueue
         self.trainTestEvent = trainTestEvent

@@ -38,18 +38,17 @@ while(True):
     print(currentMarkers)
     time.sleep(1)
     if len(currentMarkers) > 1:   
-        print("waddup")
         print(currentMarkers)
         if min([currentMarkers[key][1] for key in currentMarkers]) > 10:
             print("we're starting test mode!!")
             bci.TestMode()
             break
 
-while(True):
-    time.sleep(1)
-    # add method to retrieve marker in main pybci class instead of pritning constantly 
-
-
+try:
+    while True:
+        time.sleep(1)
+except KeyboardInterrupt:
+    pass
 #### Other function examples
 #bci.ConfigureDataStreamChannels(streamChsDropDict = streamChsDropDict)
 #bci.ConfigureEpochWindowSettings(globalEpochSettings = generalEpochSettings, customEpochSettings = customEpochSettings)

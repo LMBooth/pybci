@@ -3,7 +3,7 @@ import numpy as np
 from scipy.signal import welch
 from scipy.integrate import simps
 import warnings
-from Configuration.FeatureSettings import FeatureChoices
+from Configuration.FeatureSettings import GeneralFeatureChoices
 # Filter out UserWarning messages from the scipy package, could be worth moving to init and applying printdebug print levels?
 warnings.filterwarnings("ignore", category=UserWarning, module="scipy") # used to reduce print statements from constant signals being applied
 warnings.filterwarnings("ignore", category=UserWarning, module="antropy") # used to reduce print statements from constant signals being applied
@@ -12,7 +12,7 @@ warnings.filterwarnings("ignore", category=RuntimeWarning, module="antropy") # u
 
 class FeatureExtractor():
 
-    def __init__(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = FeatureChoices()):
+    def __init__(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
         super().__init__()
         self.freqbands = freqbands
         self.featureChoices = featureChoices
