@@ -182,7 +182,7 @@ class PyBCI:
                 self.globalWindowglobalEpochSettingsSettings = globalEpochSettings
                 self.ResetThreadsAfterConfigs()
 
-    def ConfigureFeatures(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices ()):
+    def ConfigureFeatures(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
         # potentially should move configuration to generic class which can be used for both test and train
         if freqbands != None:
             self.freqbands = freqbands

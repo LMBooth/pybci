@@ -96,11 +96,11 @@ class FeatureProcessorThread(threading.Thread):
                         features = self.ufp.ProcessECGFeatures(dataFIFOs, sr)
                     elif (dataType == "Gaze"):
                         features = self.ufp.ProcessPupilFeatures(dataFIFOs)
-                    self.featureQueue.put( [features] )
+                    self.featureQueue.put(features)
                 except queue.Empty:
                     pass
 
-    def ReceiveMarker(self, marker):
+    def ReceiveMarker(self, marker, timestamp):
         """ Tracks count of epoch markers in dict self.epochCounts - used for syncing data between multiple devices in function self.run() """
         if len(self.customEpochSettings.keys())>0: #  custom marker received
             if marker in self.customEpochSettings.keys():
@@ -177,9 +177,11 @@ class DataReceiverThread(threading.Thread):
                         print(np.array(sliceDataFIFOs).shape)
                         self.dataQueue.put([sliceDataFIFOs, self.sr, self.dataType])
             else:
-                print("PyBCI: LSL pull_sample timed out, no data on stream...")
+                pass
+                # add levels of debug 
+                # print("PyBCI: LSL pull_sample timed out, no data on stream...")
 
-    def ReceiveMarker(self, marker):
+    def ReceiveMarker(self, marker, timestamp): # timestamp will be used for non sample rate specific devices (pupil-labs gazedata)
         #print(marker)
         if self.startCounting == False: # only one marker at a time allow, other in windowed timeframe ignored
             self.currentMarker = marker
@@ -212,7 +214,9 @@ class MarkerReceiverThread(threading.Thread):
             if marker != None:
                 marker = marker[0]
                 for thread in self.dataThreads:
-                    thread.ReceiveMarker(marker)
-                self.featureThread.ReceiveMarker(marker)
+                    thread.ReceiveMarker(marker, timestamp)
+                self.featureThread.ReceiveMarker(marker, timestamp)
             else:
-                print("PyBCI: LSL pull_sample timed out, no marker on stream...")
+                pass
+                # add levels of debug 
+                # print("PyBCI: LSL pull_sample timed out, no marker on stream...")

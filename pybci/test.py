@@ -22,7 +22,7 @@ customEpochSettings = {"Baseline": baselineInd,
                 "Dropped 2 samples": ind,}
 
 bci = PyBCI( streamChsDropDict = streamChsDropDict, #dataStreams = validDataStreams, markerStream = validMarkerStream,
-            minimumEpochsRequired = 3, globalEpochSettings = generalEpochSettings)#, customEpochSettings = customEpochSettings)
+            minimumEpochsRequired = 5, globalEpochSettings = generalEpochSettings)#, customEpochSettings = customEpochSettings)
 # minimumEpochsRequired set how many epochs are required before classificaiton attempted, if testtrainsplit (sklearn) contains only one target value classification is
 #    def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
 #                 globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
