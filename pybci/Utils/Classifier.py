@@ -44,8 +44,9 @@ class Classifier():
             if all(item == y_train[0] for item in y_train):
                 pass
             else:
-                #print(x_train)
-                #print(y_train)
+                print(np.array(x_train).shape)
+                print(y_train)
+
                 self.model.fit(np.array(x_train), np.array(y_train)) # epochs and batch_size should be customisable
                 self.loss, self.accuracy = self.model.evaluate(np.array(x_test), np.array(y_test))
                 print("Classification accuracy (tf):" +str(self.accuracy))
