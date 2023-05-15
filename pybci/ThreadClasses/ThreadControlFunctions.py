@@ -149,9 +149,10 @@ class DataReceiverThread(threading.Thread):
                     del sample[index] # remove the desired channels from the sample
                 for i,fifo in enumerate(dataFIFOs):
                     fifo.append(sample[i])
+
                 if self.trainTestEvent.is_set(): # We're training!
+                    posCount+=1
                     if self.startCounting:
-                        posCount+=1
                         if posCount >= self.desiredCount:
                             ##############################
                             # Update required here!!!
@@ -168,8 +169,12 @@ class DataReceiverThread(threading.Thread):
                     posCount+=1
                     if posCount >= int(self.globalEpochSettings.windowLength * self.sr):
                         posCount = 0
-                    # ooooooo this is gonna be interesting, how do i slice... i think i need a universal window size...
+
+                        sliceDataFIFOs = [list(itertools.islice(d, fifoLength-int(self.globalEpochSettings.windowLength * self.sr), fifoLength)) for d in dataFIFOs]
+                    # ooooooo this is gonna be interesting, how do i slice... i think i need a universal window size not individual for each epoch... 
+                    # currently doesn't overlap samples
                     # relates to required update above too
+                        print(np.array(sliceDataFIFOs).shape)
                         self.dataQueue.put([sliceDataFIFOs, self.sr, self.dataType])
             else:
                 print("PyBCI: LSL pull_sample timed out, no data on stream...")

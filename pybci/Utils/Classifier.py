@@ -51,6 +51,7 @@ class Classifier():
             pass
 
     def TestModel(self, x):
+        print(np.array(x).shape)
         if (len(np.array(x).shape) ==3):
             x = np.array(x).reshape(np.array(x).shape[0], -1)
         else:

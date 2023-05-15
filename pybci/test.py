@@ -39,7 +39,7 @@ while(True):
     time.sleep(1)
     if len(currentMarkers) > 1:   
         print(currentMarkers)
-        if min([currentMarkers[key][1] for key in currentMarkers]) > 10:
+        if min([currentMarkers[key][1] for key in currentMarkers]) > 5:
             print("we're starting test mode!!")
             bci.TestMode()
             break
