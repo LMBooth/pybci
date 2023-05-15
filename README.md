@@ -2,6 +2,8 @@
 A Python interface to create a BCI with the [Lab Streaming Layer](https://github.com/sccn/labstreaminglayer), [scikit-learn](https://scikit-learn.org/stable/#) and [TensorFlow](https://www.tensorflow.org/install) packages, leveraging packages like [Antropy](https://github.com/raphaelvallat/antropy), [SciPy](https://scipy.org/) and [NumPy](https://numpy.org/) for time and/or frequency based feature extraction.
 
 ## Installation
+pip install --index-url https://test.pypi.org/simple/ pybci
+(currently can only install with testPyPi due to name isimilarities with another package on normal pip)
 
 ## Basic implementation:
 
