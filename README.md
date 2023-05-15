@@ -23,7 +23,7 @@ while(True):
     
 ```
 
-For an example with no required LSL available hardware, a psuedo time-series signal across 8 channels on an LSL stream with a StreamType "EMG" can be created with the  
+For an example with no required LSL available hardware, a psuedo time-series signal across 8 channels on an LSL stream with a StreamType "EMG" can be created with the script found in [PsuedoLSLStreamGenerator folder](https://github.com/LMBooth/pybci/tree/main/PsuedoLSLStreamGenerator). You can send a trigger marker for 5 different signal types (all modified slightly in the __init__) and a baseline marker with stream data plotted in a pyqt/pyqtgraph application.
 
 
 [ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/) (In development)
