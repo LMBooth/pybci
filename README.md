@@ -17,7 +17,7 @@ while(True):
     if len(currentMarkers) > 1:  # check there is more then one marker type received
         if min([currentMarkers[key][1] for key in currentMarkers]) > 10:
             bci.TestMode()
-            break
+            break 
 while(True):
     time.sleep(1)
     
