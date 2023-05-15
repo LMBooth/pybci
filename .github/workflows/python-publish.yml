@@ -1,8 +1,10 @@
 name: pypi publish
 
 on:
+  push:
+    branches: [ master ]
   release:
-    types: [published]
+    types: [ created ]
 
 defaults:
   run:
@@ -60,8 +62,15 @@ jobs:
 #          repository_url: https://test.pypi.org/legacy/
 #          skip_existing: true
 #
-      - name: Publish distribution 📦 to PyPI
-        if: ((matrix.config.os != 'windows-latest') && !github.event.release.prerelease)
-        uses: pypa/gh-action-pypi-publish@unstable/v1
-        with:
-          password: ${{ secrets.PYPI_API_TOKEN }}
+      - name: Publish package to TestPyPI
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
+        run: twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+      - name: Publish package to PyPI
+        if: github.event_name == 'release' && github.event.action == 'created'
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+        run: twine upload dist/*
