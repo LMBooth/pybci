@@ -36,7 +36,12 @@ For an example with no required LSL available hardware, a psuedo time-series sig
 [ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/) (In development)
 
 
-ToDo!
-Implement split epoch window settings to allow one marker to signify long period of data which can be split in to multiple epochs for training.
-
+## ToDo!
+- Implement split epoch window settings to allow one marker to signify long period of data before and after marker which can be otionally split in to multiple epochs for training.
+- Add LSL classification output marker stream + config.
+- Capture data before and after maker relative to timestamp for data streams without sample rates or 0 sample rate.
+- Add functions to get current accuracy, clf+model and assumed epoch num/string from classifier in pybci class (queues or callbacks)
+### Future Work
+- Add simple gaze decoding from pupil-labs
+- Have custom class passable for data decoding, use general and gaze for inpiration. 
 ## Curently in Alpha, come back in a few days for updates!
