@@ -31,6 +31,6 @@ while(True):
 try:
     while True:
         # print current guess from pybci
-        time.sleep(1) 
+        time.sleep(1)   
 except KeyboardInterrupt:
     pass
