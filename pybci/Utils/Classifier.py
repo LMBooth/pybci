@@ -8,6 +8,7 @@ class Classifier():
     classifierLibrary = "sklearn" # current default, should be none or somthing different?
     clf = svm.SVC(kernel = "rbf")#C=c, kernel=k, degree=d, gamma=g, coef0=c0, tol=t, max_iter=i)
     accuracy = 0
+    model = None
     def __init__(self, clf = None, model = None):
         super().__init__()
         if clf != None:
