@@ -1,5 +1,5 @@
 import time, sys
-sys.path.append('../')  # add the parent directory of 'utils' to sys.path, whilst in beta build.
+#sys.path.append('../')  # add the parent directory of 'utils' to sys.path, whilst in beta build.
 from pybci import PyBCI
 
 bci = PyBCI()
