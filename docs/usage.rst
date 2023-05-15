@@ -10,7 +10,7 @@ To use PyBCI, first install it using pip:
 
 .. code-block:: console
 
-   (.venv) $ pip install pybci
+   pip install --index-url https://test.pypi.org/simple/ pybci
 
 
 
