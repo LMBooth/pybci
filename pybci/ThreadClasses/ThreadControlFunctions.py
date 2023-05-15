@@ -1,12 +1,12 @@
 from collections import deque
 import itertools
 import threading
-from Utils.FeatureExtractor import FeatureExtractor
-from Utils.Classifier import Classifier 
+from ..Utils.FeatureExtractor import FeatureExtractor
+from ..Utils.Classifier import Classifier 
 import numpy as np
 import queue
-from Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
-from Configuration.FeatureSettings import GeneralFeatureChoices
+from ..Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
+from ..Configuration.FeatureSettings import GeneralFeatureChoices
 # need to add configurable number of desired epochs of each condition before including, if not set defaults from minimum viable (2???)
 # self.epochCounts has total counts of each epoch available
 class ClassifierThread(threading.Thread):

@@ -1,9 +1,9 @@
-from Utils.LSLScanner import LSLScanner
-from ThreadClasses.ThreadControlFunctions import DataReceiverThread, MarkerReceiverThread, FeatureProcessorThread, ClassifierThread
+from .Utils.LSLScanner import LSLScanner
+from .ThreadClasses.ThreadControlFunctions import DataReceiverThread, MarkerReceiverThread, FeatureProcessorThread, ClassifierThread
 import queue
 import threading
-from Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
-from Configuration.FeatureSettings import GeneralFeatureChoices
+from .Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
+from .Configuration.FeatureSettings import GeneralFeatureChoices
 import tensorflow as tf
 
 class PyBCI:

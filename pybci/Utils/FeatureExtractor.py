@@ -3,7 +3,7 @@ import numpy as np
 from scipy.signal import welch
 from scipy.integrate import simps
 import warnings
-from Configuration.FeatureSettings import GeneralFeatureChoices
+from ..Configuration.FeatureSettings import GeneralFeatureChoices
 # Filter out UserWarning messages from the scipy package, could be worth moving to init and applying printdebug print levels?
 warnings.filterwarnings("ignore", category=UserWarning, module="scipy") # used to reduce print statements from constant signals being applied
 warnings.filterwarnings("ignore", category=UserWarning, module="antropy") # used to reduce print statements from constant signals being applied
