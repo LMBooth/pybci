@@ -13,7 +13,6 @@ defaults:
 jobs:
   deploy:
     name: ${{ matrix.config.name }}
-    environment: development
     runs-on: ${{ matrix.config.os }}
     strategy:
       fail-fast: false
