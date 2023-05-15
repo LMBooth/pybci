@@ -5,7 +5,7 @@ A Python interface to create a BCI with the [Lab Streaming Layer](https://github
 ```
 pip install --index-url https://test.pypi.org/simple/ pybci
 ```
-(currently can only install with testPyPi due to name isimilarities with another package on normal pip)
+(currently can only install with test.pypi due to name similarities with another package on pypi)
 
 ## Basic implementation:
 
