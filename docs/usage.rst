@@ -16,8 +16,8 @@ To use PyBCI, first install it using pip:
 
 For example:
 
->>> from pylslbci import PyLSLBCI
->>> bci = PyLSLBCI()
+>>> from pybci import PyBCI
+>>> bci = PyBCI()
 >>> if bci.lslScanner.CheckAvailableLSL():
 >>>     bci.StartTraining()
 
