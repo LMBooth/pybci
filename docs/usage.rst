@@ -15,13 +15,13 @@ To use PyBCI, first install it using pip:
 
 
 For example:
+
 >>> import sleep
 >>> from pybci import PyBCI
 >>> bci = PyBCI()
 >>> while not bci.connected:
 >>>     bci.Connect()
 >>>     time.sleep(1)
-
 >>> bci.TrainMode()
 >>> while(True):
 >>>     currentMarkers = bci.ReceivedMarkerCount()
@@ -31,10 +31,8 @@ For example:
 >>>         if min([currentMarkers[key][1] for key in currentMarkers]) > 10:
 >>>             bci.TestMode()
 >>>             break
-
 >>> try:
 >>>     while True:
 >>>         time.sleep(1)
 >>> except KeyboardInterrupt: # allow user to break while loop
 >>>     pass
-
