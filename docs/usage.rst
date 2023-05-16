@@ -13,7 +13,10 @@ To use PyBCI, first install it using pip:
    pip install --index-url https://test.pypi.org/simple/ pybci
 
 
+.. _simpleimplementation:
 
+Simple Implementation:
+------------
 For example:
 
 >>> import time
