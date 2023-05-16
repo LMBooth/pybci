@@ -1,7 +1,7 @@
 import time, sys
 sys.path.append('../')  # add the parent directory of 'utils' to sys.path, whilst in beta build.
 from pybci import PyBCI
-from Configuration.EpochSettings import GlobalEpochSettings
+from pybci.Configuration.EpochSettings import GlobalEpochSettings
 import tensorflow as tf# bring in tf for custom model creation
 
 num_chs = 8 # 8 channels re created in the PsuedoLSLGwnerator
