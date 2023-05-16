@@ -16,7 +16,7 @@ To use PyBCI, first install it using pip:
 
 For example:
 
->>> import sleep
+>>> import time
 >>> from pybci import PyBCI
 >>> bci = PyBCI()
 >>> while not bci.connected:
