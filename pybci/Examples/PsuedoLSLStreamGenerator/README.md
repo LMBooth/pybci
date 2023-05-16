@@ -7,5 +7,17 @@ There are a number of markers that can be sent on the LSL marker stream which al
 
 To run this script requires installation of PyQt5 for the button interface and PyQtGraph for the data plotting.
 
+### Note:
+To change the signal for each marker type you can alter the PsuedoEMGDataConfig properties in init for each marker respectively.
+
+Default config:
+```python
+class PsuedoEMGDataConfig:
+    duration = 1.0 
+    noise_level = 0.1
+    amplitude = 0.2
+    frequency = 1.0
+```
+
 ## ToDo
 
