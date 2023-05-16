@@ -7,11 +7,11 @@ PyBCI is a python based brain computer interface software designed to receive a 
 ## Theory of Operation
 1. Initialise BCI software
     - Operational Requirements
-    -- The bci must have an available LSL datastream with accepted dataType ("EEG", "EMG", "Gaze") {hopefully configurable in the future t pass custom fature decoding class}
-    -- The bci software must have a singular LSL marker stream selected (if more then one LSL marker stream on system set the desired ML training marker stream with PyBCI(markerStream="yourMarkerStream")). Warning: If None set picks first available in list.
+        - The bci must have an available LSL datastream with accepted dataType ("EEG", "EMG", "Gaze") {hopefully configurable in the future t pass custom fature decoding class}
+        - The bci software must have a singular LSL marker stream selected (if more then one LSL marker stream on system set the desired ML training marker stream with PyBCI(markerStream="yourMarkerStream")). Warning: If None set picks first available in list.
     - Optional Configurations
-    -- We can configure epoch time window sizes based so many seconds before and after a marker has been received on PyBCI.LSLScanner.markerStream.
-    --
+        - We can configure epoch time window sizes based so many seconds before and after a marker has been received on PyBCI.LSLScanner.markerStream.
+        -
     
 2. ML Training:
   
