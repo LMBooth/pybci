@@ -25,8 +25,13 @@ while(True):
         if min([currentMarkers[key][1] for key in currentMarkers]) > 10:
             bci.TestMode()
             break 
-while(True):
-    time.sleep(1)
+try:
+    while True:
+        classInfo = bci.CurrentClassifierInfo() # when in train mode only y_pred returned
+        guess = [key for key, value in currentMarkers.items() if value[0] == classInfo["y_pred"]]
+        print("Current marker estimation: " + str(guess), end="\r")
+except KeyboardInterrupt: # allow user to break while loop
+    pass
 ```
 If you have no LSL available hardware, a psuedo time-series signal across 8 channels on an LSL stream with a StreamType "EMG" can be created with the script found in [mainSend.py PsuedoLSLStreamGenerator folder](https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PsuedoLSLStreamGenerator/mainSend.py). 
 
