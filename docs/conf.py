@@ -32,16 +32,3 @@ html_theme_options = {
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
-
-# intersphinx
-intersphinx_mapping = {
-    'liblsl': ('https://labstreaminglayer.readthedocs.io/projects/liblsl', None),
-    'cmake': ('https://cmake.org/cmake/help/latest', None),
-}
-
-extlinks = {
-        'repo': ('https://github.com/%s', ''),
-        'lslrepo': ('https://github.com/labstreaminglayer/App-%s', ''),
-        'lslrelease': ('https://github.com/labstreaminglayer/App-%s/releases', 'Download '),
-        }
