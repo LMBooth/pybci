@@ -1,9 +1,8 @@
 from .Utils.LSLScanner import LSLScanner
 from .ThreadClasses.ThreadControlFunctions import DataReceiverThread, MarkerReceiverThread, FeatureProcessorThread, ClassifierThread
-import queue
-import threading
 from .Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
 from .Configuration.FeatureSettings import GeneralFeatureChoices
+import queue, threading, copy
 import tensorflow as tf
 
 class PyBCI:
@@ -28,6 +27,7 @@ class PyBCI:
     markerStream = None
     connected = False
     epochCounts = {} # holds markers received, their target ids and number received of each
+    classifierInformation = []
 
     def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
@@ -67,6 +67,12 @@ class PyBCI:
             self.connected = False
             return False
 
+    def CurrentMarkerGuess(self):
+        if self.trainTestEvent.is_set():
+            with self.classifierLock:
+                return copy.deepcopy(self.worker_data)
+                #self.currentMarker 
+
     def TrainMode(self):
         if self.connected:
             if self.printDebug:
@@ -79,10 +85,43 @@ class PyBCI:
     def TestMode(self):
         # probably need to add check that enough valid epochs are present
         if self.connected:
+            
             if self.printDebug:
                 print("PyBCI: Started testing...")
+
+            '''
+            if self.classifierThread.classifier.classifierLibrary == "sklearn": # check model is made
+                if hasattr(self.classifierThread.classifier.clf, "coef_"): # check to see if model has been made
+                    self.trainTestEvent.clear()
+                else:
+                    self.classifierThread.classifier.TrainModel(self.classifierThread.features, self.classifierThread.targets)
+                    self.trainTestEvent.clear()
+            elif self.classifierThread.classifier.classifierLibrary == "tensor":    # check model is made
+                if len(self.classifierThread.classifier.model.weights) > 0:
+                    self.trainTestEvent.clear()
+                else:
+                    self.classifierThread.classifier.TrainModel(self.classifierThread.features, self.classifierThread.targets)
+                    self.trainTestEvent.clear()
+            '''
+            with self.featureQueue.mutex:
+                self.featureQueue.queue.clear()
             self.trainTestEvent.clear()
+            with self.featureQueue.mutex:
+                self.featureQueue.queue.clear()
         else:
+            self.Connect()
+
+    def CurrentClassifierInfo(self):
+        if self.connected:
+            #try:
+            self.classifierInfoRetrieveEvent.set()
+            classInfo = self.classifierInfoQueue.get()
+            self.classifierInfoRetrieveEvent.clear()
+            return classInfo
+            #except queue.Empty:
+            #    return None
+        else:
+            # add debug print?
             self.Connect()
 
     def ReceivedMarkerCount(self):
@@ -101,11 +140,18 @@ class PyBCI:
     def __StartThreads(self):
         self.featureQueue = queue.Queue()
         self.dataQueue = queue.Queue()
+        #self.classifierGuessQueue = queue.Queue()
+        self.classifierInfoQueue = queue.Queue()
+        self.markerCountQueue = queue.Queue()
+
         totalDevices = len(self.dataStreams)
-        lock = threading.Lock() # used for printing in threads
         self.closeEvent = threading.Event() # used for closing threads
         self.trainTestEvent = threading.Event()
         self.markerCountRetrieveEvent = threading.Event()
+        self.classifierInfoRetrieveEvent = threading.Event()
+        #self.classifierGuessEvent = threading.Event()
+        self.featureRetrieveEvent = threading.Event() # still needs coding
+
         self.trainTestEvent.set() # if set we're in train mode, if not we're in test mode
         if self.printDebug:
             print("PyBCI: Starting threads initialisation...")
@@ -113,13 +159,11 @@ class PyBCI:
         self.dataThreads = []
         for stream in self.dataStreams:
             if stream.info().name() in self.streamChsDropDict.keys():
-                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customEpochSettings, self.globalEpochSettings, self.streamChsDropDict[stream.info().name()])
+                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customEpochSettings, self.globalEpochSettings, len(self.dataThreads), self.streamChsDropDict[stream.info().name()])
             else:
-                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customEpochSettings, self.globalEpochSettings)
+                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueue, stream,  self.customEpochSettings, self.globalEpochSettings, len(self.dataThreads))
             dt.start()
             self.dataThreads.append(dt)
-        # setup feature processing thread, reduces time series data down to statisitical features
-        self.markerCountQueue = queue.Queue()
         self.featureThread = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueue,
                                                     self.featureQueue, totalDevices,
                                                     self.markerCountRetrieveEvent, self.markerCountQueue,
@@ -128,7 +172,8 @@ class PyBCI:
         # marker thread requires data and feature threads to push new markers too
         self.markerThread = MarkerReceiverThread(self.closeEvent,self.trainTestEvent, self.markerStream,self.dataThreads, self.featureThread)
         self.markerThread.start()
-        self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueue, lock, self.minimumEpochsRequired, clf = self.clf, model = self.model)
+        self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueue,self.classifierInfoQueue, self.classifierInfoRetrieveEvent,
+                                                self.minimumEpochsRequired, clf = self.clf, model = self.model)
         self.classifierThread.start()
 
     def StopThreads(self):
@@ -151,7 +196,7 @@ class PyBCI:
         else:
             self.clf = None
             if self.printDebug:
-                print("PyBCI: Error - Invalid sklearn classifier passed to clf, setting to None.")
+                print("PyBCI: Error - Invalid sklearn classifier passed to clf, setting to SVM if no tensorflow model passed either.")
         if isinstance(model, tf.keras.Model):
             self.model = model
         else:

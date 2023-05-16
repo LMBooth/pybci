@@ -53,6 +53,7 @@ class FeatureExtractor():
             target = same as input target
         NOTE: Any channels with a constant value will generate warnings in any frequency based features (constant level == no frequency components).
         """
+        #print(np.array(epoch).shape)
         features = np.zeros((len(epoch),self.numFeatures))
         for k, ch in enumerate(epoch):
             if self.featureChoices.psdBand: # get custom average power within given frequency band from freqbands
@@ -114,4 +115,6 @@ class FeatureExtractor():
                 l += 1    
                 ssc = sum([1 if (c-ch[inum+1])*(c-ch[inum+1])>=0.1 else 0 for inum, c in enumerate(ch[:-1])])
                 features[k][l] = ssc
+        features[np.isnan(features)] = 0 # checks for nans
+        features[features == np.inf] = 0 # checks for infs
         return features

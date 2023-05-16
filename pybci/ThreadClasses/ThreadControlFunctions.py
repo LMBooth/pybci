@@ -13,44 +13,58 @@ class ClassifierThread(threading.Thread):
     features = []
     targets = []
     mode = "train"
+    epochCounts = {} 
     
-    def __init__(self, closeEvent,trainTestEvent, featureQueue, lock, minRequiredEpochs = 10, clf = None, model = None):
+    def __init__(self, closeEvent,trainTestEvent, featureQueue, classifierInfoQueue, classifierInfoRetrieveEvent, minRequiredEpochs = 10, clf = None, model = None):
         super().__init__()
         self.trainTestEvent = trainTestEvent # responsible for tolling between train and test mode
         self.closeEvent = closeEvent # responsible for cosing threads
         self.featureQueue = featureQueue # gets feature data from feature processing thread
         self.classifier = Classifier(clf = clf, model = model) # sets classifier class, if clf and model passed, defaults to clf and sklearn
         self.minRequiredEpochs = minRequiredEpochs # the minimum number of epochs required for classifier attempt
-        self.lock = lock
+        self.classifierInfoRetrieveEvent = classifierInfoRetrieveEvent
+        self.classifierInfoQueue = classifierInfoQueue
 
     def run(self):
         while not self.closeEvent.is_set():
             if self.trainTestEvent.is_set(): # We're training!
                 try:
-                    featuresSingle, target, epochCounts = self.featureQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
+                    featuresSingle, target, self.epochCounts = self.featureQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
                     self.targets.append(target)
                     self.features.append(featuresSingle)
-                    #print("in class thread")
-                    #print(epochCounts)
-                    if len(epochCounts) > 1: # check if there is more then one test condition
-                        minNumKeyEpochs = min([epochCounts[key][1] for key in epochCounts]) # check minimum viable number of training eochs have been obtained
+                    if len(self.epochCounts) > 1: # check if there is more then one test condition
+                        minNumKeyEpochs = min([self.epochCounts[key][1] for key in self.epochCounts]) # check minimum viable number of training eochs have been obtained
                         #print("minNumKeyEpochs"+str(minNumKeyEpochs))
                         if minNumKeyEpochs < self.minRequiredEpochs:
                             pass
                         else: 
                             self.classifier.TrainModel(self.features, self.targets)
+                    if self.classifierInfoRetrieveEvent.is_set():
+                        classdata = {
+                            "clf":self.classifier.clf,
+                            "model":self.classifier.model,
+                            "accuracy":self.classifier.accuracy,
+                            "y_pred":self.classifier.y_pred
+                            }
+                        self.classifierInfoQueue.put(classdata)
                             #self.classifier.TestModel(featuresSingle) # maybe make this toggleable?
                 except queue.Empty:
                     pass
             else: # We're testing!
                 try:
+                    #print("we ain't we testings")
                     featuresSingle = self.featureQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
                     self.classifier.TestModel(featuresSingle)
+                    if self.classifierInfoRetrieveEvent.is_set():
+                        classdata = {
+                            "y_pred":self.classifier.y_pred[0],
+                            }
+                        self.classifierInfoQueue.put(classdata)
                 except queue.Empty:
                     pass
 
-
 class FeatureProcessorThread(threading.Thread):
+    tempDeviceEpochLogger = []
     def __init__(self, closeEvent, trainTestEvent, dataQueue, featureQueue,  totalDevices,markerCountRetrieveEvent,markerCountQueue, customEpochSettings = {}, 
                  globalEpochSettings = GlobalEpochSettings(),freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
         super().__init__()
@@ -65,6 +79,7 @@ class FeatureProcessorThread(threading.Thread):
         self.epochCounts = {}
         self.customEpochSettings = customEpochSettings
         self.globalWindowSettings = globalEpochSettings
+        self.tempDeviceEpochLogger = [0 for x in range(self.totalDevices)]
         
     def run(self):
         while not self.closeEvent.is_set():
@@ -72,7 +87,8 @@ class FeatureProcessorThread(threading.Thread):
                 self.markerCountQueue.put(self.epochCounts)
             if self.trainTestEvent.is_set(): # We're training!
                 try:
-                    dataFIFOs, currentMarker, sr, dataType = self.dataQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
+                    dataFIFOs, currentMarker, sr, dataType, qNumber = self.dataQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
+                    lastDevice = self.ReceiveMarker(currentMarker, qNumber)
                     target = self.epochCounts[currentMarker][0]
                     # could maybe allow custom dataType dict to select epoch processing pipeline. This is where new libraries will be added
                     if (dataType == "EEG" or dataType == "EMG"): # found the same can be used for EMG
@@ -82,14 +98,17 @@ class FeatureProcessorThread(threading.Thread):
                     elif (dataType == "Gaze"):
                         features = self.ufp.ProcessPupilFeatures(dataFIFOs)
                     # add logic to ensure all devices epoch data has been received (totalDevices)
-                    if self.totalDevices == 1:
-                        #self.epochCountsdata[1]
+                    if lastDevice:
                         self.featureQueue.put( [features, target, self.epochCounts] )
+                    else:
+                        # needs logic to append features together across devices (requires flattening of channels to 1d array of features)
+                        # same for test mode
+                        pass
                 except queue.Empty:
                     pass
             else:
                 try:
-                    dataFIFOs, sr, dataType = self.dataQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
+                    dataFIFOs, sr, dataType, qNumber = self.dataQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
                     if (dataType == "EEG" or dataType == "EMG"): # found the same can be used for EMG
                         features = self.ufp.ProcessGeneralEpoch(dataFIFOs, sr)
                     elif (dataType == "ECG"):
@@ -100,19 +119,41 @@ class FeatureProcessorThread(threading.Thread):
                 except queue.Empty:
                     pass
 
-    def ReceiveMarker(self, marker, timestamp):
+    def ReceiveMarker(self, marker, qNumber):
         """ Tracks count of epoch markers in dict self.epochCounts - used for syncing data between multiple devices in function self.run() """
-        if len(self.customEpochSettings.keys())>0: #  custom marker received
-            if marker in self.customEpochSettings.keys():
+        if self.totalDevices == 1:
+            if len(self.customEpochSettings.keys())>0: #  custom marker received
+                if marker in self.customEpochSettings.keys():
+                    if marker in self.epochCounts:
+                        self.epochCounts[marker][1] += 1
+                    else:
+                        self.epochCounts[marker] = [len(self.epochCounts.keys()),1]
+            else: # no custom markers set, use global settings
                 if marker in self.epochCounts:
                     self.epochCounts[marker][1] += 1
                 else:
                     self.epochCounts[marker] = [len(self.epochCounts.keys()),1]
-        else: # no custom markers set, use global settings
-            if marker in self.epochCounts:
-                self.epochCounts[marker][1] += 1
+            return True # alays true as only one device to receive
+        else:
+            if all(element == 0 for element in self.tempDeviceEpochLogger): # first device of epoch received so add to epochCounts
+                if len(self.customEpochSettings.keys())>0: #  custom marker received
+                    if marker in self.customEpochSettings.keys():
+                        if marker in self.epochCounts:
+                            self.epochCounts[marker][1] += 1
+                        else:
+                            self.epochCounts[marker] = [len(self.epochCounts.keys()),1]
+                else: # no custom markers set, use global settings
+                    if marker in self.epochCounts:
+                        self.epochCounts[marker][1] += 1
+                    else:
+                        self.epochCounts[marker] = [len(self.epochCounts.keys()),1]
+            self.tempDeviceEpochLogger[qNumber] = 1
+            if all(element == 1 for element in self.tempDeviceEpochLogger): # first device of epoch received
+                self.tempDeviceEpochLogger = [0 for x in range(self.totalDevices)]
+                return True
             else:
-                self.epochCounts[marker] = [len(self.epochCounts.keys()),1]
+                return False
+            # we need to log each type of device and make sure the same number is received of each
 
 class DataReceiverThread(threading.Thread):
     """Responsible for receiving data from accepted LSL outlet, slices samples based on tmin+tmax basis, 
@@ -120,7 +161,7 @@ class DataReceiverThread(threading.Thread):
     """
     startCounting = False
     currentMarker = ""
-    def __init__(self, closeEvent, trainTestEvent, dataQueue, dataStreamInlet,  customEpochSettings, globalEpochSettings,  streamChsDropDict = []):
+    def __init__(self, closeEvent, trainTestEvent, dataQueue, dataStreamInlet,  customEpochSettings, globalEpochSettings,devCount,  streamChsDropDict = []):
         super().__init__()
         self.trainTestEvent = trainTestEvent
         self.closeEvent = closeEvent
@@ -131,6 +172,7 @@ class DataReceiverThread(threading.Thread):
         self.streamChsDropDict = streamChsDropDict
         self.sr = dataStreamInlet.info().nominal_srate()
         self.dataType = dataStreamInlet.info().type()
+        self.devCount = devCount # used for tracking which device is sending data to feature extractor
         
     def run(self):
         posCount = 0
@@ -149,33 +191,51 @@ class DataReceiverThread(threading.Thread):
                     del sample[index] # remove the desired channels from the sample
                 for i,fifo in enumerate(dataFIFOs):
                     fifo.append(sample[i])
-
                 if self.trainTestEvent.is_set(): # We're training!
-                    posCount+=1
-                    if self.startCounting:
-                        if posCount >= self.desiredCount:
-                            ##############################
-                            # Update required here!!!
-                            # slice data fifo based on currentMarker tmin + tmax times    
+                    
+                    if self.startCounting: # we received a marker
+                        posCount+=1
+                        if posCount >= self.desiredCount:  # enough samples are in FIFO, chop up and put in dataqueue
                             if len(self.customEpochSettings.keys())>0: #  custom marker received
-                                sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.customEpochSettings[self.currentMarker].tmax+self.customEpochSettings[self.currentMarker].tmin) * self.sr), fifoLength))for d in dataFIFOs]
+                                if self.customEpochSettings[self.currentMarker].splitCheck: # slice epochs in to overlapping time windows
+                                    window_samples =int(self.customEpochSettings[self.currentMarker].windowLength * self.sr) #number of samples in each window
+                                    increment = int((1-self.customEpochSettings[self.currentMarker].windowOverlap)*window_samples) # if windows overlap each other by how many samples
+                                    while posCount - window_samples > 0:
+                                        sliceDataFIFOs = [list(itertools.islice(d, posCount - window_samples, posCount)) for d in dataFIFOs]
+                                        self.dataQueue.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType, self.devCount])
+                                        posCount-=increment
+                                else: # don't slice just take tmin to tmax time
+                                    sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.customEpochSettings[self.currentMarker].tmax+self.customEpochSettings[self.currentMarker].tmin) * self.sr), fifoLength))for d in dataFIFOs]
+                                    self.dataQueue.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType, self.devCount])
                             else:
-                                sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.globalEpochSettings.tmin+self.globalEpochSettings.tmax) * self.sr), fifoLength)) for d in dataFIFOs]
-                            self.dataQueue.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType])
+                                if self.globalEpochSettings.splitCheck: # slice epochs in to overlapping time windows
+                                    window_samples =int(self.globalEpochSettings.windowLength * self.sr) #number of samples in each window
+                                    increment = int((1-self.globalEpochSettings.windowOverlap)*window_samples) # if windows overlap each other by how many samples
+                                    startCount = self.desiredCount + int(self.globalEpochSettings.tmin * self.sr)
+                                    while startCount - window_samples > 0:
+                                        sliceDataFIFOs = [list(itertools.islice(d, startCount - window_samples, startCount)) for d in dataFIFOs]
+                                        self.dataQueue.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType,self.devCount])
+                                        startCount-=increment
+                                else: # don't slice just take tmin to tmax time
+                                    sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.globalEpochSettings.tmin+self.globalEpochSettings.tmax) * self.sr), fifoLength)) for d in dataFIFOs]
+                                    self.dataQueue.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType, self.devCount])
                             # reset flags and counters
-                            self.startCounting = False
                             posCount = 0
-                else:
+                            self.startCounting = False
+                else: # in Test mode
                     posCount+=1
-                    if posCount >= int(self.globalEpochSettings.windowLength * self.sr):
-                        posCount = 0
-
-                        sliceDataFIFOs = [list(itertools.islice(d, fifoLength-int(self.globalEpochSettings.windowLength * self.sr), fifoLength)) for d in dataFIFOs]
-                    # ooooooo this is gonna be interesting, how do i slice... i think i need a universal window size not individual for each epoch... 
-                    # currently doesn't overlap samples
-                    # relates to required update above too
-                        print(np.array(sliceDataFIFOs).shape)
-                        self.dataQueue.put([sliceDataFIFOs, self.sr, self.dataType])
+                    if self.globalEpochSettings.splitCheck:
+                        window_samples = int(self.globalEpochSettings.windowLength * self.sr) #number of samples in each window
+                    else:
+                        window_samples = int((self.globalEpochSettings.tmin+self.globalEpochSettings.tmax) * self.sr)
+                    if posCount >= window_samples:
+                        sliceDataFIFOs = [list(itertools.islice(d, fifoLength-window_samples, fifoLength)) for d in dataFIFOs]
+                        if self.globalEpochSettings.splitCheck:
+                            posCount = int((1-self.globalEpochSettings.windowOverlap)*window_samples) # offset poscoutn based on window overlap 
+                        else:
+                            posCount = 0
+                            
+                        self.dataQueue.put([sliceDataFIFOs, self.sr, self.dataType, self.devCount])
             else:
                 pass
                 # add levels of debug 
@@ -215,7 +275,7 @@ class MarkerReceiverThread(threading.Thread):
                 marker = marker[0]
                 for thread in self.dataThreads:
                     thread.ReceiveMarker(marker, timestamp)
-                self.featureThread.ReceiveMarker(marker, timestamp)
+                #self.featureThread.ReceiveMarker(marker, timestamp)
             else:
                 pass
                 # add levels of debug 

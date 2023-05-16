@@ -22,7 +22,7 @@ class Window(QtWidgets.QWidget):
     commandStrings = ["Marker1", "Marker2", "Marker3", "Marker4", "Marker5"]
     commandDataConfigs = [PsuedoEMGDataConfig(), PsuedoEMGDataConfig(), PsuedoEMGDataConfig(), PsuedoEMGDataConfig(),PsuedoEMGDataConfig()]
     baselineConfig  = PsuedoEMGDataConfig()
-    currentMarker = "Fist"
+    currentMarker = "Marker1"
     totchs = 8
     x = deque([x/250 for x in range(250*5)]) #np.zeros(250*5) # this can be edited to change width of x axis 
     y = [deque([0 for x in range(250*5)])  for y in range(totchs)]
@@ -160,7 +160,10 @@ class Window(QtWidgets.QWidget):
         
     def ChangeString(self):
         if not self.markerOccurred:
-            self.currentMarker = random.choices(population=self.commandStrings, k=1)[0]
+            newPos = self.commandStrings.index(self.currentMarker)+1
+            if newPos >= len(self.commandStrings):
+                newPos = 0
+            self.currentMarker = self.commandStrings[newPos] # = random.choices(population=self.commandStrings, k=1)[0]
             self.text.setText(self.currentMarker)
 
 if __name__ == '__main__':

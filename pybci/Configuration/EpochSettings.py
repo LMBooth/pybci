@@ -1,5 +1,4 @@
 class GlobalEpochSettings:
-    addCheck = True  #  checks whether or not to include the epoch
     splitCheck = False  # checks whether or not subdivide epochs
     tmin = 0      # time in seconds to capture samples before trigger
     tmax = 1      # time in seconds to capture samples after trigger
