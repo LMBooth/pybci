@@ -9,7 +9,7 @@ pip install --index-url https://test.pypi.org/simple/ pybci
 ```
 (currently can only install with test.pypi due to name similarities with another package on pypi)
 
-## Basic implementation:
+## Basic implementation
 ```python
 import time
 from pybci import PyBCI
@@ -28,7 +28,7 @@ while(True):
 while(True):
     time.sleep(1)
 ```
-If you have no LSL available hardware, a psuedo time-series signal across 8 channels on an LSL stream with a StreamType "EMG" can be created with the script found in [mainSend.py PsuedoLSLStreamGenerator folder](https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PsuedoLSLStreamGenerator/mainSend.py). You can send a trigger marker for 5 different signal types (all modified slightly in the __init__) and a baseline marker with stream data plotted in a pyqt/pyqtgraph application.
+If you have no LSL available hardware, a psuedo time-series signal across 8 channels on an LSL stream with a StreamType "EMG" can be created with the script found in [mainSend.py PsuedoLSLStreamGenerator folder](https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PsuedoLSLStreamGenerator/mainSend.py). 
 
 ## ToDo!
 - Implement split epoch window settings to allow one marker to signify long period of data before and after marker which can be otionally split in to multiple epochs for training.
