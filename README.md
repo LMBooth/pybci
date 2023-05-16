@@ -33,14 +33,13 @@ try:
 except KeyboardInterrupt: # allow user to break while loop
     pass
 ```
-If you have no LSL available hardware, a psuedo time-series signal across 8 channels on an LSL stream with a StreamType "EMG" can be created with the script found in [mainSend.py PsuedoLSLStreamGenerator folder](https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PsuedoLSLStreamGenerator/mainSend.py). 
+If you have no LSL available hardware, a psuedo time-series signal can be created with the script found in [mainSend.py PsuedoLSLStreamGenerator folder](https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PsuedoLSLStreamGenerator/mainSend.py). 
 
 ## ToDo!
-- Implement split epoch window settings to allow one marker to signify long period of data before and after marker which can be otionally split in to multiple epochs for training.
-- Add LSL classification output marker stream + config.
-- Capture data before and after maker relative to timestamp for data streams without sample rates or 0 sample rate.
-- Add functions to get current accuracy, clf+model and assumed epoch num/string from classifier in pybci class (queues or callbacks)
+- 
 ### Future Work
 - Add simple gaze decoding from pupil-labs
-- Have custom class passable for data decoding, use general and gaze for inpiration. 
+- Create example to output classification on LSL and make test train configurable on pure LSL markers 
+- custom class passable for data decoding, use general and gaze for inpiration. 
+
 ## Curently in Alpha, come back in a few days for updates!
