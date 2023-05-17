@@ -138,7 +138,8 @@ class PyBCI:
             self.Connect()
 
     def __StartThreads(self):
-        self.featureQueue = queue.Queue()
+        self.featureQueueTrain = queue.Queue()
+        self.featureQueueTest = queue.Queue()
         self.dataQueue = queue.Queue()
         #self.classifierGuessQueue = queue.Queue()
         self.classifierInfoQueue = queue.Queue()
@@ -172,7 +173,7 @@ class PyBCI:
         # marker thread requires data and feature threads to push new markers too
         self.markerThread = MarkerReceiverThread(self.closeEvent,self.trainTestEvent, self.markerStream,self.dataThreads, self.featureThread)
         self.markerThread.start()
-        self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueue,self.classifierInfoQueue, self.classifierInfoRetrieveEvent,
+        self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueueTest,self.featureQueueTrain,self.classifierInfoQueue, self.classifierInfoRetrieveEvent,
                                                 self.minimumEpochsRequired, clf = self.clf, model = self.model)
         self.classifierThread.start()
 

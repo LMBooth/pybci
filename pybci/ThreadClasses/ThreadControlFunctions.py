@@ -15,11 +15,12 @@ class ClassifierThread(threading.Thread):
     mode = "train"
     epochCounts = {} 
     
-    def __init__(self, closeEvent,trainTestEvent, featureQueue, classifierInfoQueue, classifierInfoRetrieveEvent, minRequiredEpochs = 10, clf = None, model = None):
+    def __init__(self, closeEvent,trainTestEvent, featureQueueTrain,featureQueueTest, classifierInfoQueue, classifierInfoRetrieveEvent, minRequiredEpochs = 10, clf = None, model = None):
         super().__init__()
         self.trainTestEvent = trainTestEvent # responsible for tolling between train and test mode
         self.closeEvent = closeEvent # responsible for cosing threads
-        self.featureQueue = featureQueue # gets feature data from feature processing thread
+        self.featureQueueTest = featureQueueTest # gets feature data from feature processing thread
+        self.featureQueueTrain = featureQueueTrain # gets feature data from feature processing thread
         self.classifier = Classifier(clf = clf, model = model) # sets classifier class, if clf and model passed, defaults to clf and sklearn
         self.minRequiredEpochs = minRequiredEpochs # the minimum number of epochs required for classifier attempt
         self.classifierInfoRetrieveEvent = classifierInfoRetrieveEvent
@@ -29,7 +30,7 @@ class ClassifierThread(threading.Thread):
         while not self.closeEvent.is_set():
             if self.trainTestEvent.is_set(): # We're training!
                 try:
-                    featuresSingle, target, self.epochCounts = self.featureQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
+                    featuresSingle, target, self.epochCounts = self.featureQueueTrain.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
                     self.targets.append(target)
                     self.features.append(featuresSingle)
                     if len(self.epochCounts) > 1: # check if there is more then one test condition
@@ -53,7 +54,7 @@ class ClassifierThread(threading.Thread):
             else: # We're testing!
                 try:
                     #print("we ain't we testings")
-                    featuresSingle = self.featureQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
+                    featuresSingle = self.featureQueueTest.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
                     self.classifier.TestModel(featuresSingle)
                     if self.classifierInfoRetrieveEvent.is_set():
                         classdata = {
@@ -65,14 +66,15 @@ class ClassifierThread(threading.Thread):
 
 class FeatureProcessorThread(threading.Thread):
     tempDeviceEpochLogger = []
-    def __init__(self, closeEvent, trainTestEvent, dataQueue, featureQueue,  totalDevices,markerCountRetrieveEvent,markerCountQueue, customEpochSettings = {}, 
+    def __init__(self, closeEvent, trainTestEvent, dataQueue, featureQueueTest,featureQueueTrain,  totalDevices,markerCountRetrieveEvent,markerCountQueue, customEpochSettings = {}, 
                  globalEpochSettings = GlobalEpochSettings(),freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
         super().__init__()
         self.markerCountQueue = markerCountQueue
         self.trainTestEvent = trainTestEvent
         self.closeEvent = closeEvent
         self.dataQueue = dataQueue
-        self.featureQueue = featureQueue
+        self.featureQueueTrain = featureQueueTrain
+        self.featureQueueTest = featureQueueTest
         self.ufp = FeatureExtractor(freqbands = freqbands, featureChoices = featureChoices)
         self.totalDevices = totalDevices
         self.markerCountRetrieveEvent = markerCountRetrieveEvent
@@ -99,7 +101,7 @@ class FeatureProcessorThread(threading.Thread):
                         features = self.ufp.ProcessPupilFeatures(dataFIFOs)
                     # add logic to ensure all devices epoch data has been received (totalDevices)
                     if lastDevice:
-                        self.featureQueue.put( [features, target, self.epochCounts] )
+                        self.featureQueueTrain.put( [features, target, self.epochCounts] )
                     else:
                         # needs logic to append features together across devices (requires flattening of channels to 1d array of features)
                         # same for test mode
@@ -115,7 +117,7 @@ class FeatureProcessorThread(threading.Thread):
                         features = self.ufp.ProcessECGFeatures(dataFIFOs, sr)
                     elif (dataType == "Gaze"):
                         features = self.ufp.ProcessPupilFeatures(dataFIFOs)
-                    self.featureQueue.put(features)
+                    self.featureQueueTest.put(features)
                 except queue.Empty:
                     pass
 
@@ -271,12 +273,13 @@ class MarkerReceiverThread(threading.Thread):
     def run(self):
         while not self.closeEvent.is_set():
             marker, timestamp = self.markerStreamInlet.pull_sample(timeout = 10)
-            if marker != None:
-                marker = marker[0]
-                for thread in self.dataThreads:
-                    thread.ReceiveMarker(marker, timestamp)
-                #self.featureThread.ReceiveMarker(marker, timestamp)
-            else:
-                pass
-                # add levels of debug 
-                # print("PyBCI: LSL pull_sample timed out, no marker on stream...")
+            if self.trainTestEvent.is_set(): # We're training!
+                if marker != None:
+                    marker = marker[0]
+                    for thread in self.dataThreads:
+                        thread.ReceiveMarker(marker, timestamp)
+                    #self.featureThread.ReceiveMarker(marker, timestamp)
+                else:
+                    pass
+                    # add levels of debug 
+                    # print("PyBCI: LSL pull_sample timed out, no marker on stream...")
