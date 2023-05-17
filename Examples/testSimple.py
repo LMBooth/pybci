@@ -10,7 +10,10 @@ while(True):
     time.sleep(1) # wait for marker updates
     print("Markers received: " + str(bci.ReceivedMarkerCount()), end="\r")
     if len(currentMarkers) > 1:  # check there is more then one marker type received
-        if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired: # enough marker received, start testing!
+        if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired:
+            classInfo = bci.CurrentClassifierInfo() 
+            print("\n Class accuracy: " + str(classInfo["accuracy"]) + " ")
+        if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+3:  
             bci.TestMode()
             break
 print("Started Testing")

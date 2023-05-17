@@ -25,6 +25,7 @@ while(True):
             classInfo = bci.CurrentClassifierInfo() 
             print("\n Class accuracy: " + str(classInfo["accuracy"]) + " ")
         if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+3:  
+            print("we trying?")
             bci.TestMode()
             break
 try:
