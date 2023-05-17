@@ -1,5 +1,5 @@
 # PyBCI
-A Python interface to create a BCI with the [Lab Streaming Layer](https://github.com/sccn/labstreaminglayer), [scikit-learn](https://scikit-learn.org/stable/#) and [TensorFlow](https://www.tensorflow.org/install) packages, leveraging packages like [Antropy](https://github.com/raphaelvallat/antropy), [SciPy](https://scipy.org/) and [NumPy](https://numpy.org/) for time and/or frequency based feature extraction.
+A Python interface to create a Brain Computer Interface (BCI) with the [Lab Streaming Layer](https://github.com/sccn/labstreaminglayer), [scikit-learn](https://scikit-learn.org/stable/#) and [TensorFlow](https://www.tensorflow.org/install) packages, leveraging packages like [Antropy](https://github.com/raphaelvallat/antropy), [SciPy](https://scipy.org/) and [NumPy](https://numpy.org/) for time and/or frequency based feature extraction.
 
 ## Background Information
 PyBCI is a python based brain computer interface software designed to receive a varying number, be it singular or multiple, [Lab Streaming Layer](https://github.com/sccn/labstreaminglayer) enabled physiological sensors data streams. 
