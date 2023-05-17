@@ -1,7 +1,2 @@
-API
+pybci.LSLScanner
 ===
-
-.. autosummary::
-   :toctree: generated
-
-   pybci
