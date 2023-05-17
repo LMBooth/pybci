@@ -40,39 +40,43 @@ class ClassifierThread(threading.Thread):
                             pass
                         else: 
                             self.classifier.TrainModel(self.features, self.targets)
-                    if self.classifierInfoRetrieveEvent.is_set():
-                        classdata = {
-                            "clf":self.classifier.clf,
-                            "model":self.classifier.model,
-                            "accuracy":self.classifier.accuracy,
-                            "y_pred":self.classifier.y_pred
-                            }
-                        self.classifierInfoQueue.put(classdata)
+                    
                             #self.classifier.TestModel(featuresSingle) # maybe make this toggleable?
                 except queue.Empty:
                     pass
+                    
+                if self.classifierInfoRetrieveEvent.is_set():
+                    classdata = {
+                        "clf":self.classifier.clf,
+                        "model":self.classifier.model,
+                        "accuracy":self.classifier.accuracy,
+                        "y_pred":self.classifier.y_pred
+                        }
+                    self.classifierInfoQueue.put(classdata)    
             else: # We're testing!
                 try:
                     #print("we ain't we testings")
                     featuresSingle = self.featureQueueTest.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
                     self.classifier.TestModel(featuresSingle)
-                    if self.classifierInfoRetrieveEvent.is_set():
-                        classdata = {
-                            "y_pred":self.classifier.y_pred[0],
-                            }
-                        self.classifierInfoQueue.put(classdata)
                 except queue.Empty:
                     pass
+                if self.classifierInfoRetrieveEvent.is_set():
+                    classdata = {
+                        "y_pred":self.classifier.y_pred[0],
+                        }
+                    self.classifierInfoQueue.put(classdata)
 
 class FeatureProcessorThread(threading.Thread):
     tempDeviceEpochLogger = []
-    def __init__(self, closeEvent, trainTestEvent, dataQueue, featureQueueTest,featureQueueTrain,  totalDevices,markerCountRetrieveEvent,markerCountQueue, customEpochSettings = {}, 
+    def __init__(self, closeEvent, trainTestEvent, dataQueueTrain,dataQueueTest,
+                  featureQueueTest,featureQueueTrain,  totalDevices,markerCountRetrieveEvent,markerCountQueue, customEpochSettings = {}, 
                  globalEpochSettings = GlobalEpochSettings(),freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
         super().__init__()
         self.markerCountQueue = markerCountQueue
         self.trainTestEvent = trainTestEvent
         self.closeEvent = closeEvent
-        self.dataQueue = dataQueue
+        self.dataQueueTrain = dataQueueTrain
+        self.dataQueueTest = dataQueueTest
         self.featureQueueTrain = featureQueueTrain
         self.featureQueueTest = featureQueueTest
         self.ufp = FeatureExtractor(freqbands = freqbands, featureChoices = featureChoices)
@@ -89,7 +93,7 @@ class FeatureProcessorThread(threading.Thread):
                 self.markerCountQueue.put(self.epochCounts)
             if self.trainTestEvent.is_set(): # We're training!
                 try:
-                    dataFIFOs, currentMarker, sr, dataType, qNumber = self.dataQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
+                    dataFIFOs, currentMarker, sr, dataType, qNumber = self.dataQueueTrain.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
                     lastDevice = self.ReceiveMarker(currentMarker, qNumber)
                     target = self.epochCounts[currentMarker][0]
                     # could maybe allow custom dataType dict to select epoch processing pipeline. This is where new libraries will be added
@@ -110,13 +114,15 @@ class FeatureProcessorThread(threading.Thread):
                     pass
             else:
                 try:
-                    dataFIFOs, sr, dataType, qNumber = self.dataQueue.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
+                    dataFIFOs, sr, dataType, qNumber = self.dataQueueTest.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
                     if (dataType == "EEG" or dataType == "EMG"): # found the same can be used for EMG
                         features = self.ufp.ProcessGeneralEpoch(dataFIFOs, sr)
                     elif (dataType == "ECG"):
                         features = self.ufp.ProcessECGFeatures(dataFIFOs, sr)
                     elif (dataType == "Gaze"):
                         features = self.ufp.ProcessPupilFeatures(dataFIFOs)
+                    print("testing feature thread")
+                    print(np.array(features).shape)
                     self.featureQueueTest.put(features)
                 except queue.Empty:
                     pass
@@ -163,11 +169,12 @@ class DataReceiverThread(threading.Thread):
     """
     startCounting = False
     currentMarker = ""
-    def __init__(self, closeEvent, trainTestEvent, dataQueue, dataStreamInlet,  customEpochSettings, globalEpochSettings,devCount,  streamChsDropDict = []):
+    def __init__(self, closeEvent, trainTestEvent, dataQueueTrain,dataQueueTest, dataStreamInlet,  customEpochSettings, globalEpochSettings,devCount,  streamChsDropDict = []):
         super().__init__()
         self.trainTestEvent = trainTestEvent
         self.closeEvent = closeEvent
-        self.dataQueue = dataQueue
+        self.dataQueueTrain = dataQueueTrain
+        self.dataQueueTest = dataQueueTest
         self.dataStreamInlet = dataStreamInlet
         self.customEpochSettings = customEpochSettings
         self.globalEpochSettings = globalEpochSettings
@@ -204,11 +211,11 @@ class DataReceiverThread(threading.Thread):
                                     increment = int((1-self.customEpochSettings[self.currentMarker].windowOverlap)*window_samples) # if windows overlap each other by how many samples
                                     while posCount - window_samples > 0:
                                         sliceDataFIFOs = [list(itertools.islice(d, posCount - window_samples, posCount)) for d in dataFIFOs]
-                                        self.dataQueue.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType, self.devCount])
+                                        self.dataQueueTrain.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType, self.devCount])
                                         posCount-=increment
                                 else: # don't slice just take tmin to tmax time
                                     sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.customEpochSettings[self.currentMarker].tmax+self.customEpochSettings[self.currentMarker].tmin) * self.sr), fifoLength))for d in dataFIFOs]
-                                    self.dataQueue.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType, self.devCount])
+                                    self.dataQueueTrain.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType, self.devCount])
                             else:
                                 if self.globalEpochSettings.splitCheck: # slice epochs in to overlapping time windows
                                     window_samples =int(self.globalEpochSettings.windowLength * self.sr) #number of samples in each window
@@ -216,11 +223,11 @@ class DataReceiverThread(threading.Thread):
                                     startCount = self.desiredCount + int(self.globalEpochSettings.tmin * self.sr)
                                     while startCount - window_samples > 0:
                                         sliceDataFIFOs = [list(itertools.islice(d, startCount - window_samples, startCount)) for d in dataFIFOs]
-                                        self.dataQueue.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType,self.devCount])
+                                        self.dataQueueTrain.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType,self.devCount])
                                         startCount-=increment
                                 else: # don't slice just take tmin to tmax time
                                     sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.globalEpochSettings.tmin+self.globalEpochSettings.tmax) * self.sr), fifoLength)) for d in dataFIFOs]
-                                    self.dataQueue.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType, self.devCount])
+                                    self.dataQueueTrain.put([sliceDataFIFOs, self.currentMarker, self.sr, self.dataType, self.devCount])
                             # reset flags and counters
                             posCount = 0
                             self.startCounting = False
@@ -237,7 +244,7 @@ class DataReceiverThread(threading.Thread):
                         else:
                             posCount = 0
                             
-                        self.dataQueue.put([sliceDataFIFOs, self.sr, self.dataType, self.devCount])
+                        self.dataQueueTest.put([sliceDataFIFOs, self.sr, self.dataType, self.devCount])
             else:
                 pass
                 # add levels of debug 

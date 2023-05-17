@@ -66,9 +66,9 @@ class Classifier():
             #x = np.array(x).reshape(np.array(x).shape[0], -1)
             x = np.array([x.flatten()])
         else:
-            x = np.array([x])
-        #print(x)
-        #print(x.shape)
+            x = np.array(x)
+        print(x)
+        print(x.shape)
         if self.classifierLibrary == "sklearn":
             self.y_pred = self.clf.predict(x)
             #print("we predict it's: "+str(y_pred))
