@@ -9,7 +9,6 @@ class Classifier():
     clf = svm.SVC(kernel = "rbf")#C=c, kernel=k, degree=d, gamma=g, coef0=c0, tol=t, max_iter=i)
     accuracy = 0
     model = None
-    y_pred = None # current tag prediction
 
     def __init__(self, clf = None, model = None):
         super().__init__()
@@ -27,12 +26,13 @@ class Classifier():
 
     def TrainModel(self, features, targets):
         # check for nans and infs in feature creation, not here
-        if (len(np.array(features).shape) ==3):
+        if (len(np.array(features).shape) == 3):
             features  = np.array(features).reshape(np.array(features).shape[0], -1)
         else:
             features = np.array(features)
         #features = np.where(np.isnan(features), 0, features)
         #self.targets = targets
+        #print(features.shape)
         x_train, x_test, y_train, y_test = train_test_split(features, targets, shuffle = True, test_size=0.2)
         #print("training model")
         if self.classifierLibrary == "sklearn":
@@ -67,16 +67,17 @@ class Classifier():
             x = np.array([x.flatten()])
         else:
             x = np.array(x)
-        print(x)
-        print(x.shape)
+        #print(x)
+        #print(x.shape)
         if self.classifierLibrary == "sklearn":
-            self.y_pred = self.clf.predict(x)
-            #print("we predict it's: "+str(y_pred))
+            return self.clf.predict(x)
+            #print("we predict it's: "+str(self.y_pred))
         elif self.classifierLibrary == "tensor":
             # Predict the class labels for the test data
             #print(x)
             #print(x.shape)
-            self.y_pred = self.model.predict(np.reshape(x, (1, len(x))))
+            return self.model.predict(np.reshape(x, (1, len(x))))
+
             #print("we predict it's: "+str(y_pred))
             # Convert the predicted probabilities to class labels
             y_pred_classes = np.argmax(self.y_pred, axis=1)

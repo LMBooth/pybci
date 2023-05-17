@@ -7,15 +7,15 @@ import numpy as np
 import queue
 from ..Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
 from ..Configuration.FeatureSettings import GeneralFeatureChoices
-# need to add configurable number of desired epochs of each condition before including, if not set defaults from minimum viable (2???)
-# self.epochCounts has total counts of each epoch available
 class ClassifierThread(threading.Thread):
     features = []
     targets = []
     mode = "train"
+    guess = None
     epochCounts = {} 
-    
-    def __init__(self, closeEvent,trainTestEvent, featureQueueTrain,featureQueueTest, classifierInfoQueue, classifierInfoRetrieveEvent, minRequiredEpochs = 10, clf = None, model = None):
+    def __init__(self, closeEvent,trainTestEvent, featureQueueTest,featureQueueTrain, classifierInfoQueue, classifierInfoRetrieveEvent, 
+                 classifierGuessMarkerQueue, classifierGuessMarkerEvent,
+                 minRequiredEpochs = 10, clf = None, model = None):
         super().__init__()
         self.trainTestEvent = trainTestEvent # responsible for tolling between train and test mode
         self.closeEvent = closeEvent # responsible for cosing threads
@@ -25,7 +25,8 @@ class ClassifierThread(threading.Thread):
         self.minRequiredEpochs = minRequiredEpochs # the minimum number of epochs required for classifier attempt
         self.classifierInfoRetrieveEvent = classifierInfoRetrieveEvent
         self.classifierInfoQueue = classifierInfoQueue
-
+        self.classifierGuessMarkerQueue = classifierGuessMarkerQueue
+        self.classifierGuessMarkerEvent = classifierGuessMarkerEvent
     def run(self):
         while not self.closeEvent.is_set():
             if self.trainTestEvent.is_set(): # We're training!
@@ -40,31 +41,26 @@ class ClassifierThread(threading.Thread):
                             pass
                         else: 
                             self.classifier.TrainModel(self.features, self.targets)
-                    
-                            #self.classifier.TestModel(featuresSingle) # maybe make this toggleable?
+                    if self.classifierGuessMarkerEvent.is_set():
+                        self.classifierGuessMarkerQueue.put(None)
                 except queue.Empty:
                     pass
-                    
-                if self.classifierInfoRetrieveEvent.is_set():
-                    classdata = {
-                        "clf":self.classifier.clf,
-                        "model":self.classifier.model,
-                        "accuracy":self.classifier.accuracy,
-                        "y_pred":self.classifier.y_pred
-                        }
-                    self.classifierInfoQueue.put(classdata)    
             else: # We're testing!
                 try:
-                    #print("we ain't we testings")
                     featuresSingle = self.featureQueueTest.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
-                    self.classifier.TestModel(featuresSingle)
+                    self.guess = self.classifier.TestModel(featuresSingle)
+                    if self.classifierGuessMarkerEvent.is_set():
+                        self.classifierGuessMarkerQueue.put(self.guess)
                 except queue.Empty:
                     pass
-                if self.classifierInfoRetrieveEvent.is_set():
-                    classdata = {
-                        "y_pred":self.classifier.y_pred[0],
-                        }
-                    self.classifierInfoQueue.put(classdata)
+            if self.classifierInfoRetrieveEvent.is_set():
+                classdata = {
+                    "clf":self.classifier.clf,
+                    "model":self.classifier.model,
+                    "accuracy":self.classifier.accuracy
+                    }
+                self.classifierInfoQueue.put(classdata) 
+            
 
 class FeatureProcessorThread(threading.Thread):
     tempDeviceEpochLogger = []
@@ -114,6 +110,7 @@ class FeatureProcessorThread(threading.Thread):
                     pass
             else:
                 try:
+                    #print("we ain't dataQueueTesting: FeatureProcessorThread")
                     dataFIFOs, sr, dataType, qNumber = self.dataQueueTest.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
                     if (dataType == "EEG" or dataType == "EMG"): # found the same can be used for EMG
                         features = self.ufp.ProcessGeneralEpoch(dataFIFOs, sr)
@@ -121,8 +118,6 @@ class FeatureProcessorThread(threading.Thread):
                         features = self.ufp.ProcessECGFeatures(dataFIFOs, sr)
                     elif (dataType == "Gaze"):
                         features = self.ufp.ProcessPupilFeatures(dataFIFOs)
-                    print("testing feature thread")
-                    print(np.array(features).shape)
                     self.featureQueueTest.put(features)
                 except queue.Empty:
                     pass
