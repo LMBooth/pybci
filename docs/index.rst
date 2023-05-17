@@ -14,6 +14,18 @@ Contents
 --------
 
 .. toctree::
+   :maxdepth: 1
+   :caption: User's Guide
 
-   usage
-   api
+   BackgroundInformation/Introduction
+   BackgroundInformation/user_guide
+   BackgroundInformation/Epoch_Timing
+   BackgroundInformation/Feature_Selection
+   BackgroundInformation/Classification
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Developer's Guide
+
+   api/PyBCI
+   api/LSLScanner

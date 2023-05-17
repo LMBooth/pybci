@@ -9,4 +9,14 @@ Once the data has been epoched it is sent for feature extraction, there is a gen
 
 Finally a passable, customisable sklearn or tensorflow classifier can be giving to the bci class, once a defined number of epochs have been obtained for each received epoch/marker type the classifier can begin to fit the model. It's advised to use bci.ReceivedMarkerCount() to get the number of received training epochs received, once the min num epochs received of each type is >= pybci.minimumEpochsRequired (default 10 of each epoch) the mdoel will begin to fit. Once fit classifier info can be queried with CurrentClassifierInfo, when a desired accuracy is met or number of epochs TestMode() can be called. Once in test mode you can query (sould change function to own function and queue for quering testthread) what pybci estimates the current bci epoch is(typically bseline is used for no state).
 
-The `examples folder <https://github.com/LMBooth/pybci/tree/main/Examples>`__ found on the github has a pseudo `LSL data generator and marker creator <https://github.com/LMBooth/pybci/tree/main/Examples/PsuedoLSLStreamGenerator>`__ so the examples can run without the need of LSL capable hardware.
+Theory of Operation
+===================
+1. Requirements Prior Initialising with python bci = PyBCI() 
+  The bci must have >=1 LSL datastream with an accepted dataType ("EEG", "EMG", "Gaze") {hopefully configurable in the future t pass custom fature decoding class}
+  The bci must have ==1 LSL markerstream selected (if more then one LSL marker stream on system set the desired ML training marker stream with PyBCI(markerStream="yourMarkerStream")). Warning: If None set picks first available in list.
+
+2. Once configuration settings are set various threads are created.
+  The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode pushes this marker to the available datastreams.
+  Each data stream has its own thread created responsible for pipleining received data on FIFO's and slicing approprialey based on globalEpochSettings and customEpochSettings.
+  FeaturesExtractor
+  Classifier
