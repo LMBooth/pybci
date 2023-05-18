@@ -6,7 +6,7 @@ class PupilGazeDecode():
     def __init__(self):
         super().__init__()
     def ProcessFeatures(self, epochData, sr, epochNum): # This is the required function name and variables that are passed to all 
-        epochData = np.nan_to_num(epochData)
+        epochData = np.nan_to_num(epochData) # sklearn doesnt like nan
         rightmean = np.mean(epochData[20]) # channel 20 is 3d pupil diameter right, get mean
         leftmean = np.mean(epochData[21]) # channel 21 is 3d pupil diameter right, get mean
         bothmean = np.mean([(epochData[20][i] + epochData[21][i]) / 2 for i in range(len(epochData[20]))]) # mean of both eyes in 3d
