@@ -38,7 +38,7 @@ version = {}
 with open("pybci/version.py") as fp:
     exec(fp.read(), version)
 
-PACKAGE_NAME = os.getenv('PYPI_PACKAGE_NAME', 'default-name')
+PACKAGE_NAME = os.getenv('PYPI_PACKAGE_NAME', 'pybci')
 
 setup(
     name=PACKAGE_NAME,

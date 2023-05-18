@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 def main():
-    package_name = os.getenv('PYPI_PACKAGE_NAME', 'default-name')
+    package_name = os.getenv('PYPI_PACKAGE_NAME', 'pybci')
     os.environ['PYPI_PACKAGE_NAME'] = package_name
 
     # Run the build command
