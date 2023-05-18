@@ -7,12 +7,17 @@ Installation
 ===================
 
 To use PyBCI, first install it using pip:
+
 .. code-block:: console
+
    pip install install-pybci
+   
 (currently can only install-pybci due to pybci name similarities with another package on pypi)
 
 For unstable dev installations and up-to-date git pushes use:
+
 .. code-block:: console
+
    pip install --index-url https://test.pypi.org/simple/ pybci
 
 
