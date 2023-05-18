@@ -34,6 +34,7 @@ jobs:
         PYPI_PACKAGE_NAME: 'pybci'  # Use 'pybci' for TestPyPI
       run: |
         python build_package.py
+        python -m build
         twine upload --repository-url https://test.pypi.org/legacy/ dist/*
     - name: Publish package to PyPI
       if: github.event_name == 'release' && github.event.action == 'created'
@@ -43,4 +44,5 @@ jobs:
         PYPI_PACKAGE_NAME: 'install-pybci'  # Use 'pybci' for TestPyPI
       run: |
         python build_package.py
+        python -m build
         twine upload dist/*
