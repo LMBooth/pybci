@@ -10,7 +10,7 @@ warnings.filterwarnings("ignore", category=UserWarning, module="antropy") # used
 warnings.filterwarnings("ignore", category=RuntimeWarning, module="antropy") # used to reduce print statements from constant signals being applied
 #warnings.filterwarnings("ignore", category=RuntimeWarning, module="pybci") # used to reduce print statements from constant signals being applied
 
-class FeatureExtractor():
+class GenericFeatureExtractor():
 
     def __init__(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
         super().__init__()
@@ -19,27 +19,22 @@ class FeatureExtractor():
         for key, value in self.featureChoices.__dict__.items():
             print(f"{key} = {value}")
         selFeats = sum([self.featureChoices.appr_entropy,
-        self.featureChoices.perm_entropy,
-        self.featureChoices.spec_entropy,
-        self.featureChoices.svd_entropy,
-        self.featureChoices.samp_entropy,
-        self.featureChoices.rms,
-        self.featureChoices.meanPSD,
-        self.featureChoices.medianPSD,
-        self.featureChoices.variance,
-        self.featureChoices.meanAbs,
-        self.featureChoices.waveformLength,
-        self.featureChoices.zeroCross,
-        self.featureChoices.slopeSignChange])
+            self.featureChoices.perm_entropy,
+            self.featureChoices.spec_entropy,
+            self.featureChoices.svd_entropy,
+            self.featureChoices.samp_entropy,
+            self.featureChoices.rms,
+            self.featureChoices.meanPSD,
+            self.featureChoices.medianPSD,
+            self.featureChoices.variance,
+            self.featureChoices.meanAbs,
+            self.featureChoices.waveformLength,
+            self.featureChoices.zeroCross,
+            self.featureChoices.slopeSignChange]
+        )
         self.numFeatures = (len(self.freqbands)*self.featureChoices.psdBand)+selFeats
 
-    def ProcessPupilFeatures(self, epoch):
-        pass
-
-    def ProcessECGFeatures(self, epoch):
-        pass
-
-    def ProcessGeneralEpoch(self, epoch, sr):
+    def ProcessFeatures(self, epoch, sr):
         """Allows 2D time series data to be passed with given sample rate to get various time+frequency based features.
         Best for EEG, EMG, EOG, or other consistent data with a consistent sample rate (pupil labs does not)
         Which features are chosen is based on self.featureChoices with initialisation. self.freqbands sets the limits for
@@ -118,3 +113,19 @@ class FeatureExtractor():
         features[np.isnan(features)] = 0 # checks for nans
         features[features == np.inf] = 0 # checks for infs
         return features
+    
+class GazeFeatureExtractor():
+    def __init__(self):
+        super().__init__()
+
+'''pupil channels in order
+confidence: 1 channel
+norm_pos_x/y: 2 channels
+gaze_point_3d_x/y/z: 3 channels
+eye_center0_3d_x/y/z (right/left, x/y/z): 6 channels (3 channels for each eye)
+gaze_normal0/1_x/y/z (right/left, x/y/z): 6 channels (3 channels for each eye)
+norm_pos_x/y: 2 channels
+diameter0/1_2d (right/left): 2 channels
+diameter0/1_3d (right/left): 2 channels
+22 total
+'''

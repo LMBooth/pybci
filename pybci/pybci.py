@@ -31,10 +31,9 @@ class PyBCI:
 
     def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
-                 freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices(),
+                 streamCustomFeatureExtract = {},
                  minimumEpochsRequired = 10, clf= None, model = None):
-        self.freqbands = freqbands
-        self.featureChoices = featureChoices
+        self.streamCustomFeatureExtract = streamCustomFeatureExtract
         self.globalEpochSettings = globalEpochSettings
         self.customEpochSettings = customEpochSettings
         self.streamChsDropDict = streamChsDropDict
@@ -116,8 +115,8 @@ class PyBCI:
     def __StartThreads(self):
         self.featureQueueTrain = queue.Queue()
         self.featureQueueTest = queue.Queue()
-        self.dataQueueTrain = queue.Queue()
-        self.dataQueueTest = queue.Queue()
+        #self.dataQueueTrain = queue.Queue()
+        #self.dataQueueTest = queue.Queue()
         self.classifierInfoQueue = queue.Queue()
         self.markerCountQueue = queue.Queue()
         self.classifierGuessMarkerQueue = queue.Queue()
@@ -133,18 +132,31 @@ class PyBCI:
             print("PyBCI: Starting threads initialisation...")
         # setup data thread
         self.dataThreads = []
+        self.featureThreads = []
         for stream in self.dataStreams:
+            self.dataQueueTrain = queue.Queue()
+            self.dataQueueTest = queue.Queue()
             if stream.info().name() in self.streamChsDropDict.keys():
-                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, self.globalEpochSettings, len(self.dataThreads), self.streamChsDropDict[stream.info().name()])
+                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+                                        self.globalEpochSettings, len(self.dataThreads), self.streamChsDropDict[stream.info().name()])
             else:
-                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, self.globalEpochSettings, len(self.dataThreads))
+                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+                                        self.globalEpochSettings, len(self.dataThreads))
             dt.start()
             self.dataThreads.append(dt)
-        self.featureThread = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueueTrain, self.dataQueueTest,
-                                                    self.featureQueueTest,self.featureQueueTrain, len(self.dataStreams),
-                                                    self.markerCountRetrieveEvent, self.markerCountQueue,
-                                                    globalEpochSettings = self.globalEpochSettings, customEpochSettings = self.customEpochSettings)
-        self.featureThread.start()
+            if stream.info().name() in self.streamCustomFeatureExtract.keys():
+                self.ft = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueueTrain, self.dataQueueTest,
+                                                self.featureQueueTest,self.featureQueueTrain, len(self.dataStreams),
+                                                self.markerCountRetrieveEvent, self.markerCountQueue,
+                                                featureExtractor = self.streamCustomFeatureExtract[stream.info().name()],
+                                                globalEpochSettings = self.globalEpochSettings, customEpochSettings = self.customEpochSettings)
+            else:
+                self.ft = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueueTrain, self.dataQueueTest,
+                                                self.featureQueueTest,self.featureQueueTrain, len(self.dataStreams),
+                                                self.markerCountRetrieveEvent, self.markerCountQueue,
+                                                globalEpochSettings = self.globalEpochSettings, customEpochSettings = self.customEpochSettings)
+            self.ft.start()
+            self.featureThreads.append(dt)
         # marker thread requires data and feature threads to push new markers too
         self.markerThread = MarkerReceiverThread(self.closeEvent,self.trainTestEvent, self.markerStream,self.dataThreads, self.featureThread)
         self.markerThread.start()
@@ -160,7 +172,8 @@ class PyBCI:
         # wait for all threads to finish processing, probably worth pulling out finalised classifier information stored for later use.
         for dt in self.dataThreads:
             dt.join()
-        self.featureThread.join()
+        for ft in self.featureThreads:
+            ft.join()
         self.classifierThread.join()
         self.connected = False
         if self.printDebug:
@@ -204,14 +217,6 @@ class PyBCI:
             else:
                 self.globalWindowglobalEpochSettingsSettings = globalEpochSettings
                 self.ResetThreadsAfterConfigs()
-
-    def ConfigureFeatures(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
-        # potentially should move configuration to generic class which can be used for both test and train
-        if freqbands != None:
-            self.freqbands = freqbands
-        if featureChoices != None:    
-            self.featureChoices = featureChoices
-        self.ResetThreadsAfterConfigs()
 
     def ConfigureDataStreamChannels(self,streamChsDropDict = {}):
         # potentially should move configuration to generic class which can be used for both test and train

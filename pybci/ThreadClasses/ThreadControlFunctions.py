@@ -1,7 +1,7 @@
 from collections import deque
 import itertools
 import threading
-from ..Utils.FeatureExtractor import FeatureExtractor
+from ..Utils.FeatureExtractor import GenericFeatureExtractor
 from ..Utils.Classifier import Classifier 
 import numpy as np
 import queue
@@ -65,8 +65,9 @@ class ClassifierThread(threading.Thread):
 class FeatureProcessorThread(threading.Thread):
     tempDeviceEpochLogger = []
     def __init__(self, closeEvent, trainTestEvent, dataQueueTrain,dataQueueTest,
-                  featureQueueTest,featureQueueTrain,  totalDevices,markerCountRetrieveEvent,markerCountQueue, customEpochSettings = {}, 
-                 globalEpochSettings = GlobalEpochSettings(),freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
+                featureQueueTest,featureQueueTrain,  totalDevices,markerCountRetrieveEvent,markerCountQueue, customEpochSettings = {}, 
+                globalEpochSettings = GlobalEpochSettings(),
+                featureExtractor = GenericFeatureExtractor()):
         super().__init__()
         self.markerCountQueue = markerCountQueue
         self.trainTestEvent = trainTestEvent
@@ -75,7 +76,7 @@ class FeatureProcessorThread(threading.Thread):
         self.dataQueueTest = dataQueueTest
         self.featureQueueTrain = featureQueueTrain
         self.featureQueueTest = featureQueueTest
-        self.ufp = FeatureExtractor(freqbands = freqbands, featureChoices = featureChoices)
+        self.featureExtractor = featureExtractor
         self.totalDevices = totalDevices
         self.markerCountRetrieveEvent = markerCountRetrieveEvent
         self.epochCounts = {}
@@ -94,11 +95,12 @@ class FeatureProcessorThread(threading.Thread):
                     target = self.epochCounts[currentMarker][0]
                     # could maybe allow custom dataType dict to select epoch processing pipeline. This is where new libraries will be added
                     if (dataType == "EEG" or dataType == "EMG"): # found the same can be used for EMG
-                        features = self.ufp.ProcessGeneralEpoch(dataFIFOs, sr)
+                        features = self.ufp.ProcessFeatures(dataFIFOs, sr)
                     elif (dataType == "ECG"):
                         features = self.ufp.ProcessECGFeatures(dataFIFOs, sr)
                     elif (dataType == "Gaze"):
                         features = self.ufp.ProcessPupilFeatures(dataFIFOs)
+                    
                     # add logic to ensure all devices epoch data has been received (totalDevices)
                     if lastDevice:
                         self.featureQueueTrain.put( [features, target, self.epochCounts] )
