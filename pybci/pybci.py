@@ -1,5 +1,9 @@
 from .Utils.LSLScanner import LSLScanner
-from .ThreadClasses.ThreadControlFunctions import DataReceiverThread, MarkerReceiverThread, FeatureProcessorThread, ClassifierThread
+from .ThreadClasses.FeatureProcessorThread import FeatureProcessorThread
+from .ThreadClasses.DataReceiverThread import DataReceiverThread
+from .ThreadClasses.AsyncDataReceiverThread import AsyncDataReceiverThread
+from .ThreadClasses.MarkerThread import MarkerThread
+from .ThreadClasses.ClassifierThread import ClassifierThread
 from .Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
 from .Configuration.FeatureSettings import GeneralFeatureChoices
 import queue, threading, copy
@@ -15,6 +19,8 @@ class PyBCI:
         streamTypes = List of strings, allows user to set custom acceptable EEG type definitions, ignored if dataStreams not None
         markerTypes = List of strings, allows user to set custom acceptable Marker type definitions, ignored if markerStream not None
         printDebug = boolean, if true prints LSLScanner debug information
+    TODO:
+        Need to add option to pass theoretical maximum sample rate to AsyncDatastreams to acount for theoretical max window limits
     """
     printDebug = True   # boolean, used to toggle print statements from LSLScanner class
     globalEpochSettings = GlobalEpochSettings()
@@ -115,8 +121,6 @@ class PyBCI:
     def __StartThreads(self):
         self.featureQueueTrain = queue.Queue()
         self.featureQueueTest = queue.Queue()
-        #self.dataQueueTrain = queue.Queue()
-        #self.dataQueueTest = queue.Queue()
         self.classifierInfoQueue = queue.Queue()
         self.markerCountQueue = queue.Queue()
         self.classifierGuessMarkerQueue = queue.Queue()
@@ -136,12 +140,22 @@ class PyBCI:
         for stream in self.dataStreams:
             self.dataQueueTrain = queue.Queue()
             self.dataQueueTest = queue.Queue()
-            if stream.info().name() in self.streamChsDropDict.keys():
-                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
-                                        self.globalEpochSettings, len(self.dataThreads), self.streamChsDropDict[stream.info().name()])
-            else:
-                dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
-                                        self.globalEpochSettings, len(self.dataThreads))
+
+            if stream.info().nominal_srate() == 0:
+                if stream.info().name() in self.streamChsDropDict.keys():
+                    dt = AsyncDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+                                            self.globalEpochSettings, len(self.dataThreads), self.streamChsDropDict[stream.info().name()])
+                else:
+                    dt = AsyncDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+                                            self.globalEpochSettings, len(self.dataThreads))
+            else: # cold be desirable to capture samples only relative to timestammps with async, so maybe make this configurable?
+                if stream.info().name() in self.streamChsDropDict.keys():
+                    dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+                                            self.globalEpochSettings, len(self.dataThreads), self.streamChsDropDict[stream.info().name()])
+                else:
+                    dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+                                            self.globalEpochSettings, len(self.dataThreads))
+
             dt.start()
             self.dataThreads.append(dt)
             if stream.info().name() in self.streamCustomFeatureExtract.keys():
@@ -158,7 +172,7 @@ class PyBCI:
             self.ft.start()
             self.featureThreads.append(dt)
         # marker thread requires data and feature threads to push new markers too
-        self.markerThread = MarkerReceiverThread(self.closeEvent,self.trainTestEvent, self.markerStream,self.dataThreads, self.featureThread)
+        self.markerThread = MarkerThread(self.closeEvent,self.trainTestEvent, self.markerStream,self.dataThreads, self.featureThreads)
         self.markerThread.start()
         self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueueTest,self.featureQueueTrain,
                                                  self.classifierInfoQueue, self.classifierInfoRetrieveEvent,

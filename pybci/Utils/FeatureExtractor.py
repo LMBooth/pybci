@@ -34,7 +34,7 @@ class GenericFeatureExtractor():
         )
         self.numFeatures = (len(self.freqbands)*self.featureChoices.psdBand)+selFeats
 
-    def ProcessFeatures(self, epoch, sr):
+    def ProcessFeatures(self, epoch, sr, target):
         """Allows 2D time series data to be passed with given sample rate to get various time+frequency based features.
         Best for EEG, EMG, EOG, or other consistent data with a consistent sample rate (pupil labs does not)
         Which features are chosen is based on self.featureChoices with initialisation. self.freqbands sets the limits for

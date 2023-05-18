@@ -1,6 +1,6 @@
 from pylsl import StreamInlet, resolve_stream  
 class LSLScanner:
-    streamTypes = ["EEG", "ECG", "EMG", "pupil_capture"] # list of strings, holds desired LSL stream types
+    streamTypes = ["EEG", "ECG", "EMG", "Gaze"] # list of strings, holds desired LSL stream types
     markerTypes = ["Markers"] # list of strings, holds desired LSL marker types
     dataStreams = []    # list of data StreamInlets, available on LSL as chosen by streamTypes
     markerStream = []  # list of marker StreamInlets, available on LSL as chosen by markerTypes
@@ -21,8 +21,7 @@ class LSLScanner:
             self.streamTypes = streamTypes
         if markerTypes != None:
             self.markerTypes = markerTypes
-        if printDebug == False:
-            self.printDebug = False
+        self.printDebug = printDebug
         if dataStreamsNames != None:
             self.dataStreamPredefined = True
             self.dataStreamsNames = dataStreamsNames

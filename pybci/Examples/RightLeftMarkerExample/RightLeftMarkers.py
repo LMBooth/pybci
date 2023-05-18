@@ -2,9 +2,9 @@ import tkinter as tk
 import pylsl
 
 # customisable variables!
-stimuli = ["Baseline", "Right", "Left", "Both"]
-stimuliTime = [3000, 1000, 1000, 1000]
-stimuliCount = [1, 2, 2, 2]  # Number of times each stimulus should appear
+stimuli = ["Baseline", "Right", "Left"]#, "Both"]
+stimuliTime = [2000, 2000, 2000]#, 2000]
+stimuliCount = [8, 8, 8]#, 8]  # Number of times each stimulus should appear
 
 
 markerStreamName = "TestMarkers" # should be targetted with pybci
@@ -54,6 +54,7 @@ class App:
             else:
                 self.label['text'] = stimuli[self.index]
                 self.markerOutlet.push_sample([stimuli[self.index]])
+                print("sent marker")
                 self.after_id = self.root.after(stimuliTime[self.index], self.next_stimulus)
                 stimuliCount[self.index] -= 1
                 if stimuliCount[self.index] == 0:
