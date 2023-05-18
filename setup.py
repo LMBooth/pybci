@@ -38,10 +38,7 @@ version = {}
 with open("pybci/version.py") as fp:
     exec(fp.read(), version)
 
-PYPI_NAME = 'install-PyBCI'
-TEST_PYPI_NAME = 'PyBCI'
-# Choose the name based on a condition, e.g., existence of a certain environment variable
-PACKAGE_NAME = PYPI_NAME if os.getenv('USE_PYPI') else TEST_PYPI_NAME
+PACKAGE_NAME = os.getenv('PYPI_PACKAGE_NAME', 'default-name')
 
 setup(
     name=PACKAGE_NAME,
