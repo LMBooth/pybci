@@ -1,11 +1,15 @@
-pybci
+=========
+PyBCI API
+=========
+
+.. module:: pybci
+
+Classes
 =======
-.. class::pybci
+
+.. class:: PyBCI
    Initialisation options and defaults:
-   .. method:: __init__(dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
-                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
-                  freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices(),
-                  minimumEpochsRequired = 10, clf= None, model = None)
+   .. method:: __init__(dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices(),minimumEpochsRequired = 10, clf= None, model = None)
 
       :param dataStreams: 
          list(string) - list of target data streams.
