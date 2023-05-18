@@ -4,7 +4,7 @@ from setuptools import setup, find_packages
 from setuptools.command.install import install
 from codecs import open
 from os import path
-import sys
+import sys, os
 
 
 try:
