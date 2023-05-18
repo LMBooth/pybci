@@ -94,13 +94,9 @@ class FeatureProcessorThread(threading.Thread):
                     lastDevice = self.ReceiveMarker(currentMarker, qNumber)
                     target = self.epochCounts[currentMarker][0]
                     # could maybe allow custom dataType dict to select epoch processing pipeline. This is where new libraries will be added
-                    if (dataType == "EEG" or dataType == "EMG"): # found the same can be used for EMG
-                        features = self.ufp.ProcessFeatures(dataFIFOs, sr)
-                    elif (dataType == "ECG"):
-                        features = self.ufp.ProcessECGFeatures(dataFIFOs, sr)
-                    elif (dataType == "Gaze"):
-                        features = self.ufp.ProcessPupilFeatures(dataFIFOs)
-                    
+
+                    features = self.featureExtractor.ProcessFeatures(dataFIFOs, sr)
+
                     # add logic to ensure all devices epoch data has been received (totalDevices)
                     if lastDevice:
                         self.featureQueueTrain.put( [features, target, self.epochCounts] )
