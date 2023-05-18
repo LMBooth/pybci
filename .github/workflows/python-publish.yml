@@ -24,6 +24,11 @@ jobs:
         python -m pip install --upgrade pip
         pip install build
         pip install twine
+    - name: Create temp_setup.py
+      run: |
+        echo "import os" > temp_setup.py
+        echo "from setup import setup" >> temp_setup.py
+        echo "setup(name=os.getenv('PYPI_PACKAGE_NAME', 'default-name'))" >> temp_setup.py
     - name: Build package
       run: python -m build
     - name: Build and publish to TestPyPI
