@@ -2,16 +2,10 @@
 A Python interface to create a Brain Computer Interface (BCI) with the [Lab Streaming Layer](https://github.com/sccn/labstreaminglayer), [scikit-learn](https://scikit-learn.org/stable/#) and [TensorFlow](https://www.tensorflow.org/install) packages, leveraging packages like [Antropy](https://github.com/raphaelvallat/antropy), [SciPy](https://scipy.org/) and [NumPy](https://numpy.org/) for time and/or frequency based feature extraction.
 
 ## Installation
-For stable releases use
-```
-pip install install-pybci
-```
+For stable releases use: ```pip install install-pybci```
 (currently can only install-pybci due to pybci name similarities with another package on pypi)
 
-For unstable dev installations and up-to-date git pushes use:
-```
-pip install --index-url https://test.pypi.org/simple/ pybci
-```
+For unstable dev installations and up-to-date git pushes use: ```pip install --index-url https://test.pypi.org/simple/ pybci```
 
 
 [ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/) (In development)
