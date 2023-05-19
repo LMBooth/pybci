@@ -1,5 +1,6 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/install-pybci)](https://pypi.org/project/install-pybci)  [![Documentation Status](https://readthedocs.org/projects/pybci/badge/?version=latest)](https://pybci.readthedocs.io/en/latest/?badge=latest)
 
+.. -*- mode: rst -*-
 |PyBCI|_
 
 .. |PyBCI| image:: https://github.com/LMBooth/pybci/blob/main/docs/Images/pyBCITitle.png
