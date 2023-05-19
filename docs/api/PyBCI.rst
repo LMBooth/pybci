@@ -18,21 +18,67 @@ PyBCI
   :param ClassifierMixin clf: Allows custom Sklearn model to be passed.
   :param model model: Allows custom tensorflow model to be passed.
 
-Methods
-^^^^^^^
+   .. py:method:: __enter__()
 
-- **\_\_init__**: Initializes the PyBCI instance.
-- **\_\_enter__**: Connects to the BCI.
-- **\_\_exit__**: Stops all threads of the BCI.
-- **Connect**: Checks valid data and markers streams are present, controls dependent functions by setting self.connected.
-- **TrainMode**: Set the mode to Train.
-- **TestMode**: Set the mode to Test.
-- **CurrentClassifierInfo**: Retrieve current classifier info.
-- **CurrentClassifierMarkerGuess**: Retrieve current classifier marker guess.
-- **ReceivedMarkerCount**: Retrieve received marker count.
-- **\_\_StartThreads**: Starts the threads of the BCI.
-- **StopThreads**: Stops all threads of the BCI.
-- **ConfigureMachineLearning**: Configure machine learning settings.
-- **ConfigureEpochWindowSettings**: Configure epoch window settings.
-- **ConfigureDataStreamChannels**: Configure data stream channels.
-- **ResetThreadsAfterConfigs**: Reset threads after configurations.
+      Connects to the BCI.
+
+   .. py:method:: __exit__(exc_type, exc_val, exc_tb)
+
+      Stops all threads of the BCI.
+
+   .. py:method:: Connect()
+
+      Checks valid data and markers streams are present, controls dependent functions by setting self.connected.
+
+   .. py:method:: TrainMode()
+
+      Set the mode to Train.
+
+   .. py:method:: TestMode()
+
+      Set the mode to Test.
+
+   .. py:method:: CurrentClassifierInfo()
+
+      Retrieve current classifier info.
+
+   .. py:method:: CurrentClassifierMarkerGuess()
+
+      Retrieve current classifier marker guess.
+
+   .. py:method:: ReceivedMarkerCount()
+
+      Retrieve received marker count.
+
+   .. py:method:: __StartThreads()
+
+      Starts the threads of the BCI.
+
+   .. py:method:: StopThreads()
+
+      Stops all threads of the BCI.
+
+   .. py:method:: ConfigureMachineLearning(minimumEpochsRequired=10, clf=None, model=None)
+
+      Configure machine learning settings.
+
+      :param int minimumEpochsRequired: Minimum number of epochs required.
+      :param ClassifierMixin clf: Allows custom Sklearn model to be passed.
+      :param model model: Allows custom tensorflow model to be passed.
+
+   .. py:method:: ConfigureEpochWindowSettings(globalEpochSettings=GlobalEpochSettings(), customEpochSettings={})
+
+      Configure epoch window settings.
+
+      :param GlobalEpochSettings globalEpochSettings: Sets global timing settings for epochs.
+      :param dict customEpochSettings: Sets individual timing settings for epochs.
+
+   .. py:method:: ConfigureDataStreamChannels(streamChsDropDict={})
+
+      Configure data stream channels.
+
+      :param dict streamChsDropDict: Keys for dict should be respective datastreams with corresponding list of which channels to drop.
+
+   .. py:method:: ResetThreadsAfterConfigs()
+
+      Reset threads after configurations.
