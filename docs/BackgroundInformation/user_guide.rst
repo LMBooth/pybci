@@ -71,7 +71,7 @@ The marker stream has its own thread which recieves markers from the target LSL 
 
 2.2 Data Threads
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Each data stream has its own thread created, the thread is responsible for pipelining received data on FIFO's and slicing appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_.
+Each data stream has its own thread created, the thread is responsible for pipelining received data on FIFO's and potentially slicing and overlapping so many seconds before and after the marker appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_, set with globalEpochSettings and customEpochSettings when intialisying PyBCI().
 
 2.3 Feature Extractor Threads
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
