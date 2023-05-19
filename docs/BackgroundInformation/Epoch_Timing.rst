@@ -5,7 +5,7 @@ What are Epochs?
 ----------------
 Defining epochs relates to the amount of time-series data before and after a marker has been received we wish to process and analyse/extract features for training models.
 
-Setting the ``globalEpochSettings`` with the ``GlobalEpochSettings()`` class  sets the target window length and overlap for the training time windows. It is desirable to have a singular global window length that all epcosh will be sliced into so then it is uniform when having a continous rolling window of data when in testing mode.
+Setting the ``globalEpochSettings`` with the ``GlobalEpochSettings()`` class  sets the target window length and overlap for the training time windows. It is desirable to have a singular global window length that all epcosh will be sliced into so then it is uniform when having a continuous rolling window of data when in testing mode.
 
 
 Setting Custom Epoch Times
