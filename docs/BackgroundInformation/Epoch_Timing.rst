@@ -33,7 +33,7 @@ This would be configured by coding the following :
 
 .. _nosplitExample:
 
-.. image:: Images/splitEpochs/example1.png
+.. image:: ../Images/splitEpochs/example1.png
    :target: https://github.com/LMBooth/pybci/blob/main/docs/Images/splitEpochs/example1.png
 
 
@@ -43,11 +43,11 @@ Overlapping Epoch Windows
 
 .. _overlap0:
 
-.. image:: Images/splitEpochs/example1split0%25.png
+.. image:: ../Images/splitEpochs/example1split0%25.png
    :target: https://github.com/LMBooth/pybci/blob/main/docs/Images/splitEpochs/example1split0%25.png
    
    
 .. _overlap50:
 
-.. image:: Images/splitEpochs/example1split50%25.png
+.. image:: ../Images/splitEpochs/example1split50%25.png
    :target: https://github.com/LMBooth/pybci/blob/main/docs/Images/splitEpochs/example1split50%25.png
