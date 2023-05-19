@@ -18,7 +18,7 @@ extensions = [
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 master_doc = 'index'  # for Sphinx < 2.0
-
+latex_logo = 'Images/pyBCI.png.png'
 # -- Options for HTML output -------------------------------------------------
 
 html_theme_options = {
