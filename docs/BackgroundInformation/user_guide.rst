@@ -17,7 +17,7 @@ For unstable dev installations and up-to-date git pushes use:
 
 .. code-block:: console
 
-   pip install --index-url https://test.pypi.org/simple/ pybci
+   pip install --index-url https://test.pypi.org/simple/ install-pybci
 
 
 .. _simpleimplementation:
