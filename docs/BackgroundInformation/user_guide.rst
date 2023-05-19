@@ -68,9 +68,9 @@ The marker stream has its own thread which recieves markers from the target LSL 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Each data stream has its own thread created, the thread is responsible for pipelining received data on FIFO's and slicing appropriately based on globalEpochSettings and customEpochSettings.
 
-2.3 Feature Extractor Thread
+2.3 Feature Extractor Threads
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The feature extractor thread receives data from the various data stream threads and prepares epoch data for the classification thread based on settings made in each markers respective feature FeatureSettings`FeatureSettings<https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_.
+The feature extractor threads receives data from the various data stream threads and prepares epoch data for the classification thread based on settings made in each markers respective feature FeatureSettings`FeatureSettings<https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_.
 
 2.4 Classifier Thread
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
