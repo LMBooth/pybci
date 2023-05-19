@@ -24,11 +24,6 @@ jobs:
         python -m pip install --upgrade pip
         pip install build
         pip install twine
-    - name: Create temp_setup.py
-      run: |
-        echo "import os" > temp_setup.py
-        echo "from setuptools import setup" >> temp_setup.py
-        echo "setup(name=os.getenv('PYPI_PACKAGE_NAME', 'pybci'))" >> temp_setup.py
     - name: Build package
       run: python -m build
     - name: Build and publish to TestPyPI
@@ -36,17 +31,14 @@ jobs:
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
-        PYPI_PACKAGE_NAME: 'pybci'  # Use 'pybci' for TestPyPI
       run: |
         python build_package.py
         twine upload --repository-url https://test.pypi.org/legacy/ dist/*
-    
     - name: Build and publish to PyPI
       if: github.event_name == 'release' && github.event.action == 'created'
       env:
         TWINE_USERNAME: __token__
         TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
-        PYPI_PACKAGE_NAME: 'install-pybci'  # Use 'install-pybci' for PyPI
       run: |
         python build_package.py
         twine upload dist/*
