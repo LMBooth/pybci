@@ -3,7 +3,6 @@ Theory of Operation
 
 1. Requirements Prior Initialising with ``bci = PyBCI()``
 =========================================================
-EEG", "EMG", "Gaze") {hopefully configurable in the future t pass custom fature decoding class}
 The bci must have ==1 LSL markerstream selected (if more then one LSL marker stream on system set the desired ML training marker stream with ``PyBCI(markerStream="yourMarkerStream"))``. Warning: If None set picks first available in list.
 
 2. Thread Creation.
