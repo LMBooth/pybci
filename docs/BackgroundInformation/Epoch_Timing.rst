@@ -40,7 +40,7 @@ Overlapping Epoch Windows
 
 By setting splitCheck to True for ``baselineSettings.splitCheck`` and ``gs.windowOverlap`` to 0 we can turn one marker into 10 epochs, shown below:
 
-.. _overlap0:
+.. _nooverlapExample:
 
 .. image:: ../Images/splitEpochs/example1split0%25.png
    :target: https://github.com/LMBooth/pybci/blob/main/docs/Images/splitEpochs/example1split0%25.png
@@ -48,7 +48,7 @@ By setting splitCheck to True for ``baselineSettings.splitCheck`` and ``gs.windo
    
 By setting ``gs.windowOverlap`` to 0.5 we can turn overlap our 1 second epochs by 50% giving us 19 (2n-1) epochs, shown below:
 
-.. _overlap50:
+.. _overlapExample:
 
 .. image:: ../Images/splitEpochs/example1split50%25.png
    :target: https://github.com/LMBooth/pybci/blob/main/docs/Images/splitEpochs/example1split50%25.png
