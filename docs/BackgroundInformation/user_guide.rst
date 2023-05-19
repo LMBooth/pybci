@@ -78,11 +78,30 @@ Machine learning thread is responsible for receiving data from the various featu
 
 3. Train Mode
 ----------
+
 3.1 FeaturesExtractor
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+
 3.2 Classifier
 ~~~~~~~~~~~~~~
+Before the classifier can be run a minimum number of marker strings must be received for each type of target marker, set with the minimumEpochsRequired variable (default: 10).
+
+An sklearn classifier of the users choosing can be passed with the clf variable, or a tensorflow model with pased to model.
+
+The classifier performance or updated modedl/clf types can be queried by calling CurrentClassifierInfo(), example:
+
+.. code-block:: python
+   bci = PyBCI()
+   classInfo = bci.CurrentClassifierInfo()
+
+Where classInfo is a dict of:
+.. code-block:: python
+   classinfo = {
+      "clf":self.classifier.clf,
+      "model":self.classifier.model,
+      "accuracy":self.classifier.accuracy
+   }
 
 
 4.Test Mode
@@ -92,3 +111,4 @@ Machine learning thread is responsible for receiving data from the various featu
 
 4.2 Resetting or Adding to Train mode Feature Data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+(Functionality is yet to be coded or added, pending...)
