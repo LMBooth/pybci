@@ -25,7 +25,7 @@ The :ref:`figure below <_nosplitExample>` illustrates when you may have epochs o
 .. code-block:: python
 
    baselineSettings = IndividualEpochSetting()
-   baselineSettings.splitCheck = True
+   baselineSettings.splitCheck = False
    baselineSettings.tmin = 0      # time in seconds to capture samples before trigger
    baselineSettings.tmax=  10      # time in seconds to capture samples after trigger
 
