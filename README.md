@@ -8,6 +8,7 @@ The goal of PyBCI is to help create quick iteration pipelines for testing potent
 
 ## Installation
 For stable releases use: ```pip install install-pybci```
+
 For unstable dev installations and up-to-date git pushes use: ```pip install --index-url https://test.pypi.org/simple/ install-pybci```
 
 (currently using install-pybci due to pybci having name too similar with another package on pypi)
