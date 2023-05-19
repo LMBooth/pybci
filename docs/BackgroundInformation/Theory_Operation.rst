@@ -5,7 +5,7 @@ Theory of Operation
 =========================================================
 The bci must have ==1 LSL markerstream selected (if more then one LSL marker stream on system set the desired ML training marker stream with ``PyBCI(markerStream="yourMarkerStream"))``. Warning: If None set picks first available in list.
 
-2. Thread Creation.
+2. Thread Creation
 =========================================================
 Once configuration settings are set various threads are created.
 
