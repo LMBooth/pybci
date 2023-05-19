@@ -28,10 +28,9 @@ The :ref:`figure below <_nosplitExample>` illustrates when you may have epochs o
    baselineSettings.splitCheck = False
    baselineSettings.tmin = 0      # time in seconds to capture samples before trigger
    baselineSettings.tmax=  10      # time in seconds to capture samples after trigger
+   bci = PyBCI(customEpochSettings=baselineSettings, globalEpochSettings=gs)
 
-This would be configured by coding the following :
-
-
+Highlighting these epochs on some psuedo emg data looks like the following:
 
 .. _nosplitExample:
 
@@ -42,13 +41,15 @@ This would be configured by coding the following :
 Overlapping Epoch Windows
 ------------------------
 
+By setting splitCheck to True for ``baselineSettings.splitCheck`` and ``gs.windowOverlap`` to 0 we can turn one marker into 10 epochs, shown below:
 
 .. _overlap0:
 
 .. image:: ../Images/splitEpochs/example1split0%25.png
    :target: https://github.com/LMBooth/pybci/blob/main/docs/Images/splitEpochs/example1split0%25.png
    
-   
+By setting ``gs.windowOverlap`` to 0.5 we can turn overlap our 1 second epochs by 50% giving us 19 (2n-1) epochs, shown below:
+
 .. _overlap50:
 
 .. image:: ../Images/splitEpochs/example1split50%25.png
