@@ -41,7 +41,7 @@ class PyBCI:
         customEpochSettings (dict {marker name string:IndividualEpochSettings()}): Sets individual timing settings for epochs.
         streamChsDropDict (dict {datastream name string: list(ints)}): Keys for dict should be respective datastreams with corresponding list of which channels to drop.
         streamCustomFeatureExtract (dict {datastream type string: customClass()}): allows dict to be passed of datastream type with custom feature extractor class for analysing data.
-        minimumEpochsRequired ():
+        minimumEpochsRequired (Int): minimm number of required epochs before model fitting begins, must be of each type of received markers and mroe then 1 type of marker to classify.
         clf (ClassifierMixin): Allows custom Sklearn model to be passed.
         model (model):Allows custom tensorflow model to be passed.
         """
