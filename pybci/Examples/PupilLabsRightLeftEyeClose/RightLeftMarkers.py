@@ -2,10 +2,9 @@ import tkinter as tk
 import pylsl
 
 # customisable variables!
-stimuli = ["Baseline", "Right", "Left"]#, "Both"]
-stimuliTime = [2000, 2000, 2000]#, 2000]
-stimuliCount = [8, 8, 8]#, 8]  # Number of times each stimulus should appear
-
+stimuli = ["Both Open", "Right Open", "Left Open"]
+stimuliTime = [2000, 2000, 2000]
+stimuliCount = [8, 8, 8]
 
 markerStreamName = "TestMarkers" # should be targetted with pybci
 streamType = 'Markers'
