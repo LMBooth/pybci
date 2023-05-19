@@ -74,7 +74,7 @@ The feature extractor threads receives data from the various data stream threads
 
 2.4 Classifier Thread
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Machine learning thread is responsible for 
+Machine learning thread is responsible for receiving data from the various feature extraction threads, syncrhonising based on the number of target data streams, then passes thse features for testing and training mahine learning tensorflow and scikit learn models and classifiers. 
 
 3. Train Mode
 ----------
