@@ -8,13 +8,11 @@ The goal of PyBCI is to help create quick iteration pipelines for testing potent
 
 ## Installation
 For stable releases use: ```pip install install-pybci```
-
-(currently can only install-pybci due to pybci name similarities with another package on pypi)
-
 For unstable dev installations and up-to-date git pushes use: ```pip install --index-url https://test.pypi.org/simple/ install-pybci```
 
+(currently using install-pybci due to pybci having name too similar with another package on pypi)
 
-[ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/) (In development)
+[ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/)      [Examples found here!](https://github.com/LMBooth/pybci/tree/main/pybci/Examples)
 
 ## Basic implementation
 ```python
