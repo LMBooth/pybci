@@ -24,7 +24,7 @@ Contents
 
 .. toctree::
    :maxdepth: 1
-   :caption: Developer's Guide
+   :caption: API
 
    api/PyBCI
    api/LSLScanner
