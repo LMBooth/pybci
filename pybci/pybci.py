@@ -10,18 +10,6 @@ import queue, threading, copy
 import tensorflow as tf
 
 class PyBCI:
-    """The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
-     and holds a configurable number of samples based on lsl marker strings.
-     If no marker strings are available on the LSL the class will close and return an error.
-     Optional Inputs:
-        dataStreams = List of strings, allows user to set custom acceptable EEG stream definitions, if None defaults to streamTypes scan
-        markerStream = List of strings, allows user to set custom acceptable Marker stream definitions, if None defaults to markerTypes scan
-        streamTypes = List of strings, allows user to set custom acceptable EEG type definitions, ignored if dataStreams not None
-        markerTypes = List of strings, allows user to set custom acceptable Marker type definitions, ignored if markerStream not None
-        printDebug = boolean, if true prints LSLScanner debug information
-    TODO:
-        Need to add option to pass theoretical maximum sample rate to AsyncDatastreams to acount for theoretical max window limits
-    """
     printDebug = True   # boolean, used to toggle print statements from LSLScanner class
     globalEpochSettings = GlobalEpochSettings()
     customEpochSettings = {}
@@ -39,6 +27,24 @@ class PyBCI:
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
                  streamCustomFeatureExtract = {},
                  minimumEpochsRequired = 10, clf= None, model = None):
+        """
+        The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
+        and holds a configurable number of samples based on lsl marker strings.
+        If no marker strings are available on the LSL the class will close and return an error.
+        Parameters:
+        dataStreams (List of strings): Allows user to set custom acceptable EEG stream definitions, if None defaults to streamTypes scan
+        markerStream (List of strings): Allows user to set custom acceptable Marker stream definitions, if None defaults to markerTypes scan
+        streamTypes (List of strings): Allows user to set custom acceptable EEG type definitions, ignored if dataStreams not None
+        markerTypes (List of strings): Allows user to set custom acceptable Marker type definitions, ignored if markerStream not None
+        printDebug (bool): If true prints LSLScanner debug information
+        globalEpochSettings (GlobalEpochSettings): Sets global timing settings for epochs.
+        customEpochSettings (dict {marker name string:IndividualEpochSettings()}): Sets individual timing settings for epochs.
+        streamChsDropDict (dict {datastream name string: list(ints)}): Keys for dict should be respective datastreams with corresponding list of which channels to drop.
+        streamCustomFeatureExtract (dict {datastream type string: customClass()}): allows dict to be passed of datastream type with custom feature extractor class for analysing data.
+        minimumEpochsRequired ():
+        clf (ClassifierMixin): Allows custom Sklearn model to be passed.
+        model (model):Allows custom tensorflow model to be passed.
+        """
         self.streamCustomFeatureExtract = streamCustomFeatureExtract
         self.globalEpochSettings = globalEpochSettings
         self.customEpochSettings = customEpochSettings
