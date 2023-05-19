@@ -33,6 +33,7 @@ For example:
 >>>     bci.Connect()
 >>>     time.sleep(1)
 >>> bci.TrainMode()
+>>> accuracy = 0
 >>> try:
 >>>     while(True):
 >>>         currentMarkers = bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
