@@ -27,7 +27,7 @@ while not bci.connected: # check to see if lsl marker and datastream are availab
 bci.TrainMode() # now both marker and datastreams available start training on received epochs
 accuracy = 0
 try:
-    while(True):
+    while(True): # training based on couple epochs more then min threshold for classifying
         currentMarkers = bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
         time.sleep(1) # wait for marker updates
         print("Markers received: " + str(currentMarkers) +" Class accuracy: " + str(accuracy), end="\r")
@@ -38,7 +38,7 @@ try:
             if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+1:  
                 bci.TestMode()
                 break
-    while True:
+    while True: # now sufficient epochs gathered start testing
         markerGuess = bci.CurrentClassifierMarkerGuess() # when in test mode only y_pred returned
         guess = [key for key, value in currentMarkers.items() if value[0] == markerGuess]
         print("Current marker estimation: " + str(guess), end="\r")
