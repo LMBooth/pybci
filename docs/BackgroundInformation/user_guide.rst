@@ -1,7 +1,7 @@
 User Guide
 ############
 
-.. _installation:
+:ref:`installation`
 
 Installation
 ===================
