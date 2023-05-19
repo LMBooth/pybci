@@ -3,6 +3,10 @@ Epoch Timing
 
 What are Epochs?
 ----------------
+Defining epoch timings relate to the amount of time before and after a marker has been recieved we wish to process and analyse/extract features from out time series data.
+
+By setting the `globalEpochSettings` with the `GlobalEpochSettings()` class sets the target window length and overlap
+
 
 Setting Custom Epoch Times
 ------------------------
