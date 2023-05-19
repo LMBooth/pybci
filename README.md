@@ -2,7 +2,7 @@
 
 [![Alt Text](https://github.com/LMBooth/pybci/blob/main/docs/Images/pyBCITitle.png)](https://github.com/LMBooth/pybci)
 
-A Python package to create a Brain Computer Interface (BCI) with the [Lab Streaming Layer](https://github.com/sccn/labstreaminglayer), [scikit-learn](https://scikit-learn.org/stable/#) and [TensorFlow](https://www.tensorflow.org/install), leveraging packages like [AntroPy](https://github.com/raphaelvallat/antropy), [SciPy](https://scipy.org/) and [NumPy](https://numpy.org/) for time and/or frequency based feature extraction.
+A Python package to create a Brain Computer Interface (BCI) with data synchronisation and pipelining with the [Lab Streaming Layer](https://github.com/sccn/labstreaminglayer), machine learning with [scikit-learn](https://scikit-learn.org/stable/#) and [TensorFlow](https://www.tensorflow.org/install), whilst leveraging packages like [AntroPy](https://github.com/raphaelvallat/antropy), [SciPy](https://scipy.org/) and [NumPy](https://numpy.org/) for generic time and/or frequency based feature extraction or optionally have the users own custom feature extraction class used.
 
 The goal of PyBCI is to help create quick iteration pipelines for testing potential human machine and brain computer interfaces, namely applied machine learning models and feature extraction techniques for LSL enabled devices and training stimuli.
 
