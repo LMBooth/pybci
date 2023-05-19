@@ -45,9 +45,12 @@ By setting splitCheck to True for ``baselineSettings.splitCheck`` and ``gs.windo
 .. image:: ../Images/splitEpochs/example1split0%25.png
    :target: https://github.com/LMBooth/pybci/blob/main/docs/Images/splitEpochs/example1split0%25.png
    
+   
 By setting ``gs.windowOverlap`` to 0.5 we can turn overlap our 1 second epochs by 50% giving us 19 (2n-1) epochs, shown below:
 
 .. _overlap50:
 
 .. image:: ../Images/splitEpochs/example1split50%25.png
    :target: https://github.com/LMBooth/pybci/blob/main/docs/Images/splitEpochs/example1split50%25.png
+   
+   
