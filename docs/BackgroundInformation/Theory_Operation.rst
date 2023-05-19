@@ -1,8 +1,3 @@
-User Guide
-############
-
-
-
 Theory of Operation
 ############
 
