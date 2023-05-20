@@ -13,3 +13,16 @@ The LSLScanner class scans and selects desired data and marker streams from avai
 :param bool printDebug: If true, prints LSLScanner debug information.
 
 .. py:method:: ScanStreams()
+  Scans LSL for both data and marker channels.
+
+.. py:method:: ScanDataStreams()
+  Scans available LSL streams and appends inlet to self.dataStreams
+
+.. py:method:: ScanMarkerStreams()
+  Scans available LSL streams and appends inlet to self.markerStreams
+
+
+.. py:method:: CheckAvailableLSL()
+  Checks streaminlets available, prints if printDebug
+
+  :returns: True if 1 marker stream present and available datastreams are present. False if no datastreams are present and/or more or less than one marker stream is present.
