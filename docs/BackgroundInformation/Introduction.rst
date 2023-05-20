@@ -2,7 +2,7 @@ Introduction
 ############
 
 .. _installation:
-Installation
+1. Installation
 ===================
 
 To use PyBCI, first install it using pip:
@@ -22,7 +22,7 @@ For unstable dev installations and up-to-date git pushes use:
 
 .. _simpleimplementation:
 
-Simple Implementation:
+2. Simple Implementation:
 ===================
 For example:
 
@@ -54,7 +54,7 @@ For example:
 >>> except KeyboardInterrupt: # allow user to break while loop
 >>>     pass
 
-What is PyBCI?
+3. What is PyBCI?
 ===================
 PyBCI is a python based brain computer interface software designed to receive a varying number, be it singular or multiple, Lab Streaming Layer enabled physiological sensor data streams. An understanding of time-series data analysis, the lab streaming layer protocol, and machine learning techniques are a must to integrate innovative ideas with this interface. An LSL marker stream is required to train the model, where a received marker epochs the data received on the accepted datastreams based on a configurable time window around certain markers - where custom marker strings can optionally have its epoch timewindow split and overlapped to count for more then one marker, example: a baseline marker may have one marker sent for a 60 second window, where as target actions may only be ~0.5s long, so to conform when testing the model and giving a standardised window length would be desirable to split the 60s window after the received baseline marker in to ~0.5s windows. By overlapping windows we try to account for potential missed signal patterns/aliasing, as a rule of thumb it would be advised when testing a model to have an overlap >= than 50%, see Shannon nyquist criterion.
 
