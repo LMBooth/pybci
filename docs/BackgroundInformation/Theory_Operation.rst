@@ -72,8 +72,14 @@ Where classInfo is a dict of:
 **********************************************
 3.2.1 Retrieiving current estimate
 -----------------------------------------------
+It is recommended to periodically query the current estimated marker with 
 
+.. code-block:: python
+
+    classGuess = bci.CurrentClassifierMarkerGuess()
+
+where classGuess is an index value relating to the marker value in the marker dict returned with :func:`PyBCI.ReceivedMarkerCount()`.
 
 3.2.2 Resetting or Adding to Train mode Feature Data
 -----------------------------------------------
-(Functionality is yet to be coded or added, pending...)
+The user can call :func:`PyBCI.TrainMode()` again to go back to training the model and add to the existing feature data with new LSL markers signifying new epochs to be processed.
