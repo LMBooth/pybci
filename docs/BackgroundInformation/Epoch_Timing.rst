@@ -5,13 +5,13 @@ What are Epochs?
 ----------------
 Defining epochs relates to the amount of time-series data before and after a marker has been received that may be processed and analysed with features extracted for training models.
 
-Setting the ``globalEpochSettings`` with the ``GlobalEpochSettings()`` class  sets the target window length and overlap for the training time windows. It is desirable to have a singular global window length that all epcosh will be sliced into so then it is uniform when having a continuous rolling window of data when in testing mode.
+Setting the :class:`PyBCI.globalEpochSettings` with the :class:`GlobalEpochSettings()` class  sets the target window length and overlap for the training time windows. It is desirable to have a singular global window length that all epcosh will be sliced into so then it is uniform when having a continuous rolling window of data when in testing mode.
 
 .. _set_custom_epoch_times:
 Setting Custom Epoch Times
 ------------------------
 
-The figure below illustrates when you may have epochs of differing lengths received on the LSL marker stream. A baseline marker may signify an extended period, in this case 10 seconds, and our motor task is only 1 second long. To account for this set ``customEpochSettings`` and ``globalEpochSettings`` accordingly:
+The figure below illustrates when you may have epochs of differing lengths received on the LSL marker stream. A baseline marker may signify an extended period, in this case 10 seconds, and our motor task is only 1 second long. To account for this set :class:`PyBCI.customEpochSettings` and :class:`PyBCI.globalEpochSettings` accordingly:
 
 .. code-block:: python
 
