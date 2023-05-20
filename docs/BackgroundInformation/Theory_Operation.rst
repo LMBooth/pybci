@@ -3,7 +3,7 @@ Theory of Operation
 
 1. Requirements Prior Initialising with ``bci = PyBCI()``
 =========================================================
-The bci must have ==1 LSL markerstream selected (if more then one LSL marker stream on system set the desired ML training marker stream with ``PyBCI(markerStream="yourMarkerStream"))``. Warning: If None set picks first available in list.
+The bci must have ==1 LSL marker stream selected (if more then one LSL marker stream on system set the desired ML training marker stream with :param:`yourMarkerStream` to  :class:`PyBCI()`. Warning: If None set it picks first available in list, if more then one marker stream available to LSL then it is advised to hard select on intialisation.
 
 2. Thread Creation
 =========================================================
@@ -15,7 +15,7 @@ The marker stream has its own thread which recieves markers from the target LSL 
 
 2.2 Data Threads
 **********************************************
-Each data stream has its two threads created, one data and one feautre extractor, the thread is responsible for pipelining received data on FIFO's and potentially slicing and overlapping so many seconds before and after the marker appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_, set with `globalEpochSettings` and `customEpochSettings` when initialising :class:`PyBCI()`.
+Each data stream has its two threads created, one data and one feautre extractor, the thread is responsible for pipelining received data on FIFO's and potentially slicing and overlapping so many seconds before and after the marker appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_, set with :param:`globalEpochSettings` and :param:`customEpochSettings` when initialising :class:`PyBCI()`.
 
 Add desired dataStreams by passing a list of accepted data stream names with `dataStreams`.
 
@@ -23,7 +23,7 @@ Add desired dataStreams by passing a list of accepted data stream names with `da
 **********************************************
 The feature extractor threads receive data from their corresponding data stream thread and prepares epoch data for reunification in the classification thread with other devices in the same epoch.
 
-The feature extraction techniques used can vary drastically between devices, to resolve this custom classes can be created to deal with specific stream types and passed to ``streamCustomFeatureExtract`` when initialising ``PyBCI()``, discussed more in :ref:`custom-extractor`.
+The feature extraction techniques used can vary drastically between devices, to resolve this custom classes can be created to deal with specific stream types and passed to ``streamCustomFeatureExtract`` when initialising  :class:`PyBCI()`, discussed more in :ref:`custom-extractor`.
 
 The default feature extraction used is ``GeneralFeatureChoices`` found in `FeatureSettings.py <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_, see :ref:`generic-extractor` for more details.
 
