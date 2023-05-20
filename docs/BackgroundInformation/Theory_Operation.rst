@@ -1,7 +1,7 @@
 Theory of Operation
 ############
 
-1. Requirements Prior Initialising with ``bci = PyBCI()``
+1. Requirements Prior Initialising with `bci = PyBCI()`
 =========================================================
 The bci must have ==1 LSL marker stream selected (if more then one LSL marker stream on system set the desired ML training marker stream with :py:attr:`~PyBCI.markerStream` to  :py:class:`PyBCI()`). Warning: If None set it picks first available in list, if more then one marker stream available to LSL then it is advised to hard select on intialisation.
 
