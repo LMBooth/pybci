@@ -5,11 +5,12 @@ copyright = '2023, Liam Booth'
 author = 'Liam Booth'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1.4b2'
+release = '0.1.4b4'
 
 # -- General configuration ---------------------------------------------------
 extensions = [
     'sphinx.ext.intersphinx',
+    'sphinx.ext.autodoc',
     'sphinx.ext.extlinks',
 ]
 
@@ -30,3 +31,15 @@ html_logo = 'Images/pyBCI.png'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+# Set the location of your Python module(s)
+# Replace 'your_package_name' with the actual package/module name
+autodoc_mock_imports = ['pybci']
+
+# Include all members (methods, attributes, etc.) in the API documentation
+autodoc_default_options = {
+    'members': None,
+    'undoc-members': True,
+    'private-members': True,
+    'show-inheritance': True,
+}
