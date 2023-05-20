@@ -3,7 +3,7 @@ Theory of Operation
 
 1. Requirements Prior Initialising with ``bci = PyBCI()``
 =========================================================
-The bci must have ==1 LSL marker stream selected (if more then one LSL marker stream on system set the desired ML training marker stream with :py:class:`PyBCI.markerStream` to  :py:class:`PyBCI()`). Warning: If None set it picks first available in list, if more then one marker stream available to LSL then it is advised to hard select on intialisation.
+The bci must have ==1 LSL marker stream selected (if more then one LSL marker stream on system set the desired ML training marker stream with :py:attr:`~PyBCI.markerStream` to  :py:class:`PyBCI()`). Warning: If None set it picks first available in list, if more then one marker stream available to LSL then it is advised to hard select on intialisation.
 
 2. Thread Creation
 =========================================================
@@ -11,7 +11,7 @@ Once configuration settings are set various threads are created.
 
 2.1 Marker Thread
 **********************************************
-The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with :py:class:`PyBCI.markerStream` to  :py:class:`PyBCI()`.
+The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with :py:attr:`~PyBCI.markerStream` to  :py:class:`PyBCI()`.
 
 2.2 Data Threads
 **********************************************
