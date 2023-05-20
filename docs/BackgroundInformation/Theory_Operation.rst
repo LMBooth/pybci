@@ -3,7 +3,7 @@ Theory of Operation
 
 1. Requirements Prior Initialising with `bci = PyBCI()`
 =========================================================
-The bci must have ==1 LSL marker stream selected (if more then one LSL marker stream on system set the desired ML training marker stream with :ref:`markerStream` to  :py:class:`PyBCI()`). Warning: If None set it picks first available in list, if more then one marker stream available to LSL then it is advised to hard select on intialisation.
+The bci must have ==1 LSL marker stream selected (if more then one LSL marker stream on system set the desired ML training marker stream with :param:`markerStream` to  :py:class:`PyBCI()`). Warning: If None set it picks first available in list, if more then one marker stream available to LSL then it is advised to hard select on intialisation.
 
 2. Thread Creation
 =========================================================
@@ -11,11 +11,11 @@ Once configuration settings are set various threads are created.
 
 2.1 Marker Thread
 **********************************************
-The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with :ref:`markerStream` to  :py:class:`PyBCI()`.
+The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with :param:`markerStream` to  :py:class:`PyBCI()`.
 
 2.2 Data Threads
 **********************************************
-Each data stream has its two threads created, one data and one feautre extractor, the thread is responsible for pipelining received data on `deque` FIFO's and optionally slicing and overlapping so many seconds before and after the marker appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_, set with :ref:`globalEpochSettings` and :ref:`customEpochSettings` when initialising :py:class:`PyBCI()`.
+Each data stream has its two threads created, one data and one feautre extractor, the thread is responsible for pipelining received data on `deque` FIFO's and optionally slicing and overlapping so many seconds before and after the marker appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_, set with :param:`globalEpochSettings` and :param:`customEpochSettings` when initialising :py:class:`PyBCI()`.
 
 Add desired dataStreams by passing a list of accepted data stream names with `dataStreams`.
 
@@ -25,13 +25,17 @@ Upon data thread creation the effective sample rate is queried for each LSL data
 **********************************************
 The feature extractor threads receive data from their corresponding data stream thread and prepares epoch data for reunification in the classification thread with other devices in the same epoch.
 
-The feature extraction techniques used can vary drastically between devices, to resolve this custom classes can be created to deal with specific stream types and passed to :ref:`streamCustomFeatureExtract` when initialising  :py:class:`PyBCI()`, discussed more in :ref:`custom-extractor`.
+The feature extraction techniques used can vary drastically between devices, to resolve this custom classes can be created to deal with specific stream types and passed to :param:`streamCustomFeatureExtract` when initialising  :py:class:`PyBCI()`, discussed more in :ref:`custom-extractor`.
 
 The default feature extraction used is :ref:`GeneralFeatureChoices` found in `FeatureSettings.py <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_, see :ref:`generic-extractor` for more details.
 
 2.4 Classifier Thread
 **********************************************
-The Classifier thread is responsible for receiving data from the various feature extraction threads, syncrhonising based on the number of target data streams, then passes uses these features for testing and training mahine learning tensorflow and scikit-learn models and classifiers. 
+The Classifier thread is responsible for receiving data from the various feature extraction threads, synchronising based on the number of target data streams, then uses the features and target marker values for testing and training the selected machine learning tensorflow or scikit-learn model or classifier. If a valid marker stream and datastream/s are available we can start the bci machine learning training by calling :func:`PyBCI.TrainMode()`.
+
+Once in test mode a datathreads continuously slice time windows of data and optionally overlap these windows - according to :param:`globalEpochSettings`when initialising :py:class:`PyBCI()` - nd test the extracted features against the currently fit model. 
+
+If the model is not performing well the user can always swap back to training model to gather more data with :func:`PyBCI.TestMode()`.
 
 To set you own clf and model see the examples found `here for sklearn <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_, and `here for tensorflow <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testTensorflow.py>`_.
 
@@ -46,7 +50,7 @@ Before the classifier can be run a minimum number of marker strings must be rece
 
 An sklearn classifier of the users choosing can be passed with the `clf` variable, or a tensorflow model with passed to `model` when instantiating with :py:class:`PyBCI()`.
 
-The classifier performance or updated model/clf types can be queried by calling :func:`PyBCI.MyClass.CurrentClassifierInfo` example:
+The classifier performance or updated model/clf types can be queried by calling :func:`PyBCI.CurrentClassifierInfo()` example:
 
 .. code-block:: python
 
