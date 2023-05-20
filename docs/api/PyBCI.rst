@@ -1,46 +1,46 @@
 PyBCI
 =====
-:class: PyBCI(dataStreams=None, markerStream=None, streamTypes=None, markerTypes=None, printDebug=True, globalEpochSettings=GlobalEpochSettings(), customEpochSettings={}, streamChsDropDict={}, streamCustomFeatureExtract={}, minimumEpochsRequired=10, clf=None, model=None)
+.. class:: PyBCI(dataStreams=None, markerStream=None, streamTypes=None, markerTypes=None, printDebug=True, globalEpochSettings=GlobalEpochSettings(), customEpochSettings={}, streamChsDropDict={}, streamCustomFeatureExtract={}, minimumEpochsRequired=10, clf=None, model=None)
 
-The `PyBCI` object stores data from available LSL time series data streams (EEG, pupilometry, EMG, etc.) and holds a configurable number of samples based on LSL marker strings.
+    The `PyBCI` object stores data from available LSL time series data streams (EEG, pupilometry, EMG, etc.) and holds a configurable number of samples based on LSL marker strings.
 
-**Parameters:**
+    **Parameters:**
 
-:dataStreams: list[str] or None
-    Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
+    :dataStreams: list[str] or None
+        Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
 
-:markerStream: list[str] or None
-    Allows the user to set custom acceptable Marker stream definitions. If `None`, it defaults to `markerTypes` scan.
+    :markerStream: list[str] or None
+        Allows the user to set custom acceptable Marker stream definitions. If `None`, it defaults to `markerTypes` scan.
 
-:streamTypes: list[str] or None
-    Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
+    :streamTypes: list[str] or None
+        Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
 
-:markerTypes: list[str] or None
-    Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
+    :markerTypes: list[str] or None
+        Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
 
-:printDebug: bool
-    If `True`, prints LSLScanner debug information.
+    :printDebug: bool
+        If `True`, prints LSLScanner debug information.
 
-:globalEpochSettings: GlobalEpochSettings
-    Sets global timing settings for epochs.
+    :globalEpochSettings: GlobalEpochSettings
+        Sets global timing settings for epochs.
 
-:customEpochSettings: dict{str: IndividualEpochSettings}
-    Sets individual timing settings for epochs. The keys of the dictionary are marker name strings, and the values are `IndividualEpochSettings` objects.
+    :customEpochSettings: dict{str: IndividualEpochSettings}
+        Sets individual timing settings for epochs. The keys of the dictionary are marker name strings, and the values are `IndividualEpochSettings` objects.
 
-:streamChsDropDict: dict{str: list[int]}
-    Keys for dict should be respective datastreams with corresponding lists of which channels to drop.
+    :streamChsDropDict: dict{str: list[int]}
+        Keys for dict should be respective datastreams with corresponding lists of which channels to drop.
 
-:streamCustomFeatureExtract: dict{str:class}
-    Allows a dictionary to be passed with datastream type as the key and a custom feature extractor class for analyzing data as the value.
+    :streamCustomFeatureExtract: dict{str:class}
+        Allows a dictionary to be passed with datastream type as the key and a custom feature extractor class for analyzing data as the value.
 
-:minimumEpochsRequired: int
-    Minimum number of required epochs before model fitting begins, must be of each type of received markers and more than 1 type of marker to classify.
+    :minimumEpochsRequired: int
+        Minimum number of required epochs before model fitting begins, must be of each type of received markers and more than 1 type of marker to classify.
 
-:clf: ClassifierMixin or None
-    Allows a custom Sklearn model to be passed, if None and None model too defaults to sklearn SVM with 'rbf' kernel.
+    :clf: ClassifierMixin or None
+        Allows a custom Sklearn model to be passed, if None and None model too defaults to sklearn SVM with 'rbf' kernel.
 
-:model: model or None
-    Allows a custom TensorFlow model to be passed, if None and None model too defaults to sklearn SVM with 'rbf' kernel.
+    :model: model or None
+        Allows a custom TensorFlow model to be passed, if None and None model too defaults to sklearn SVM with 'rbf' kernel.
 
 .. py:method:: __enter__()
 
