@@ -7,7 +7,7 @@ Defining epochs relates to the amount of time-series data before and after a mar
 
 Setting the ``globalEpochSettings`` with the ``GlobalEpochSettings()`` class  sets the target window length and overlap for the training time windows. It is desirable to have a singular global window length that all epcosh will be sliced into so then it is uniform when having a continuous rolling window of data when in testing mode.
 
-
+.. _set_custom_epoch_times:
 Setting Custom Epoch Times
 ------------------------
 
