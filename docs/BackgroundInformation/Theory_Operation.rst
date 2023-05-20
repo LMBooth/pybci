@@ -3,7 +3,7 @@ Theory of Operation
 
 1. Requirements Prior Initialising with `bci = PyBCI()`
 =========================================================
-The bci must have ==1 LSL marker stream selected (if more then one LSL marker stream on system set the desired ML training marker stream with :py:attr:`~PyBCI.markerStream` to  :py:class:`PyBCI()`). Warning: If None set it picks first available in list, if more then one marker stream available to LSL then it is advised to hard select on intialisation.
+The bci must have ==1 LSL marker stream selected (if more then one LSL marker stream on system set the desired ML training marker stream with `markerStream` to  :py:class:`PyBCI()`). Warning: If None set it picks first available in list, if more then one marker stream available to LSL then it is advised to hard select on intialisation.
 
 2. Thread Creation
 =========================================================
@@ -11,13 +11,15 @@ Once configuration settings are set various threads are created.
 
 2.1 Marker Thread
 **********************************************
-The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with :py:attr:`~PyBCI.markerStream` to  :py:class:`PyBCI()`.
+The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with `markerStream` to  :py:class:`PyBCI()`.
 
 2.2 Data Threads
 **********************************************
-Each data stream has its two threads created, one data and one feautre extractor, the thread is responsible for pipelining received data on FIFO's and potentially slicing and overlapping so many seconds before and after the marker appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_, set with :py:class:`PyBCI.globalEpochSettings` and :py:class:`PyBCI.customEpochSettings` when initialising :py:class:`PyBCI()`.
+Each data stream has its two threads created, one data and one feautre extractor, the thread is responsible for pipelining received data on `deque` FIFO's and optionally slicing and overlapping so many seconds before and after the marker appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_, set with `globalEpochSettings` and `customEpochSettings` when initialising :py:class:`PyBCI()`.
 
 Add desired dataStreams by passing a list of accepted data stream names with `dataStreams`.
+
+Upon data thread creation the effective sample rate is queried for each LSL data stream, if the sample rate is 0 an `Asynchronous thread <https://github.com/LMBooth/pybci/blob/main/pybci/ThreadClasses/AsyncDataReceiverThread.py>_ is created for FIFO handling, though potentially more accurate, it is far more computationally intensive to slice data than the `synchronous data thread <https://github.com/LMBooth/pybci/blob/main/pybci/ThreadClasses/DataReceiverThread.py>_. If n effective sample rate  greater than 0 is supplised by the LSL datastream a syncrhnous data thread is used for slicing epochs relative to markers in training mode and continously slices in testing mode.
 
 2.3 Feature Extractor Threads
 **********************************************
@@ -40,11 +42,11 @@ To set you own clf and model see the examples found
 **********************************************
 3.2.1 Retrieiving current estimate
 -----------------------------------------
-Before the classifier can be run a minimum number of marker strings must be received for each type of target marker, set with the minimumEpochsRequired variable (default: 10).
+Before the classifier can be run a minimum number of marker strings must be received for each type of target marker, set with the `minimumEpochsRequired` variable (default: 10) to :py:class:`PyBCI()`.
 
-An sklearn classifier of the users choosing can be passed with the clf variable, or a tensorflow model with pased to model.
+An sklearn classifier of the users choosing can be passed with the `clf` variable, or a tensorflow model with passed to `model` when instantiating with :py:class:`PyBCI()`.
 
-The classifier performance or updated model/clf types can be queried by calling ``CurrentClassifierInfo()``, example:
+The classifier performance or updated model/clf types can be queried by calling :func:`PyBCI.MyClass.CurrentClassifierInfo` example:
 
 .. code-block:: python
 
