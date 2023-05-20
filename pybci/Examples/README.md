@@ -10,4 +10,4 @@ This folder holds multiple scripts illustrating the functions and configurations
 - 
 
 ## Specific Examples
-- A simple eample for Pupil labs has been created in the PupilLabsRightLeftEyeClose showing how a custom class for interptretting pupil labs lsl relay data.
+- A simple eample for Pupil labs has been created in the PupilLabsRightLeftEyeClose showing how a custom class for interpreting pupil labs lsl relay data.
