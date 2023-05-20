@@ -28,4 +28,3 @@ Contents
 
    api/PyBCI
    api/LSLScanner
-   api/LSLScanner
