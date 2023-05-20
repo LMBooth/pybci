@@ -4,4 +4,4 @@ The Pupil Labs Right Left Eye Close Example in [bciGazeExample.py](https://githu
 
 The [RightLeftMarkers.py](https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/RightLeftMarkers.py) script generates LSLMarkers and an onscreen stimulus in pythons built-in tkinter to inform the user when to shut what eye for training the bci.
 
-It's advised to have a play with the ustom decoding class PupilGazeDecode() and see if other filtering/feature extraction methods can be used to improve the classifier.
+It's advised to have a play with the custom decoding class PupilGazeDecode() in [bciGazeExample.py](https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/bciGazeExample.py) and see if other filtering/feature extraction methods can be used to improve the classifier.
