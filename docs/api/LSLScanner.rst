@@ -1,6 +1,5 @@
-pybci.LSLScanner
-===
-
+PyBCI.LSLScanner
+===============
 .. class:: LSLScanner(parent, dataStreamsNames=None, markerStreamName=None, streamTypes=None, markerTypes=None, printDebug=True)
 
 The LSLScanner class scans and selects desired data and marker streams from available LSL streams.
