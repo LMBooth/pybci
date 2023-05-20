@@ -21,7 +21,7 @@ Each data stream has its two threads created, one data and one feautre extractor
 **********************************************
 The feature extractor threads receive data from their corresponding data stream thread and prepares epoch data for reunification in the classification thread with other devices in the same epoch.
 
-The feature extraction techniques used can vary drastically between devices, to resolve this custom classes can be created to deal with specific stream types and passed to ``streamCustomFeatureExtract`` when initialising ``PyBCI()``, discussed more in :ref:`custom-extractor`.
+The feature extraction techniques used can vary drastically between devices, to resolve this custom classes can be created to deal with specific stream types and passed to :py:data:streamCustomFeatureExtract <PyBCI.streamCustomFeatureExtract> when initialising ``PyBCI()``, discussed more in :ref:`custom-extractor`.
 
 The default feature extraction used is ``GeneralFeatureChoices`` found in `FeatureSettings.py <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_, see :ref:`generic-extractor` for more details.
 
