@@ -46,18 +46,18 @@ The classifier performance or updated model/clf types can be queried by calling 
 
 .. code-block:: python
 
-bci = PyBCI()
-classInfo = bci.CurrentClassifierInfo()
+   bci = PyBCI()
+   classInfo = bci.CurrentClassifierInfo()
 
 Where classInfo is a dict of:
 
 .. code-block:: python
 
-classinfo = {
-   "clf":self.classifier.clf,
-   "model":self.classifier.model,
-   "accuracy":self.classifier.accuracy
-}
+   classinfo = {
+      "clf":self.classifier.clf,
+      "model":self.classifier.model,
+      "accuracy":self.classifier.accuracy
+   }
 
 
 3.2 Testing
