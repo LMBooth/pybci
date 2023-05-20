@@ -3,10 +3,14 @@ Feature Selection
 .. _generic-extractor:
 Generic Time-Series Feature Extractor
 --------------------------------
-The `FeatureSettings class GeneralFeatureChoices <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_ is perfect for generic time-series feature extractor.
+The `FeatureSettings class GeneralFeatureChoices <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_ gives a diverse selectionof time and/or frequency based feature extraction techniques - useful for reducing overall stored data.
 The FeatureExtractor.py file is part of the pybci project and is used to extract various features from time-series data, such as EEG, EMG, EOG or other consistent data with a consistent sample rate. The type of features to be extracted can be specified during initialization, and the code supports extracting various types of entropy features, average power within specified frequency bands, root mean square, mean and median of power spectral density (PSD), variance, mean absolute value, waveform length, zero-crossings, and slope sign changes.
 
 The file provides a class GenericFeatureExtractor, which is initialized with freqbands and featureChoices.
+
+
+.. code-block:: python
+
 
 The freqbands argument is a list of frequency bands for which the average power is to be calculated. By default, it is set to [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], corresponding to typical EEG frequency bands.
 
