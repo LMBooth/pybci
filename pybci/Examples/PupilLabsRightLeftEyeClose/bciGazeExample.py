@@ -15,7 +15,8 @@ class PupilGazeDecode():
     
 streamCustomFeatureExtract = {"pupil_capture" : PupilGazeDecode()}
 dataStreamName = ["pupil_capture"]
-
+# Recommended to probably drop alot of channels unused channels as Asynchronous data streams like pupil-gazr can be computationally more expensive then synchrnous slicing,
+# if finding performance issues or markers not received  consider add to streamChsDropDict = {"pupil_capture" = range(20)} to PyBCI intiialise, then changeephcData[20] and [21] to 0 and 1 in PupilGazeDecode()
 bci = PyBCI(dataStreams = dataStreamName, minimumEpochsRequired = 4, streamCustomFeatureExtract=streamCustomFeatureExtract)
 while not bci.connected: # check to see if lsl marker and datastream are available
     bci.Connect()
