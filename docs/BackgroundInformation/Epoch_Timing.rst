@@ -11,7 +11,7 @@ Setting the ``globalEpochSettings`` with the ``GlobalEpochSettings()`` class  se
 Setting Custom Epoch Times
 ------------------------
 
-The figure below illustrates when you may have epochs of differing lengths received on the LSL marker stream. A baseline marker may signify an extended period, in this case 10 seconds, and our motor task is only 1 second long. To account for this we can set our ``customEpochSettings`` and ``globalEpochSettings`` accordingly:
+The figure below illustrates when you may have epochs of differing lengths received on the LSL marker stream. A baseline marker may signify an extended period, in this case 10 seconds, and our motor task is only 1 second long. To account for this set``customEpochSettings`` and ``globalEpochSettings`` accordingly:
 
 .. code-block:: python
 
