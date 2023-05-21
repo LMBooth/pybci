@@ -83,7 +83,7 @@ PyBCI
 
    Retrieve received marker count.
 
-    :returns: dict{str:[int,int]}, where the string is the marker label receied on the LSL, the int is the corresponding value returned by :method:`CurrentClassifierMarkerGuess()`.
+    :returns: dict{str:[int,int]}, where the string is the marker label receied on the LSL, the first int is the corresponding value returned by :method:`CurrentClassifierMarkerGuess()`, and the second int is the number of received markers of that key type.
 
 .. py:method:: __StartThreads()
 
