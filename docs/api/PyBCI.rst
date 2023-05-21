@@ -66,11 +66,12 @@ PyBCI
 
    Retrieve current classifier info. Give dict of current fit model, clf and the class accuracy, if sklearn is used model is None, if tensorflow is used clf is None. the clf or model is fit when the minimum number of training epochs have been recied for each marker, default 10.
    
-   :returns: dict{
-        "clf": clf,
-       "model": model,
-       "accuracy": accuracy
-       }
+   :returns: 
+        dict{
+            "clf": clf,
+            "model": model,
+            "accuracy": accuracy
+        }
 
 .. py:method:: CurrentClassifierMarkerGuess()
 
@@ -82,7 +83,7 @@ PyBCI
 
    Retrieve received marker count.
 
-    :returns: dict{str:int}, where the string is the marker label receied on the LSL, the int is the corresponding value returned by :method:`CurrentClassifierMarkerGuess()`.
+    :returns: dict{str:[int,int]}, where the string is the marker label receied on the LSL, the int is the corresponding value returned by :method:`CurrentClassifierMarkerGuess()`.
 
 .. py:method:: __StartThreads()
 
