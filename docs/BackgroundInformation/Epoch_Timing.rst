@@ -3,7 +3,9 @@ Epoch Timing
 
 1. What are Epochs?
 ----------------
-Defining epochs relates to the amount of time-series data before and after a marker has been received that may be processed and analysed with features extracted for training models.
+Epochs relate to periods of time.
+
+In relation to training models on set actions for brain computer interfaces, it is useful to define epochs by the amount of time-series data before and after a marker has been received. Once this epoch has been received it may be processed and analysed for feature extraction or in some cases passed as raw input, see :ref:`set_custom_epoch_times`.
 
 Setting the :class:`PyBCI.globalEpochSettings` with the :class:`GlobalEpochSettings()` class  sets the target window length and overlap for the training time windows. It is desirable to have a singular global window length that all epcosh will be sliced into so then it is uniform when having a continuous rolling window of data when in testing mode.
 
