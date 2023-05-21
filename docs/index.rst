@@ -20,7 +20,7 @@ Contents
    BackgroundInformation/Theory_Operation
    BackgroundInformation/Epoch_Timing
    BackgroundInformation/Feature_Selection
-   BackgroundInformation/Classification
+   BackgroundInformation/Examples
 
 .. toctree::
    :maxdepth: 1
