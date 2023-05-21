@@ -8,6 +8,7 @@ The `FeatureSettings class GeneralFeatureChoices <https://github.com/LMBooth/pyb
 The :class:`featureChoices` argument is an instance of the :class:`configuration.GeneralFeatureChoices()` class, which allows the user to specify which features they want to calculate. The features can be selected by setting the respective attributes in the GeneralFeatureChoices class to True. When initialising :class:`PyBCI()` we can pass :class:`configuration.GeneralFeatureChoices()` to :class:`featureChoices` which offers a list boolean for the following features:
 
 .. code-block:: python
+
   class GeneralFeatureChoices:
     psdBand = True
     appr_entropy = True
@@ -23,6 +24,7 @@ The :class:`featureChoices` argument is an instance of the :class:`configuration
     waveformLength = True
     zeroCross = True
     slopeSignChange = True
+
 
 The `generic feature extractor class <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_ shows how the :class:`GeneralFeatureChoices()` is computationally executed for each of the above boolean choices. 
 
