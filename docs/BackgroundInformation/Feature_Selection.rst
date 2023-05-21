@@ -3,7 +3,8 @@ Feature Selection
 .. _generic-extractor:
 1. Generic Time-Series Feature Extractor
 --------------------------------
-The `FeatureSettings class GeneralFeatureChoices <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_ gives a diverse selection of time and/or frequency based feature extraction techniques - useful for reducing overall stored data.
+
+The `generic feature extractor class found here <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_ shows how :class:`GenericFeatureExtractor()` is computationally executed for each of the below boolean feature choices. The `FeatureSettings class GeneralFeatureChoices <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_ gives a quick method for selecting the time and/or frequency based feature extraction techniques - useful for reducing overall stored data.
 
 The :class:`featureChoices` argument is an instance of the :class:`configuration.GeneralFeatureChoices()` class, which allows the user to specify which features they want to calculate. The features can be selected by setting the respective attributes in the GeneralFeatureChoices class to True. When initialising :class:`PyBCI()` we can pass :class:`configuration.GeneralFeatureChoices()` to :class:`featureChoices` which offers a list boolean for the following features:
 
@@ -25,8 +26,6 @@ The :class:`featureChoices` argument is an instance of the :class:`configuration
     zeroCross = True
     slopeSignChange = True
 
-
-The `generic feature extractor class <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_ shows how the :class:`GeneralFeatureChoices()` is computationally executed for each of the above boolean choices. 
 
 If :class:`psdBand == True` we can also pass custom :class:`freqbands` when initialising :class:`PyBCI()`, which can be an exensible list of lists, where each inner list has a length of two representing the upper and lower frequency band to get the mean power of. The :class:`freqbands` argument is a list of frequency bands for which the average power is to be calculated. By default, it is set to [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], corresponding to typical EEG frequency bands.
 
