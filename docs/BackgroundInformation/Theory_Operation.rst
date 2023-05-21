@@ -33,7 +33,7 @@ The default feature extraction used is :ref:`GeneralFeatureChoices` found in `Fe
 **********************************************
 The Classifier thread is responsible for receiving data from the various feature extraction threads, synchronising based on the number of target data streams, then uses the features and target marker values for testing and training the selected machine learning tensorflow or scikit-learn model or classifier. If a valid marker stream and datastream/s are available we can start the bci machine learning training by calling :func:`PyBCI.TrainMode()`.
 
-Once in test mode a datathreads continuously slice time windows of data and optionally overlap these windows - according to :param:`globalEpochSettings`when initialising :py:class:`PyBCI()` - nd test the extracted features against the currently fit model. 
+Once in test mode a datathreads continuously slice time windows of data and optionally overlap these windows - according to :class:`globalEpochSettings`when initialising :py:class:`PyBCI()` - nd test the extracted features against the currently fit model. 
 
 If the model is not performing well the user can always swap back to training model to gather more data with :func:`PyBCI.TestMode()`.
 
