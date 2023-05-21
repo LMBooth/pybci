@@ -1,7 +1,7 @@
 Feature Selection
 ############
 .. _generic-extractor:
-Generic Time-Series Feature Extractor
+1. Generic Time-Series Feature Extractor
 --------------------------------
 The `FeatureSettings class GeneralFeatureChoices <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_ gives a diverse selection of time and/or frequency based feature extraction techniques - useful for reducing overall stored data.
 
@@ -33,12 +33,12 @@ If :class:`psdBand == True` we can also pass custom :class:`freqbands` when init
 The FeatureExtractor.py file is part of the pybci project and is used to extract various features from time-series data, such as EEG, EMG, EOG or other consistent data with a consistent sample rate. The type of features to be extracted can be specified during initialization, and the code supports extracting various types of entropy features, average power within specified frequency bands, root mean square, mean and median of power spectral density (PSD), variance, mean absolute value, waveform length, zero-crossings, and slope sign changes.
 
 .. _raw-extractor:
-Raw time-series
+2. Raw time-series
 ----------------
 (Give example for getting raw time series by passing custom class, probably better for R-NN/LSTM/GRU tensorflow models)
 
 .. _custom-extractor:
-Passing Custom Feature Extractor classes 
+3. Passing Custom Feature Extractor classes 
 --------------------------------
 
 
