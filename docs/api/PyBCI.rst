@@ -6,16 +6,16 @@ PyBCI
 
     **Parameters:**
 
-    :dataStreams: list[str] or None
+    :dataStreams: list(str) or None
         Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
 
-    :markerStream: list[str] or None
+    :markerStream: list(str) or None
         Allows the user to set custom acceptable Marker stream definitions. If `None`, it defaults to `markerTypes` scan.
 
-    :streamTypes: list[str] or None
+    :streamTypes: list(str) or None
         Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
 
-    :markerTypes: list[str] or None
+    :markerTypes: list(str) or None
         Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
 
     :printDebug: bool
@@ -27,7 +27,7 @@ PyBCI
     :customEpochSettings: dict{str: IndividualEpochSettings}
         Sets individual timing settings for epochs. The keys of the dictionary are marker name strings, and the values are `IndividualEpochSettings` objects.
 
-    :streamChsDropDict: dict{str: list[int]}
+    :streamChsDropDict: dict{str: list(int)}
         Keys for dict should be respective datastreams with corresponding lists of which channels to drop.
 
     :streamCustomFeatureExtract: dict{str:class}
@@ -64,15 +64,25 @@ PyBCI
 
 .. py:method:: CurrentClassifierInfo()
 
-   Retrieve current classifier info.
+   Retrieve current classifier info. Give dict of current fit model, clf and the class accuracy, if sklearn is used model is None, if tensorflow is used clf is None. the clf or model is fit when the minimum number of training epochs have been recied for each marker, default 10.
+   
+   :returns: dict{
+        "clf": clf,
+       "model": model,
+       "accuracy": accuracy
+       }
 
 .. py:method:: CurrentClassifierMarkerGuess()
 
    Retrieve current classifier marker guess.
+   
+   :returns: `int` if in test mode, `None` is in train mode. The int should relate to the dict value from :method:`ReceivedMarkerCount()`
 
 .. py:method:: ReceivedMarkerCount()
 
    Retrieve received marker count.
+
+    :returns: dict{str:int}, where the string is the marker label receied on the LSL, the int is the corresponding value returned by :method:`CurrentClassifierMarkerGuess()`.
 
 .. py:method:: __StartThreads()
 
