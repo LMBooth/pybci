@@ -34,6 +34,7 @@ The `FeatureExtractor.py <https://github.com/LMBooth/pybci/blob/main/pybci/Utils
 .. _raw-extractor:
 2. Raw time-series
 ----------------
+If the raw time-series data is wanted to be the input for the classifier we can pass a custom class which flattens this to a 1-D array for our default sklearn-svm 
 (Give example for getting raw time series by passing custom class, probably better for R-NN/LSTM/GRU tensorflow models)
 
 .. _custom-extractor:
@@ -41,7 +42,7 @@ The `FeatureExtractor.py <https://github.com/LMBooth/pybci/blob/main/pybci/Utils
 --------------------------------
 Due to the idiosyncratic nature of each LSL data stream and the potential pre-processing/filtering that may be required before data is passed to the machine learning classifier, it can be desirable to have custom feature extraction classes passed to :class:`streamCustomFeatureExtract` When initialising :class:`PyBCI()`. 
 
-:class:`streamCustomFeatureExtract` is a dict where the key is a string for the LSL datastream type and the value is the custom created class that will be used for data on that LSL type, example:
+:class:`streamCustomFeatureExtract` is a dict where the key is a string for the LSL datastream name and the value is the custom created class that will be used for data on that LSL type, example:
 
 .. code-block:: python
 
@@ -63,5 +64,7 @@ Due to the idiosyncratic nature of each LSL data stream and the potential pre-pr
 NOTE: Every custom class for processing features requires the features to be processed in a function labelled with corresponding arguements as above, namely  :class:`def ProcessFeatures(self, epochData, sr, epochNum):`, the epochNum may be handy for distinguishing baseline information and holding that in the class to act use with features from other classes (pupil data: baseline diameter change compared to stimulus, ECG: resting heart rate vs stimulus, heart rate variability, etc.). Look at :ref:`examples` for more inspiriation of custom class creation and integration.
 
 :class:`epochData` is a 2D array in the shape of [chs,samps] where chs is the number of channels on the LSL datastream after any are dropped with the variable :class:`streamChsDropDict` and samps is the number of samples captured in the epoch time window depending on the :class:`globalEpochSettings` and :class:`customEpochSettings` - see :ref:`_epoch_timing` for more information on epoch time windows.
+
+the return of the function should be a 1d array of features, unless the target model specifies gerater dimensions More dimensions may be desirable for some tensorflow models, but less applicable for sklearn classifiers.
 
 A practical example of custom datastream decoding can be found in the `Pupil Labs example <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/PupilLabsRightLeftEyeClose>`_, where in the `bciGazeExample.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/bciGazeExample.py>`_ file there is a custom class; :class:`PupilGazeDecode()`, which is a very simply getting the mean pupil diameter of the left, right and both eyes as feature data, then this is used to classify whether someone has their right or left eye closed or both eyes open.
