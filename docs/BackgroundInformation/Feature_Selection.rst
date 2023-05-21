@@ -24,7 +24,7 @@ The :class:`featureChoices` argument is an instance of the :class:`configuration
     zeroCross = True
     slopeSignChange = True
 
-The `generic feature extractor class<https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_ shows how the :class:`GeneralFeatureChoices()` is computationally executed for each of the above boolean choices. 
+The `generic feature extractor class <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_ shows how the :class:`GeneralFeatureChoices()` is computationally executed for each of the above boolean choices. 
 
 If :class:`psdBand == True` we can also pass custom :class:`freqbands` when initialising :class:`PyBCI()`, which can be an exensible list of lists, where each inner list has a length of two representing the upper and lower frequency band to get the mean power of. The :class:`freqbands` argument is a list of frequency bands for which the average power is to be calculated. By default, it is set to [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], corresponding to typical EEG frequency bands.
 
@@ -40,4 +40,4 @@ Passing Custom Feature Extractor classes
 --------------------------------
 
 
-An example of custom datastream decoding can be found in `Pupil Labs example <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/PupilLabsRightLeftEyeClose>`_, where in the `bciGazeExample.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/bciGazeExample.py>_` file we create our own :class:`PupilGazeDecode()` class which is a very simply mean taker to gauge whether someone has their right or left eye closed or both eyes open.
+An example of custom datastream decoding can be found in `Pupil Labs example <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/PupilLabsRightLeftEyeClose>`_, where in the `bciGazeExample.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/bciGazeExample.py>`_ file we create our own :class:`PupilGazeDecode()` class which is a very simply mean taker to gauge whether someone has their right or left eye closed or both eyes open.
