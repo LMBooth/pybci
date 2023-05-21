@@ -40,4 +40,4 @@ Passing Custom Feature Extractor classes
 --------------------------------
 
 
-An example of custom datastream decoding can be found in `Pupil Labs example <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/PupilLabsRightLeftEyeClose>`_, where in the `bciGazeExample.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/bciGazeExample.py>`_ file we create our own :class:`PupilGazeDecode()` class which is a very simply mean taker to gauge whether someone has their right or left eye closed or both eyes open.
+A practical example of custom datastream decoding can be found in the `Pupil Labs example <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/PupilLabsRightLeftEyeClose>`_, where in the `bciGazeExample.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/bciGazeExample.py>`_ file we create our own :class:`PupilGazeDecode()` class which is a very simply mean taker to gauge whether someone has their right or left eye closed or both eyes open.
