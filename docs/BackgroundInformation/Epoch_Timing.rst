@@ -1,3 +1,4 @@
+.. _epoch_timing:
 Epoch Timing
 ############
 
