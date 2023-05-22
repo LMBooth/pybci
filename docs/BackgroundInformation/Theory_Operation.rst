@@ -67,18 +67,22 @@ Where classInfo is a dict of:
       "accuracy":self.classifier.accuracy
    }
 
+When in test mode data is captured :class:`tmin` seconds before the training marker and :class:`tmax` after the marker, if the :class:`splitCheck` otion is True then the epochs will be sliced up and overlapped set by the :class:`globalEpochSettings` :class:`windowLength` and :class:`overlap` options, see :ref:`set_custom_epoch_times` for more information and illustrations.
+
 
 3.2 Testing
 **********************************************
 3.2.1 Retrieiving current estimate
 -----------------------------------------------
-It is recommended to periodically query the current estimated marker with 
+When in test mode the data threads will continously pass time windows to the respective feature extractor threads. 
+
+It is recommended to periodically query the current estimated marker with:
 
 .. code-block:: python
 
     classGuess = bci.CurrentClassifierMarkerGuess()
 
-where classGuess is an index value relating to the marker value in the marker dict returned with :func:`PyBCI.ReceivedMarkerCount()`.
+where :class:`classGuess` is an integer relating to the marker value in the marker dict returned with :func:`PyBCI.ReceivedMarkerCount()`. See the :ref:`examples` for reference on how to setup sufficient training before switching to test mode and quering live classification esitmation. 
 
 3.2.2 Resetting or Adding to Train mode Feature Data
 -----------------------------------------------
