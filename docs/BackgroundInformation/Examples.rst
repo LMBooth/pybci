@@ -8,7 +8,7 @@ Examples
 
    * - Example File
      - Description
-   * - `PsuedoLSLSreamGenerator/mainSend.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PsuedoLSLSreamGenerator/mainSend.py>`_
+   * - `PsuedoLSLSreamGenerator/mainSend.py <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/PsuedoLSLSreamGenerator/mainSend.py>`_
      - Generates multiple channels on a given stream type at a given sample rate. A baseline signal is generated on an LSL stream outlet and a PyQt button can be pressed to signify this signal on a separate LSL marker stream. The signal can be altered by 5 distinct markers for a configurable amount of time, allowing the user to play with various signal patterns for clasification. NOTE: Requires `PyQt5` and `pyqtgraph` installs for data viewer.
    * - `PupilLabs/bciGazeExample.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabs/bciGazeExample.py>`_
      - Illustrates how a 'simple' custom pupil-labs feature extractor class can be passed for the gaze data, where the mean pupil diameter is taken for each eye and both eyes and used as feature data, where nans for no confidence are set to a value of 0.
