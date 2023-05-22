@@ -19,11 +19,8 @@ For unstable dev installations and up-to-date git pushes use: ```pip install --i
 ```python
 import time
 from pybci import PyBCI
-bci = PyBCI(minimumEpochsRequired = 4)
-while not bci.connected: # check to see if lsl marker and datastream are available
-    bci.Connect()
-    time.sleep(1)
-bci.TrainMode() # now both marker and datastreams available start training on received epochs
+bci = PyBCI()
+bci.TrainMode() # assume both marker and datastreams available to start training on received epochs
 accuracy = 0
 try:
     while(True): # training based on couple epochs more then min threshold for classifying
