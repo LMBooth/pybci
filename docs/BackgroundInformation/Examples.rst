@@ -2,6 +2,22 @@
 Examples
 ############
 
+.. list-table:: My Table Title
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Header 1
+     - Header 2
+     - Header 3
+   * - Row 1, Column 1
+     - Row 1, Column 2
+     - This cell contains a lot of text that will need to be
+       continued on another line. Just indent the second line
+       to indicate that it's a continuation of the cell's content.
+   * - Row 2, Column 1
+     - Row 2, Column 2
+     - Row 2, Column 3
+
 
 .. list-table:: My Table Title
    :widths: 25 25 50
