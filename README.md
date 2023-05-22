@@ -19,7 +19,7 @@ For unstable dev installations and up-to-date git pushes use: ```pip install --i
 ```python
 import time
 from pybci import PyBCI
-bci = PyBCI()
+bci = PyBCI() # set default epoch timing, looks for first available lsl stream and all data streams
 bci.TrainMode() # assume both marker and datastreams available to start training on received epochs
 accuracy = 0
 try:
