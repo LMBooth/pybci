@@ -70,6 +70,7 @@ A practical example of custom datastream decoding can be found in the `Pupil Lab
 If the raw time-series data is wanted to be the input for the classifier we can pass a custom class which will allow us to retain a 2d array of channels by samples as the input for our model, though when doing this it is required to pass the correct shape as the input to the model, like the tensorflow example given below:
 
 .. code-block:: python
+
   num_chs = 8 # 8 channels re created in the PsuedoLSLGwnerator
   sum_samps = 250 # sample rate is 250 in the PsuedoLSLGwnerator
   num_classes = 3 # number of different triggers (can include baseline) sent, defines if we use softmax of binary
@@ -91,3 +92,4 @@ If the raw time-series data is wanted to be the input for the classifier we can 
           return np.array(epochData) # tensorflow wants [1,chs,samps] for testing model
   streamCustomFeatureExtract = {"sendTest" : RawDecode()} # we select EMG as that is the default type in the psuedolslgenerator example
   bci = PyBCI(minimumEpochsRequired = 4, model = model, streamCustomFeatureExtract=streamCustomFeatureExtract )
+
