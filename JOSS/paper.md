@@ -102,10 +102,15 @@ By offering a comprehensive, open-source platform for BCI research, PyBCI has th
 
 
 ## Needs adding to .bib and removing from here
+
 Abadi, M., Agarwal, A., Barham, P., et al. (2016). TensorFlow: Large-scale machine learning on heterogeneous distributed systems.
+
 Vallat, R. (2023). Antropy. GitHub. Retrieved May 22, 2023, from https://github.com/raphaelvallat/antropy
+
 Kothe, C. (2014). Lab Streaming Layer (LSL).
+
 Oliphant, T. E. (2006). A guide to NumPy.
+
 Pedregosa, F., Varoquaux, G., Gramfort, A., et al. (2011). Scikit-learn: Machine learning in Python. Journal of Machine Learning Research, 12,
 
 
