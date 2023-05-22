@@ -20,7 +20,7 @@ Examples
 
 
 .. list-table:: My Table Title
-   :widths: 25 25 50
+   :widths: 25 25
    :header-rows: 1
 
    * - File / Subfolder
