@@ -9,7 +9,7 @@ Examples
 
    * - File / Subfolder
      - Description
-   * - `PsuedoLSLSreamGenerator/mainSend.py , Generates multiple channels on a given stream type at a given sample rate. A baseline signal is generated on an LSL stream outlet and a PyQt button can       be pressed to signify this baseline signal on a separate LSL marker stream.
+   * - `PsuedoLSLSreamGenerator/mainSend.py , Generates multiple channels on a given stream type at a given sample rate. A baseline signal is generated on an LSL stream outlet and a PyQt button can be pressed to signify this baseline signal on a separate LSL marker stream.
      - PupilLabs/bciGazeExample.py, Column 2
      
    * - Row 2, Column 1
