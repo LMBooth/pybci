@@ -39,7 +39,7 @@ If the model is not performing well the user can always swap back to training mo
 
 To set you own clf and model see the examples found `here for sklearn <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_, and `here for tensorflow <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testTensorflow.py>`_.
 
-The figure below tries to illustrate the general flow of data between threads:
+The figure below illustrates the general flow of data between threads:
 
 .. image:: ../Images/flowchart/Flowchart.svg
    :alt: Alternative text describing the image
