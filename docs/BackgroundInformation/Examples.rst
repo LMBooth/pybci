@@ -3,9 +3,16 @@ Examples
 ############
 
 
-.. list-table::
-:widths: 50 50
-:header-rows: 1
+.. list-table:: My Table Title
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - File / Subfolder
+     - Description
+   * - `PsuedoLSLSreamGenerator/mainSend.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PsuedoLSLSreamGenerator/mainSend.py>`_, Generates multiple channels on a given stream type at a given sample rate. A baseline signal is generated on an LSL stream outlet and a PyQt button can be pressed to signify this baseline signal on a separate LSL marker stream.
+     - Row 1, Column 2
+   * - Row 2, Column 1
+     - Row 2, Column 2
 
 File / Subfolder
 Description
