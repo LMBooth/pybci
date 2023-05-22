@@ -8,7 +8,7 @@ tags:
   - labstreminglayer
   - machinelearning
 authors:
- - name: Liam Booth & Anthony Bateson
+ - name: Liam Booth
    orcid: 0000-0002-8749-9726
    affiliation: "1"
  - name: Anthony Bateson
@@ -31,7 +31,7 @@ BCIs have the potential to revolutionise the way we interact with computers and 
 
 # Software functionality and performance:
 
-PyBCI provides an end-to-end solution for BCI research. It uses the Lab Streaming Layer (LSL) to handle data acquisition and labelling, allowing for real-time, synchronous data collection from multiple devices (Kothe, 2014). Samples are streamed through datastream FIFOs and stored when in training mode based on a configurable time window before and after each marker type. When in test mode data is continuously processed and analysed based on the global epoch timing settings.  For feature extraction, PyBCI leverages the power of Antropy, NumPy, and SciPy, robust Python libraries known for their efficiency in handling numerical operations (Oliphant, 2006; Virtanen et al., 2020; Fulcher et al., 2021). Machine learning, a crucial component of BCI research, is facilitated through Scikit-learn and TensorFlow. Scikit-learn offers a wide range of algorithms for classification, regression, and clustering (Pedregosa et al., 2011), while TensorFlow provides a comprehensive ecosystem for developing and training machine learning models (Abadi et al., 2016).
+PyBCI provides an end-to-end solution for BCI research. It uses the Lab Streaming Layer (LSL) to handle data acquisition and labelling, allowing for real-time, synchronous data collection from multiple devices (Kothe, 2014). Samples are streamed through datastream FIFOs and stored when in training mode based on a configurable time window before and after each marker type. When in test mode data is continuously processed and analysed based on the global epoch timing settings.  For feature extraction, PyBCI leverages the power of Antropy, NumPy, and SciPy, robust Python libraries known for their efficiency in handling numerical operations (Oliphant, 2006; Virtanen et al., 2020; Vallat, 2023). Machine learning, a crucial component of BCI research, is facilitated through Scikit-learn and TensorFlow. Scikit-learn offers a wide range of algorithms for classification, regression, and clustering (Pedregosa et al., 2011), while TensorFlow provides a comprehensive ecosystem for developing and training machine learning models (Abadi et al., 2016).
 
 ## Theory of operation:
 1. Requirements Prior Initialising with bci = PyBCI()
@@ -103,7 +103,7 @@ By offering a comprehensive, open-source platform for BCI research, PyBCI has th
 
 ## Needs adding to .bib and removing from here
 Abadi, M., Agarwal, A., Barham, P., et al. (2016). TensorFlow: Large-scale machine learning on heterogeneous distributed systems.
-Fulcher, B. D., Little, M. A., & Jones, N. S. (2021). Antropy: A Python package for calculation of complexity and entropy in physiological signals.
+Vallat, R. (2023). Antropy. GitHub. Retrieved May 22, 2023, from https://github.com/raphaelvallat/antropy
 Kothe, C. (2014). Lab Streaming Layer (LSL).
 Oliphant, T. E. (2006). A guide to NumPy.
 Pedregosa, F., Varoquaux, G., Gramfort, A., et al. (2011). Scikit-learn: Machine learning in Python. Journal of Machine Learning Research, 12,
