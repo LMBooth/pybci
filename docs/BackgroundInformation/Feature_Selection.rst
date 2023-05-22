@@ -86,8 +86,8 @@ If the raw time-series data is wanted to be the input for the classifier we can 
   model.compile(loss='sparse_categorical_crossentropy',# using sparse_categorical as we expect multi-class (>2) output, sparse because we encode targetvalues with integers
                 optimizer='adam',
                 metrics=['accuracy'])
-class RawDecode():
-    def ProcessFeatures(self, epochData, sr, epochNum): 
-        return np.array(epochData) # tensorflow wants [1,chs,samps] for testing model
-streamCustomFeatureExtract = {"sendTest" : RawDecode()} # we select EMG as that is the default type in the psuedolslgenerator example
-bci = PyBCI(minimumEpochsRequired = 4, model = model, streamCustomFeatureExtract=streamCustomFeatureExtract )
+  class RawDecode():
+      def ProcessFeatures(self, epochData, sr, epochNum): 
+          return np.array(epochData) # tensorflow wants [1,chs,samps] for testing model
+  streamCustomFeatureExtract = {"sendTest" : RawDecode()} # we select EMG as that is the default type in the psuedolslgenerator example
+  bci = PyBCI(minimumEpochsRequired = 4, model = model, streamCustomFeatureExtract=streamCustomFeatureExtract )
