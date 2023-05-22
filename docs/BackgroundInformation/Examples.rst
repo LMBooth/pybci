@@ -14,6 +14,8 @@ Examples
      - Illustrates how a 'simple' custom pupil-labs feature extractor class can be passed for the gaze data, where the mean pupil diameter is taken for each eye and both eyes and used as feature data, where nans for no confidence are set to a value of 0.
    * - `PupilLabs/RightLeftMarkers.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabs/RightLeftMarkers.py>`_
      - Uses tkinter to generate visual on-screen stimuli for only right, left or both eyes open, sends same onscreen stimuli as LSL markers, ideal for testing pupil-labs eyes classifier test.
+   * - `testEpochTimingsConfig.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testEpochTimingsConfig.py>`_
+     - Simple example showing custom global epoch settings  changed on initialisation.
    * - `testSimple.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSimple.py>`_
      - Provides the simplest setup, where no specific streams or epoch settings are given, all default to sklearn SVM classifier and GeneralEpochSettings.
    * - `testSklearn.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_
