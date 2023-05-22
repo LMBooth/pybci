@@ -43,8 +43,6 @@ The figure below tries to illustrate the general flow of data between threads:
 
 .. image:: ../Images/flowchart/Flowchart.svg
    :alt: Alternative text describing the image
-   :width: 300
-   :height: 200
 
 3. Testing and Training the Model
 =========================================================
