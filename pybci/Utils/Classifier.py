@@ -26,10 +26,10 @@ class Classifier():
 
     def TrainModel(self, features, targets):
         # check for nans and infs in feature creation, not here
-        if (len(np.array(features).shape) == 3):
-            features  = np.array(features).reshape(np.array(features).shape[0], -1)
-        else:
-            features = np.array(features)
+        #if (len(np.array(features).shape) == 3):
+        #    features  = np.array(features).reshape(np.array(features).shape[0], -1)
+        #else:
+        #    features = np.array(features)
         #features = np.where(np.isnan(features), 0, features)
         #self.targets = targets
         #print(features.shape)
@@ -62,11 +62,11 @@ class Classifier():
         # needs check for nans and infs
         #print(x)
         #print(np.array(x).shape)
-        if (len(np.array(x).shape) == 2):
-            #x = np.array(x).reshape(np.array(x).shape[0], -1)
-            x = np.array([x.flatten()])
-        else:
-            x = np.array(x)
+        #if (len(np.array(x).shape) == 2):
+        #    #x = np.array(x).reshape(np.array(x).shape[0], -1)
+        #    x = np.array([x.flatten()])
+        #else:
+        #    x = np.array(x)
         #print(x)
         #print(x.shape)
         if self.classifierLibrary == "sklearn":
@@ -74,14 +74,13 @@ class Classifier():
             #print("we predict it's: "+str(self.y_pred))
         elif self.classifierLibrary == "tensor":
             # Predict the class labels for the test data
-            #print(x)
-            #print(x.shape)
-            return self.model.predict(np.reshape(x, (1, len(x))))
+            x = np.expand_dims(x, axis=0)
+            predictions = self.model.predict(x)
+            if len (predictions[0]) == 1: # assume binary classification
+                return 1 if predictions[0] > 0.5 else 0
+            else:    # assume multi-classification
+                return np.argmax(predictions[0])
 
-            #print("we predict it's: "+str(y_pred))
-            # Convert the predicted probabilities to class labels
-            y_pred_classes = np.argmax(self.y_pred, axis=1)
-            #print("if class label: "+str(y_pred_classes))
         else:
             print("no classifier library selected")
             # no classifier library selected, print debug?
