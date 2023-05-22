@@ -49,7 +49,8 @@ class GenericFeatureExtractor():
         NOTE: Any channels with a constant value will generate warnings in any frequency based features (constant level == no frequency components).
         """
         #print(np.array(epoch).shape)
-        features = np.zeros((len(epoch),self.numFeatures))
+        numchs = len(epoch)
+        features = np.zeros(numchs * self.numFeatures)
         for k, ch in enumerate(epoch):
             if self.featureChoices.psdBand: # get custom average power within given frequency band from freqbands
                 freqs, psd = welch(ch, sr)
@@ -62,54 +63,54 @@ class GenericFeatureExtractor():
                         #else:
                         #    bp = simps(psd[idx_band], dx=(freqs[1]-freqs[0])) / (band[1] - band[0])
                             #bp = simpson(psd[idx_band], dx=freq_res)
-                        features[k][l] = bp
+                        features[(k*numchs)+l] = bp
                     else:
-                        features[k][l] = 0
+                        features[(k*numchs)+l] = 0
             else:
                 freqs, psd = welch(ch, sr)# calculate for mean and median
                 l = -1 # accounts for no freqbands being selected
             if self.featureChoices.meanPSD: # mean power
                 l += 1
-                if len(freqs) > 0: features[k][l] = np.mean(psd) # len(freqs) can be 0 if signal is all DC
-                else: features[k][l] = 0
+                if len(freqs) > 0: features[(k*numchs)+l] = np.mean(psd) # len(freqs) can be 0 if signal is all DC
+                else: features[(k*numchs)+l] = 0
             if self.featureChoices.medianPSD: # median Power
                 l += 1   
-                if len(freqs) > 0: features[k][l] = np.median(psd) # len(freqs) can be 0 if signal is all DC
-                else: features[k][l] = 0
+                if len(freqs) > 0: features[(k*numchs)+l] = np.median(psd) # len(freqs) can be 0 if signal is all DC
+                else: features[(k*numchs)+l] = 0
             if self.featureChoices.appr_entropy:  # Approximate entorpy(X,M,R) X = data, M is , R is 30% standard deviation of X 
                 l += 1
-                features[k][l] = ant.app_entropy(ch) 
+                features[(k*numchs)+l] = ant.app_entropy(ch) 
             if self.featureChoices.perm_entropy: # permutation_entropy
                 l += 1
-                features[k][l] = ant.perm_entropy(ch,normalize=True)
+                features[(k*numchs)+l] = ant.perm_entropy(ch,normalize=True)
             if self.featureChoices.spec_entropy:  # spectral Entropy
                 l += 1
-                features[k][l] = ant.spectral_entropy(ch, sf=sr, method='welch', nperseg = len(ch), normalize=True)
+                features[(k*numchs)+l] = ant.spectral_entropy(ch, sf=sr, method='welch', nperseg = len(ch), normalize=True)
             if self.featureChoices.svd_entropy:# svd Entropy
                 l += 1
-                features[k][l] = ant.svd_entropy(ch, normalize=True)
+                features[(k*numchs)+l] = ant.svd_entropy(ch, normalize=True)
             if self.featureChoices.samp_entropy: # sample Entropy
                 l += 1
-                features[k][l] = ant.sample_entropy(ch)
+                features[(k*numchs)+l] = ant.sample_entropy(ch)
             if self.featureChoices.rms: # rms
                 l += 1
-                features[k][l] = np.sqrt(np.mean(np.array(ch)**2))
+                features[(k*numchs)+l] = np.sqrt(np.mean(np.array(ch)**2))
             if self.featureChoices.variance: # variance
                 l += 1    
-                features[k][l] =  np.var(ch)
+                features[(k*numchs)+l] =  np.var(ch)
             if self.featureChoices.meanAbs: # Mean Absolute Value 
                 l += 1
-                features[k][l] = sum([np.linalg.norm(c) for c in ch])/len(ch)
+                features[(k*numchs)+l] = sum([np.linalg.norm(c) for c in ch])/len(ch)
             if self.featureChoices.waveformLength: # waveformLength
                 l += 1
-                features[k][l] = sum([np.linalg.norm(c-ch[inum]) for inum, c in enumerate(ch[1:])])
+                features[(k*numchs)+l] = sum([np.linalg.norm(c-ch[inum]) for inum, c in enumerate(ch[1:])])
             if self.featureChoices.zeroCross: # zeroCross
                 l += 1
-                features[k][l] = sum([1 if c*ch[inum+1]<0 else 0 for inum, c in enumerate(ch[:-1])])
+                features[(k*numchs)+l] = sum([1 if c*ch[inum+1]<0 else 0 for inum, c in enumerate(ch[:-1])])
             if self.featureChoices.slopeSignChange: # slopeSignChange
                 l += 1    
                 ssc = sum([1 if (c-ch[inum+1])*(c-ch[inum+1])>=0.1 else 0 for inum, c in enumerate(ch[:-1])])
-                features[k][l] = ssc
+                features[(k*numchs)+l] = ssc
         features[np.isnan(features)] = 0 # checks for nans
         features[features == np.inf] = 0 # checks for infs
         return features

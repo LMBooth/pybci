@@ -70,17 +70,22 @@ class Classifier():
         #print(x)
         #print(x.shape)
         if self.classifierLibrary == "sklearn":
+            x = np.expand_dims(x, axis=0)
             return self.clf.predict(x)
             #print("we predict it's: "+str(self.y_pred))
         elif self.classifierLibrary == "tensor":
             # Predict the class labels for the test data
+            #print(x)
             x = np.expand_dims(x, axis=0)
             predictions = self.model.predict(x)
             if len (predictions[0]) == 1: # assume binary classification
                 return 1 if predictions[0] > 0.5 else 0
             else:    # assume multi-classification
                 return np.argmax(predictions[0])
-
+            #print("we predict it's: "+str(y_pred))
+            # Convert the predicted probabilities to class labels
+            #y_pred_classes = np.argmax(self.y_pred, axis=1)
+            #print("if class label: "+str(y_pred_classes))
         else:
             print("no classifier library selected")
             # no classifier library selected, print debug?

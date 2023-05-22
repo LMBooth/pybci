@@ -8,6 +8,7 @@ from .Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSet
 from .Configuration.FeatureSettings import GeneralFeatureChoices
 import queue, threading, copy
 import tensorflow as tf
+tf.get_logger().setLevel('ERROR')
 
 class PyBCI:
     printDebug = True   # boolean, used to toggle print statements from LSLScanner class
@@ -51,6 +52,7 @@ class PyBCI:
         self.streamChsDropDict = streamChsDropDict
         self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes)
         self.printDebug = printDebug
+        #if self.printDebug == False:
         self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model) # configure first, connect second
         self.Connect()
        
