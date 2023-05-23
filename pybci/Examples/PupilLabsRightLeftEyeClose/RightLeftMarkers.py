@@ -3,7 +3,7 @@ import pylsl
 
 # customisable variables!
 stimuli = ["Both Open", "Right Open", "Left Open"]
-stimuliTime = [2000, 2000, 2000]
+stimuliTime = [3000, 3000, 3000]
 stimuliCount = [8, 8, 8]
 
 markerStreamName = "TestMarkers" # should be targetted with pybci

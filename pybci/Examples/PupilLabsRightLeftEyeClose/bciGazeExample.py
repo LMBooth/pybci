@@ -7,11 +7,14 @@ class PupilGazeDecode():
         super().__init__()
     def ProcessFeatures(self, epochData, sr, epochNum): # This is the required function name and variables that are passed to all 
         epochData = np.nan_to_num(epochData) # sklearn doesnt like nan
-        rightmean = np.mean(epochData[20]) # channel 20 is 3d pupil diameter right, get mean
-        leftmean = np.mean(epochData[21]) # channel 21 is 3d pupil diameter right, get mean
-        bothmean = np.mean([(epochData[20][i] + epochData[21][i]) / 2 for i in range(len(epochData[20]))]) # mean of both eyes in 3d
-        #print(np.nan_to_num([rightmean,leftmean,bothmean]))
-        return np.nan_to_num([[rightmean,leftmean,bothmean]]) #  expects 2d
+        if len(epochData[0]) ==  0:
+            return [0,0,0]
+        else:
+            rightmean = np.mean(epochData[20]) # channel 20 is 3d pupil diameter right, get mean
+            leftmean = np.mean(epochData[21]) # channel 21 is 3d pupil diameter right, get mean
+            bothmean = np.mean([(epochData[20][i] + epochData[21][i]) / 2 for i in range(len(epochData[20]))]) # mean of both eyes in 3d
+            #print(np.nan_to_num([rightmean,leftmean,bothmean]))
+            return np.nan_to_num([rightmean,leftmean,bothmean]) #  expects 2d
     
 streamCustomFeatureExtract = {"pupil_capture" : PupilGazeDecode()}
 dataStreamName = ["pupil_capture"]

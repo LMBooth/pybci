@@ -152,14 +152,14 @@ class PyBCI:
             if stream.info().nominal_srate() == 0:
                 if stream.info().name() in self.streamChsDropDict.keys():
                     dt = AsyncDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
-                                            self.globalEpochSettings, len(self.dataThreads), self.streamChsDropDict[stream.info().name()])
+                                            self.globalEpochSettings, len(self.dataThreads), streamChsDropDict=self.streamChsDropDict[stream.info().name()])
                 else:
                     dt = AsyncDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
                                             self.globalEpochSettings, len(self.dataThreads))
             else: # cold be desirable to capture samples only relative to timestammps with async, so maybe make this configurable?
                 if stream.info().name() in self.streamChsDropDict.keys():
                     dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
-                                            self.globalEpochSettings, len(self.dataThreads), self.streamChsDropDict[stream.info().name()])
+                                            self.globalEpochSettings, len(self.dataThreads), streamChsDropDict=self.streamChsDropDict[stream.info().name()])
                 else:
                     dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
                                             self.globalEpochSettings, len(self.dataThreads))

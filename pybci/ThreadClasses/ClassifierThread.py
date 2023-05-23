@@ -34,12 +34,16 @@ class ClassifierThread(threading.Thread):
                     if self.numStreamDevices > 1:
                         tempdatatrain[devCount] = featuresSingle
                         if len(tempdatatrain) == self.numStreamDevices:
-                            flattened_list = []
-                            for value in tempdatatrain.values():
-                                flattened_list.extend(value)
+                            #print(tempdatatrain)
+                            #flattened_list = []
+                            #for value in tempdatatrain.values():
+                                #flattened_list.extend(value)
+                            flattened_list = [item for sublist in tempdatatrain.values() for item in sublist]
                             tempdatatrain = {}
+                            #print(flattened_list)
                             self.targets.append(target)
                             self.features.append(flattened_list)
+
                         # need to check if all device data is captured, then flatten and append
                             if len(self.epochCounts) > 1: # check if there is more then one test condition
                                 minNumKeyEpochs = min([self.epochCounts[key][1] for key in self.epochCounts]) # check minimum viable number of training eochs have been obtained
@@ -74,7 +78,8 @@ class ClassifierThread(threading.Thread):
                             for value in tempdatatest.values():
                                 flattened_list.extend(value)
                             tempdatatest = {}
-                            self.features.append(flattened_list)
+                            #self.features.append(flattened_list)
+
                             self.guess = self.classifier.TestModel(flattened_list)
                     else:
                         self.guess = self.classifier.TestModel(featuresSingle)

@@ -51,7 +51,7 @@ class Classifier():
                 #print(np.array(x_train).shape)
                 #print(y_train)
 
-                self.model.fit(np.array(x_train), np.array(y_train)) # epochs and batch_size should be customisable
+                self.model.fit(x_train, y_train) # epochs and batch_size should be customisable
                 self.loss, self.accuracy = self.model.evaluate(np.array(x_test), np.array(y_test))
                 #print("Classification accuracy (tf):" +str(self.accuracy))
         else:
@@ -71,12 +71,14 @@ class Classifier():
         #print(x.shape)
         if self.classifierLibrary == "sklearn":
             x = np.expand_dims(x, axis=0)
+            #print(x.shape)
             return self.clf.predict(x)
             #print("we predict it's: "+str(self.y_pred))
         elif self.classifierLibrary == "tensor":
             # Predict the class labels for the test data
             #print(x)
             x = np.expand_dims(x, axis=0)
+            #print(x.shape)
             predictions = self.model.predict(x)
             if len (predictions[0]) == 1: # assume binary classification
                 return 1 if predictions[0] > 0.5 else 0

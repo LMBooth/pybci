@@ -1,3 +1,2 @@
 from .pybci import PyBCI
-
-#from .Utils import (
+#from .Utils import Classifier, FeatureExtractor, LSLScanner

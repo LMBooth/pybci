@@ -33,16 +33,20 @@ class FeatureProcessorThread(threading.Thread):
                 try:
                     #print(len(self.dataQueueTrain.get_nowait()))
                     dataFIFOs, currentMarker, sr, devCount = self.dataQueueTrain.get_nowait() #[sliceDataFIFOs, self.currentMarker, self.sr, self.devCount
-                    lastDevice = self.ReceiveMarker(currentMarker, devCount)
+                    #lastDevice = self.ReceiveMarker(currentMarker, devCount)
+                    if currentMarker in self.epochCounts:
+                        self.epochCounts[currentMarker][1] += 1
+                    else:
+                        self.epochCounts[currentMarker] = [len(self.epochCounts.keys()),1]
                     target = self.epochCounts[currentMarker][0]
                     features = self.featureExtractor.ProcessFeatures(dataFIFOs, sr, target) # allows custom epoch class to be passed
                     # add logic to ensure all devices epoch data has been received (totalDevices)
-                    if lastDevice:
-                        self.featureQueueTrain.put( [features, devCount, target, self.epochCounts] )
-                    else:
+                    #if lastDevice:
+                    self.featureQueueTrain.put( [features, devCount, target, self.epochCounts] )
+                    #else:
                         # needs logic to append features together across devices (requires flattening of channels to 1d array of features)
                         # same for test mode
-                        pass
+                    #    pass
                 except queue.Empty:
                     pass
             else:
@@ -54,6 +58,7 @@ class FeatureProcessorThread(threading.Thread):
                 except queue.Empty:
                     pass
 
+    '''
     def ReceiveMarker(self, marker, devCount):
         """ Tracks count of epoch markers in dict self.epochCounts - used for syncing data between multiple devices in function self.run() """
         if self.totalDevices == 1:
@@ -89,3 +94,4 @@ class FeatureProcessorThread(threading.Thread):
             else:
                 return False
             # we need to log each type of device and make sure the same number is received of each
+    '''
