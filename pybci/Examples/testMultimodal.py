@@ -2,15 +2,38 @@ import time
 from pybci import PyBCI
 import numpy as np
 import tensorflow as tf# bring in tf for custom model creation
+from pybci.Utils.FeatureExtractor import GenericFeatureExtractor
+# Define our model, must be 1 dimesional at output to flatten due to multi-modal devices
+pupilFeatures = 3
+eegChs = 2 # Fp1, Fp2
+eegfeaturesPerCh = 17
+totalFeatures = (eegfeaturesPerCh * eegChs) + pupilFeatures
+model = tf.keras.models.Sequential([
+    tf.keras.layers.Dense(64, activation='relu', input_shape=(totalFeatures,)),
+    tf.keras.layers.Dense(32, activation='relu'),
+    tf.keras.layers.Dense(1, activation='sigmoid') # 2 class output
+])
+model.compile(
+    optimizer='adam',
+    loss='binary_crossentropy',  # 2 class output
+    metrics=['accuracy']
+)
+class PupilGazeDecode():
+    def __init__(self):
+        super().__init__()
+    def ProcessFeatures(self, epochData, sr, epochNum): # This is the required function name and variables that are passed to all 
+        epochData = np.nan_to_num(epochData) # sklearn doesnt like nan
+        rightmean = np.mean(epochData[20]) # channel 20 is 3d pupil diameter right, get mean
+        leftmean = np.mean(epochData[21]) # channel 21 is 3d pupil diameter right, get mean
+        bothmean = np.mean([(epochData[20][i] + epochData[21][i]) / 2 for i in range(len(epochData[20]))]) # mean of both eyes in 3d
+        return np.nan_to_num([[rightmean,leftmean,bothmean]]) #  expects 2d
 
+hullUniEEGLSLStreamName = "UoH-Stream"
+pupilLabsLSLName = "pupil_capture" 
+streamCustomFeatureExtract = {pupilLabsLSLName: PupilGazeDecode(), hullUniEEGLSLStreamName: GenericFeatureExtractor()}
+dataStreamNames = [pupilLabsLSLName, hullUniEEGLSLStreamName]
 
-class RawDecode():
-    def ProcessFeatures(self, epochData, sr, epochNum): 
-        return np.array(epochData) # tensorflow wants [1,chs,samps] for testing model
-
-streamCustomFeatureExtract = {"sendTest" : RawDecode()} # we select EMG as that is the default type in the psuedolslgenerator example
-
-bci = PyBCI(minimumEpochsRequired = 4, model = model, streamCustomFeatureExtract=streamCustomFeatureExtract )
+bci = PyBCI(datastreams = dataStreamNames, minimumEpochsRequired = 4, model = model, streamCustomFeatureExtract=streamCustomFeatureExtract )
 
 while not bci.connected:
     bci.Connect()
