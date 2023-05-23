@@ -3,22 +3,6 @@ from pybci import PyBCI
 import numpy as np
 import tensorflow as tf# bring in tf for custom model creation
 
-num_chs = 8 # 8 channels re created in the PsuedoLSLGwnerator
-sum_samps = 250
-num_classes = 3 # number of different triggers (can include baseline) sent 
-model = tf.keras.Sequential()
-model.add(tf.keras.layers.Reshape((num_chs,sum_samps, 1), input_shape=(num_chs,sum_samps)))
-model.add(tf.keras.layers.Permute((2, 1, 3)))
-model.add(tf.keras.layers.Reshape((num_chs*sum_samps, 1)))
-model.add(tf.keras.layers.GRU(units=256))#, input_shape=num_chs*num_feats)) # maybe should show this example as 2d with toggleable timesteps disabled
-model.add(tf.keras.layers.Dense(units=512, activation='relu'))
-model.add(tf.keras.layers.Flatten())#   )tf.keras.layers.Dense(units=128, activation='relu'))
-model.add(tf.keras.layers.Dense(units=num_classes, activation='softmax')) # softmax as more then binary classification (sparse_categorical_crossentropy)
-#model.add(tf.keras.layers.Dense(units=1, activation='sigmoid')) # sigmoid as binary classification (binary_crossentropy)
-model.summary()
-model.compile(loss='sparse_categorical_crossentropy',# using sparse_categorical as we expect multi-class (>2) output, sparse because we encode targetvalues with integers
-              optimizer='adam',
-              metrics=['accuracy'])
 
 class RawDecode():
     def ProcessFeatures(self, epochData, sr, epochNum): 

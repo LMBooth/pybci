@@ -38,7 +38,7 @@ class FeatureProcessorThread(threading.Thread):
                     features = self.featureExtractor.ProcessFeatures(dataFIFOs, sr, target) # allows custom epoch class to be passed
                     # add logic to ensure all devices epoch data has been received (totalDevices)
                     if lastDevice:
-                        self.featureQueueTrain.put( [features, target, self.epochCounts] )
+                        self.featureQueueTrain.put( [features, devCount, target, self.epochCounts] )
                     else:
                         # needs logic to append features together across devices (requires flattening of channels to 1d array of features)
                         # same for test mode
@@ -50,7 +50,7 @@ class FeatureProcessorThread(threading.Thread):
                     #print("we ain't dataQueueTesting: FeatureProcessorThread")
                     dataFIFOs, sr, devCount = self.dataQueueTest.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, ]
                     features = self.featureExtractor.ProcessFeatures(dataFIFOs, sr, None)
-                    self.featureQueueTest.put(features)
+                    self.featureQueueTest.put([features, devCount])
                 except queue.Empty:
                     pass
 

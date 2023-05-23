@@ -184,7 +184,7 @@ class PyBCI:
         self.markerThread.start()
         self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueueTest,self.featureQueueTrain,
                                                  self.classifierInfoQueue, self.classifierInfoRetrieveEvent,
-                                                 self.classifierGuessMarkerQueue, self.classifierGuessMarkerEvent,
+                                                 self.classifierGuessMarkerQueue, self.classifierGuessMarkerEvent, len(self.dataThreads),
                                                 self.minimumEpochsRequired, clf = self.clf, model = self.model)
         self.classifierThread.start()
 
