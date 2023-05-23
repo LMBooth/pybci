@@ -15,6 +15,8 @@ For unstable dev installations and up-to-date git pushes use: ```pip install --i
 
 [ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/)      [Examples found here!](https://github.com/LMBooth/pybci/tree/main/pybci/Examples)
 
+[Examples of supported LSL hardware here!](https://labstreaminglayer.readthedocs.io/info/supported_devices.html)
+
 ## Basic implementation
 ```python
 import time
