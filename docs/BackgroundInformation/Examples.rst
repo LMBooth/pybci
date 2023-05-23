@@ -16,6 +16,7 @@ Examples
      - Uses tkinter to generate visual on-screen stimuli for only right, left or both eyes open, sends same onscreen stimuli as LSL markers, ideal for testing pupil-labs eyes classifier test.
    * - `testEpochTimingsConfig.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testEpochTimingsConfig.py>`_
      - Simple example showing custom global epoch settings  changed on initialisation.
+   * - `testMultimodal.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testMultimodal.py>`_ Advanced example illustrating two devices, pupil labs gaze device stream wth custom feature      - extractor class and Hull University ioBio EEG device with the generic feature extractor, each have set channels dropped to reduce computational strain (Async datathreads {LSLsample rate of 0Hz} can be heavy with lots of channels.
    * - `testSimple.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSimple.py>`_
      - Provides the simplest setup, where no specific streams or epoch settings are given, all default to sklearn SVM classifier and GeneralEpochSettings.
    * - `testSklearn.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_
