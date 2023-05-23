@@ -23,16 +23,19 @@ class PupilGazeDecode():
         super().__init__()
     def ProcessFeatures(self, epochData, sr, epochNum): # This is the required function name and variables that are passed to all 
         epochData = np.nan_to_num(epochData) # sklearn doesnt like nan
-        rightmean = np.mean(epochData[20]) # channel 20 is 3d pupil diameter right, get mean
-        leftmean = np.mean(epochData[21]) # channel 21 is 3d pupil diameter right, get mean
-        bothmean = np.mean([(epochData[20][i] + epochData[21][i]) / 2 for i in range(len(epochData[20]))]) # mean of both eyes in 3d
+        rightmean = np.mean(epochData[0]) # channel 20 is 3d pupil diameter right, get mean
+        leftmean = np.mean(epochData[1]) # channel 21 is 3d pupil diameter right, get mean
+        bothmean = np.mean([(epochData[0][i] + epochData[1][i]) / 2 for i in range(len(epochData[0]))]) # mean of both eyes in 3d
         return np.nan_to_num([[rightmean,leftmean,bothmean]]) #  expects 2d
 
 hullUniEEGLSLStreamName = "UoH-Stream"
 pupilLabsLSLName = "pupil_capture" 
 streamCustomFeatureExtract = {pupilLabsLSLName: PupilGazeDecode(), hullUniEEGLSLStreamName: GenericFeatureExtractor()}
 dataStreamNames = [pupilLabsLSLName, hullUniEEGLSLStreamName]
-
+# to reduce overall computational complexity we are going to drop irrelevant channels
+streamChsDropDict = {hullUniEEGLSLStreamName : [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,19,20,21,22,23], # for our device we have Fp1 and Fp2 on channels 18 and 19, so list values 17 and 18 removed
+                     pupilLabsLSLName: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] # pupil labs we only wan left and right 3d pupil diameter, drop rest
+                     } 
 bci = PyBCI(datastreams = dataStreamNames, minimumEpochsRequired = 4, model = model, streamCustomFeatureExtract=streamCustomFeatureExtract )
 
 while not bci.connected:
