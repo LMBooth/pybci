@@ -32,13 +32,13 @@ class PupilGazeDecode():
             bothmean = np.mean([(epochData[0][i] + epochData[1][i]) / 2 for i in range(len(epochData[0]))]) # mean of both eyes in 3d
             return np.nan_to_num([rightmean,leftmean,bothmean, len(epochData[0])]) #  expects 2d
 
-hullUniEEGLSLStreamName = "EEGStream"
+hullUniEEGLSLStreamName = "sendTest"#EEGStream"
 pupilLabsLSLName = "pupil_capture" 
 markerstream = "TestMarkers" # using pupillabs rightleftmarkers example
 streamCustomFeatureExtract = {pupilLabsLSLName: PupilGazeDecode(), hullUniEEGLSLStreamName: GenericFeatureExtractor()}
 dataStreamNames = [pupilLabsLSLName, hullUniEEGLSLStreamName]
 # to reduce overall computational complexity we are going to drop irrelevant channels
-streamChsDropDict = {hullUniEEGLSLStreamName : [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,19,20,21,22,23], # for our device we have Fp1 and Fp2 on channels 18 and 19, so list values 17 and 18 removed
+streamChsDropDict = {hullUniEEGLSLStreamName : [6,7],#0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,19,20,21,22,23], # for our device we have Fp1 and Fp2 on channels 18 and 19, so list values 17 and 18 removed
                      pupilLabsLSLName: [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19] # pupil labs we only wan left and right 3d pupil diameter, drop rest
                      } 
 bci = PyBCI(dataStreams = dataStreamNames, markerStream=markerstream, minimumEpochsRequired = 4,
@@ -55,7 +55,7 @@ try:
     while(True):
         currentMarkers = bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
         time.sleep(1) # wait for marker updates
-        print("Markers received: " + str(currentMarkers) +" Class accuracy: " + str(accuracy), end="\r")
+        print("Markers received: " + str(currentMarkers) +" Class accuracy: " + str(accuracy))#, end="\r")
         if len(currentMarkers) > 1:  # check there is more then one marker type received
             if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired:
                 classInfo = bci.CurrentClassifierInfo() # hangs if called too early

@@ -4,10 +4,11 @@ from scipy.signal import welch
 from scipy.integrate import simps
 import warnings
 from ..Configuration.FeatureSettings import GeneralFeatureChoices
-# Filter out UserWarning messages from the scipy package, could be worth moving to init and applying printdebug print levels?
+# Filter out UserWarning messages from the scipy package, could be worth moving to init and applying printdebug print levels? (typically nans, 0 and infs causing errors)
 warnings.filterwarnings("ignore", category=UserWarning, module="scipy") # used to reduce print statements from constant signals being applied
 warnings.filterwarnings("ignore", category=UserWarning, module="antropy") # used to reduce print statements from constant signals being applied
 warnings.filterwarnings("ignore", category=RuntimeWarning, module="antropy") # used to reduce print statements from constant signals being applied
+warnings.filterwarnings("ignore", category=RuntimeWarning, module="numpy") # used to reduce print statements from constant signals being applied
 #warnings.filterwarnings("ignore", category=RuntimeWarning, module="pybci") # used to reduce print statements from constant signals being applied
 
 class GenericFeatureExtractor():
@@ -28,9 +29,9 @@ class GenericFeatureExtractor():
             self.featureChoices.medianPSD,
             self.featureChoices.variance,
             self.featureChoices.meanAbs,
-            self.featureChoices.waveformLength,
-            self.featureChoices.zeroCross,
-            self.featureChoices.slopeSignChange]
+            #self.featureChoices.waveformLength,
+            self.featureChoices.zeroCross]
+            #self.featureChoices.slopeSignChange]
         )
         self.numFeatures = (len(self.freqbands)*self.featureChoices.psdBand)+selFeats
 
@@ -52,6 +53,7 @@ class GenericFeatureExtractor():
         numchs = len(epoch)
         features = np.zeros(numchs * self.numFeatures)
         for k, ch in enumerate(epoch):
+            #ch = np.isnan(ch)
             if self.featureChoices.psdBand: # get custom average power within given frequency band from freqbands
                 freqs, psd = welch(ch, sr)
                 for l, band in enumerate(self.freqbands):
@@ -101,18 +103,19 @@ class GenericFeatureExtractor():
             if self.featureChoices.meanAbs: # Mean Absolute Value 
                 l += 1
                 features[(k* self.numFeatures)+l] = sum([np.linalg.norm(c) for c in ch])/len(ch)
-            if self.featureChoices.waveformLength: # waveformLength
-                l += 1
-                features[(k* self.numFeatures)+l] = sum([np.linalg.norm(c-ch[inum]) for inum, c in enumerate(ch[1:])])
+            #if self.featureChoices.waveformLength: # waveformLength
+            #    l += 1
+            #    features[(k* self.numFeatures)+l] = sum([np.linalg.norm(c-ch[inum]) for inum, c in enumerate(ch[1:])])
             if self.featureChoices.zeroCross: # zeroCross
                 l += 1
                 features[(k* self.numFeatures)+l] = sum([1 if c*ch[inum+1]<0 else 0 for inum, c in enumerate(ch[:-1])])
-            if self.featureChoices.slopeSignChange: # slopeSignChange
-                l += 1    
-                ssc = sum([1 if (c-ch[inum+1])*(c-ch[inum+1])>=0.1 else 0 for inum, c in enumerate(ch[:-1])])
-                features[(k* self.numFeatures)+l] = ssc
-        features[np.isnan(features)] = 0 # checks for nans
-        features[features == np.inf] = 0 # checks for infs
+            #if self.featureChoices.slopeSignChange: # slopeSignChange
+            #    l += 1    
+            #    ssc = sum([1 if (c-ch[inum+1])*(c-ch[inum+1])>=0.1 else 0 for inum, c in enumerate(ch[:-1])])
+            #    features[(k* self.numFeatures)+l] = ssc
+        #features[np.isnan(features)] = 0 # checks for nans
+        #features[features == np.inf] = 0 # checks for infs
+        #print(features)
         return features
     
 class GazeFeatureExtractor():

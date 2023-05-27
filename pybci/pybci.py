@@ -8,6 +8,8 @@ from .Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSet
 from .Configuration.FeatureSettings import GeneralFeatureChoices
 import queue, threading, copy
 import tensorflow as tf
+import torch
+import torch.nn as nn
 tf.get_logger().setLevel('ERROR')
 
 class PyBCI:
@@ -27,7 +29,7 @@ class PyBCI:
     def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
                  streamCustomFeatureExtract = {},
-                 minimumEpochsRequired = 10, clf= None, model = None):
+                 minimumEpochsRequired = 10, clf= None, model = None, torchModel = None):
         """
         The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
         and holds a configurable number of samples based on lsl marker strings.
@@ -53,7 +55,7 @@ class PyBCI:
         self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes)
         self.printDebug = printDebug
         #if self.printDebug == False:
-        self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model) # configure first, connect second
+        self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
         self.Connect()
        
     def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
@@ -184,8 +186,8 @@ class PyBCI:
         self.markerThread.start()
         self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueueTest,self.featureQueueTrain,
                                                  self.classifierInfoQueue, self.classifierInfoRetrieveEvent,
-                                                 self.classifierGuessMarkerQueue, self.classifierGuessMarkerEvent, len(self.dataThreads),
-                                                self.minimumEpochsRequired, clf = self.clf, model = self.model)
+                                                 self.classifierGuessMarkerQueue, self.classifierGuessMarkerEvent, self.printDebug,len(self.dataThreads),
+                                                self.minimumEpochsRequired, clf = self.clf, model = self.model, torchModel = self.torchModel)
         self.classifierThread.start()
 
     def StopThreads(self):
@@ -201,7 +203,7 @@ class PyBCI:
         if self.printDebug:
             print("PyBCI: Threads stopped.")
 
-    def ConfigureMachineLearning(self, minimumEpochsRequired = 10, clf = None, model = None):
+    def ConfigureMachineLearning(self, minimumEpochsRequired = 10, clf = None, model = None, torchModel = None):
         from sklearn.base import ClassifierMixin
         self.minimumEpochsRequired = minimumEpochsRequired
         if isinstance(clf, ClassifierMixin):
@@ -216,6 +218,13 @@ class PyBCI:
             self.model = None
             if self.printDebug:
                 print("PyBCI: Error - Invalid tensorflow model passed to model, setting to None.")
+        if callable(torchModel): # isinstance(torchModel, torch.nn.Module):
+            self.torchModel = model
+        else:
+            self.torchModel = None
+            if self.printDebug:
+                print("PyBCI: Error - Invalid PyTorch model passed to model, setting to None.")
+    
 
     # Could move all configures to a configuration class, might make options into more descriptive classes?
     def ConfigureEpochWindowSettings(self, globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}):

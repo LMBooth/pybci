@@ -1,4 +1,4 @@
-import threading
+import threading, time
 from collections import deque
 import itertools
 from bisect import bisect_left
@@ -57,6 +57,8 @@ class AsyncDataReceiverThread(threading.Thread):
                     if self.startCounting: # we received a marker
                         posCount += 1
                         if posCount >= self.desiredCount:  # enough samples are in FIFO, chop up and put in dataqueue
+                            start = time.time()
+
                             if len(self.customEpochSettings.keys())>0: #  custom marker received
                                 if self.customEpochSettings[self.currentMarker].splitCheck: # slice epochs into overlapping time windows
                                     window_length = self.customEpochSettings[self.currentMarker].windowLength
@@ -91,6 +93,8 @@ class AsyncDataReceiverThread(threading.Thread):
                                     sliceDataFIFOs = [slice_fifo_by_time(fifo, start_time, end_time) for fifo in dataFIFOs]
                                     self.dataQueueTrain.put([sliceDataFIFOs, self.currentMarker, self.sr, self.devCount])
                             # reset flags and counters
+                            end = time.time()
+                            print(f"Data slicing process time {end - start}")
                             posCount = 0
                             self.startCounting = False
                 else: # in Test mode

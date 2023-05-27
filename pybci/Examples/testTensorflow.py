@@ -4,8 +4,22 @@ from pybci import PyBCI
 from pybci.Configuration.EpochSettings import GlobalEpochSettings
 import tensorflow as tf# bring in tf for custom model creation
 
+gpus = tf.config.experimental.list_physical_devices('GPU')
+print(gpus)
+if gpus:
+  # Restrict TensorFlow to only allocate 1GB of memory on the first GPU
+  try:
+    tf.config.experimental.set_virtual_device_configuration(
+        gpus[0],
+        [tf.config.experimental.VirtualDeviceConfiguration(memory_limit=1024)])
+    logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+  except RuntimeError as e:
+    # Virtual devices must be set before GPUs have been initialized
+    print(e)
+
 num_chs = 8 # 8 channels re created in the PsuedoLSLGwnerator
-num_feats = 17 # there are a total of 17 available features which are all enabled by default in Configurations.GeneralFeatureChoices (4 freq bands and 13 other metrics)
+num_feats = 15 # there are a total of 17 available features which are all enabled by default in Configurations.GeneralFeatureChoices (4 freq bands and 13 other metrics)
 num_classes = 3 # number of different triggers (can include baseline) sent 
 # Define the GRU model
 model = tf.keras.Sequential()
@@ -35,7 +49,7 @@ try:
     while(True):
         currentMarkers = bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
         time.sleep(1) # wait for marker updates
-        print("Markers received: " + str(currentMarkers) +" Class accuracy: " + str(accuracy), end="\r")
+        print("Markers received: " + str(currentMarkers) +" Class accuracy: " + str(accuracy))#, end="\r")
         if len(currentMarkers) > 1:  # check there is more then one marker type received
             if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired:
                 classInfo = bci.CurrentClassifierInfo() # hangs if called too early
@@ -46,7 +60,7 @@ try:
     while True:
         markerGuess = bci.CurrentClassifierMarkerGuess() # when in test mode only y_pred returned
         guess = [key for key, value in currentMarkers.items() if value[0] == markerGuess]
-        print("Current marker estimation: " + str(guess), end="\r")
+        print("Current marker estimation: " + str(guess))#, end="\r")
         time.sleep(0.5)
 except KeyboardInterrupt: # allow user to break while loop
     pass

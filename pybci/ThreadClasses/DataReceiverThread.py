@@ -1,4 +1,5 @@
 import threading
+import time
 from collections import deque
 import itertools
 
@@ -41,10 +42,10 @@ class DataReceiverThread(threading.Thread):
                 for i,fifo in enumerate(dataFIFOs):
                     fifo.append(sample[i])
                 if self.trainTestEvent.is_set(): # We're training!
-                    
                     if self.startCounting: # we received a marker
                         posCount+=1
                         if posCount >= self.desiredCount:  # enough samples are in FIFO, chop up and put in dataqueue
+                            #start = time.time()
                             if len(self.customEpochSettings.keys())>0: #  custom marker received
                                 if self.customEpochSettings[self.currentMarker].splitCheck: # slice epochs in to overlapping time windows
                                     window_samples =int(self.customEpochSettings[self.currentMarker].windowLength * self.sr) #number of samples in each window
@@ -68,6 +69,8 @@ class DataReceiverThread(threading.Thread):
                                 else: # don't slice just take tmin to tmax time
                                     sliceDataFIFOs = [list(itertools.islice(d, fifoLength - int((self.globalEpochSettings.tmin+self.globalEpochSettings.tmax) * self.sr), fifoLength)) for d in dataFIFOs]
                                     self.dataQueueTrain.put([sliceDataFIFOs, self.currentMarker, self.sr, self.devCount])
+                            #end = time.time()
+                            #print(f"Data slicing process time {end - start}")
                             # reset flags and counters
                             posCount = 0
                             self.startCounting = False
@@ -83,7 +86,6 @@ class DataReceiverThread(threading.Thread):
                             posCount = int((1-self.globalEpochSettings.windowOverlap)*window_samples) # offset poscoutn based on window overlap 
                         else:
                             posCount = 0
-                            
                         self.dataQueueTest.put([sliceDataFIFOs, self.sr, self.devCount])
             else:
                 pass
