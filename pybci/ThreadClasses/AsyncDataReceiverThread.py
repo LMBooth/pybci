@@ -57,8 +57,6 @@ class AsyncDataReceiverThread(threading.Thread):
                     if self.startCounting: # we received a marker
                         posCount += 1
                         if posCount >= self.desiredCount:  # enough samples are in FIFO, chop up and put in dataqueue
-                            start = time.time()
-
                             if len(self.customEpochSettings.keys())>0: #  custom marker received
                                 if self.customEpochSettings[self.currentMarker].splitCheck: # slice epochs into overlapping time windows
                                     window_length = self.customEpochSettings[self.currentMarker].windowLength
@@ -93,8 +91,6 @@ class AsyncDataReceiverThread(threading.Thread):
                                     sliceDataFIFOs = [slice_fifo_by_time(fifo, start_time, end_time) for fifo in dataFIFOs]
                                     self.dataQueueTrain.put([sliceDataFIFOs, self.currentMarker, self.sr, self.devCount])
                             # reset flags and counters
-                            end = time.time()
-                            print(f"Data slicing process time {end - start}")
                             posCount = 0
                             self.startCounting = False
                 else: # in Test mode
@@ -115,12 +111,9 @@ class AsyncDataReceiverThread(threading.Thread):
                             window_end_time = timestamp + window_length
             else:
                 pass
-                # add levels of debug 
-                # print("PyBCI: LSL pull_sample timed out, no data on stream...")
-
+                # add levels of debug?
 
     def ReceiveMarker(self, marker, timestamp): # timestamp will be used for non sample rate specific devices (pupil-labs gazedata)
-        #print(marker)
         if self.startCounting == False: # only one marker at a time allow, other in windowed timeframe ignored
             self.currentMarker = marker
             self.markerTimestamp = timestamp
@@ -131,4 +124,3 @@ class AsyncDataReceiverThread(threading.Thread):
             else: # no custom markers set, use global settings
                 self.desiredCount = int(self.globalEpochSettings.tmax * self.sr) # find number of samples after tmax to finish counting
                 self.startCounting = True
-            #print(self.desiredCount)

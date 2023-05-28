@@ -10,7 +10,7 @@ try:
     while(True):
         currentMarkers = bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
         time.sleep(1) # wait for marker updates
-        print("Markers received: " + str(currentMarkers) +" Class accuracy: " + str(accuracy))#, end="\r")
+        print("Markers received: " + str(currentMarkers) +" Class accuracy: " + str(accuracy), end="\r")
         if len(currentMarkers) > 1:  # check there is more then one marker type received
             if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired:
                 classInfo = bci.CurrentClassifierInfo() # hangs if called too early

@@ -17,8 +17,8 @@ class GenericFeatureExtractor():
         super().__init__()
         self.freqbands = freqbands
         self.featureChoices = featureChoices
-        for key, value in self.featureChoices.__dict__.items():
-            print(f"{key} = {value}")
+        #for key, value in self.featureChoices.__dict__.items():
+        #    print(f"{key} = {value}")
         selFeats = sum([self.featureChoices.appr_entropy,
             self.featureChoices.perm_entropy,
             self.featureChoices.spec_entropy,
@@ -46,7 +46,7 @@ class GenericFeatureExtractor():
             sr = samplerate of current device
         Returns:
             features = 2D numpy array of size (chs, (len(freqbands) + sum(True in self.featureChoices)))
-            target = same as input target
+            target = same as input target, can be useful for using a baseline number differently
         NOTE: Any channels with a constant value will generate warnings in any frequency based features (constant level == no frequency components).
         """
         #print(np.array(epoch).shape)

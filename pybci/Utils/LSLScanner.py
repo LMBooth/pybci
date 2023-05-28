@@ -1,4 +1,6 @@
 from pylsl import StreamInlet, resolve_stream  
+from ..Utils.Logger import Logger
+
 class LSLScanner:
     streamTypes = ["EEG", "ECG", "EMG", "Gaze"] # list of strings, holds desired LSL stream types
     markerTypes = ["Markers"] # list of strings, holds desired LSL marker types
@@ -6,22 +8,23 @@ class LSLScanner:
     markerStream = []  # list of marker StreamInlets, available on LSL as chosen by markerTypes
     markerStreamPredefined = False
     dataStreamPredefined = False
-    printDebug = True
-    def __init__(self,parent, dataStreamsNames = None, markerStreamName = None, streamTypes = None, markerTypes = None, printDebug = True):
-        """Intiialises LSLScanner 
-            Optional Inputs:
-                streamTypes = List of strings, allows user to set custom acceptable EEG stream definitions, if None defaults to streamTypes scan
-                markerTypes = List of strings, allows user to set custom acceptable Marker stream definitions, if None defaults to markerTypes scan
-                streamTypes = List of strings, allows user to set custom acceptable EEG type definitions, ignored if streamTypes not None
-                markerTypes = List of strings, allows user to set custom acceptable Marker type definitions, ignored if markerTypes not None
-                printDebug = boolean, if true prints LSLScanner debug information
+
+    def __init__(self,parent, dataStreamsNames = None, markerStreamName = None, streamTypes = None, markerTypes = None, logger = Logger(Logger.INFO)):
+        """
+        Intiialises LSLScanner, accepts custom data and marker stream strings to search for, if valid can be obtained after scans with LSLScanner.dataStreams and LSLScanner.makerStream.
+        Parameters:
+        streamTypes (List of strings): allows user to set custom acceptable EEG stream definitions, if None defaults to streamTypes scan
+        markerTypes (List of strings): allows user to set custom acceptable Marker stream definitions, if None defaults to markerTypes scan
+        streamTypes (List of strings): allows user to set custom acceptable EEG type definitions, ignored if streamTypes not None
+        markerTypes (List of strings): allows user to set custom acceptable Marker type definitions, ignored if markerTypes not None
+        logger (pybci.Logger): Custom Logger class or PyBCI, defaults to logger.info if not set, which prints all pybci messages.
         """
         self.parent = parent
         if streamTypes != None:
             self.streamTypes = streamTypes
         if markerTypes != None:
             self.markerTypes = markerTypes
-        self.printDebug = printDebug
+        self.logger = logger
         if dataStreamsNames != None:
             self.dataStreamPredefined = True
             self.dataStreamsNames = dataStreamsNames
@@ -50,10 +53,8 @@ class LSLScanner:
             for s in dataStreams:
                 name = s.info().name()
                 if name not in self.dataStreamsNames:
-                    if self.printDebug:
-                        print("PyBCI: Error - Predefined LSL Data Stream name not present.")
-                        print("Available Streams:")
-                        [print(s.info().name()) for s in dataStreams]
+                    self.logger.log(Logger.WARNING,"Predefined LSL Data Stream name not present.")
+                    self.logger.log(Logger.WARNING, "Available Streams: "+str([s.info().name() for s in dataStreams]))
                 else:
                     self.dataStreams.append(s)
         else: # just add all datastreams as none were specified
@@ -69,15 +70,12 @@ class LSLScanner:
                 markerStreams.append(StreamInlet(stream))
         if self.markerStreamPredefined:
             if len(markerStreams) > 1:
-                if self.printDebug:
-                    print("PyBCI: Warning - Too many Marker streams available, set single desired markerStream in  bci.lslScanner.markerStream correctly.")
+                self.logger.log(Logger.WARNING," Too many Marker streams available, set single desired markerStream in  bci.lslScanner.markerStream correctly.")
             for s in markerStreams:
                 name = s.info().name()
                 if name != self.markerStreamName:
-                    if self.printDebug:
-                        print("PyBCI: Error - Predefined LSL Data Stream name not present.")
-                        print("Available Streams:")
-                        [print(s.info().name()) for s in markerStreams]
+                    self.logger.log(Logger.WARNING,"Predefined LSL Marker Stream name not present.")
+                    self.logger.log(Logger.WARNING, "Available Streams: "+str([s.info().name() for s in markerStreams]))
                 else:
                     self.markerStream = s
         else:
@@ -85,19 +83,18 @@ class LSLScanner:
                 self.markerStream = markerStreams[0] # if none specified grabs first avaialble marker stream
 
     def CheckAvailableLSL(self):
-        """Checks streaminlets available, prints if printDebug  
+        """Checks streaminlets available, 
         Returns:
             True = 1 marker stream present and available datastreams are present
             False = If no datastreams are present and/or more or less then one marker stream is present, requires hard selection or markser stream if too many.
         """
         self.ScanStreams()
-        if (self.printDebug):
-            if self.markerStream == None:
-                print("PyBCI: Error - No Marker streams available, make sure your accepted marker data Type have been set in bci.lslScanner.markerTypes correctly.")
-            if len(self.dataStreams) == 0:
-                print("PyBCI: Error - No data streams available, make sure your streamTypes have been set in bci.lslScanner.dataStream correctly.")
-            if len(self.dataStreams) > 0 and self.markerStream !=None:
-                print("PyBCI: Success - ",len(self.dataStreams)," data stream(s) found, 1 marker stream found")
+        if self.markerStream == None:
+            self.logger.log(Logger.WARNING,"No Marker streams available, make sure your accepted marker data Type have been set in bci.lslScanner.markerTypes correctly.")
+        if len(self.dataStreams) == 0:
+            self.logger.log(Logger.WARNING,"No data streams available, make sure your streamTypes have been set in bci.lslScanner.dataStream correctly.")
+        if len(self.dataStreams) > 0 and self.markerStream !=None:
+            self.logger.log(Logger.INFO,"Success - "+str(len(self.dataStreams))+" data stream(s) found, 1 marker stream found")
         if len(self.dataStreams) > 0 and self.markerStream != None:
             self.parent.dataStreams = self.dataStreams
             self.parent.markerStream = self.markerStream

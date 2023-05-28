@@ -1,5 +1,4 @@
 import threading
-import time
 from collections import deque
 import itertools
 
@@ -21,7 +20,6 @@ class DataReceiverThread(threading.Thread):
         self.globalEpochSettings = globalEpochSettings
         self.streamChsDropDict = streamChsDropDict
         self.sr = dataStreamInlet.info().nominal_srate()
-        #self.dataType = dataStreamInlet.info().type()
         self.devCount = devCount # used for tracking which device is sending data to feature extractor
         
     def run(self):
@@ -32,7 +30,6 @@ class DataReceiverThread(threading.Thread):
             if  max([self.customEpochSettings[x].tmin + self.customEpochSettings[x].tmax for x in self.customEpochSettings]) > maxTime:
                 maxTime = max([self.customEpochSettings[x].tmin + self.customEpochSettings[x].tmax for x in self.customEpochSettings])
         fifoLength = int(self.dataStreamInlet.info().nominal_srate()*maxTime)
-        #print(fifoLength)
         dataFIFOs = [deque(maxlen=fifoLength) for ch in range(chCount - len(self.streamChsDropDict))]
         while not self.closeEvent.is_set():
             sample, timestamp = self.dataStreamInlet.pull_sample(timeout = 1)
@@ -45,7 +42,6 @@ class DataReceiverThread(threading.Thread):
                     if self.startCounting: # we received a marker
                         posCount+=1
                         if posCount >= self.desiredCount:  # enough samples are in FIFO, chop up and put in dataqueue
-                            #start = time.time()
                             if len(self.customEpochSettings.keys())>0: #  custom marker received
                                 if self.customEpochSettings[self.currentMarker].splitCheck: # slice epochs in to overlapping time windows
                                     window_samples =int(self.customEpochSettings[self.currentMarker].windowLength * self.sr) #number of samples in each window
@@ -90,10 +86,8 @@ class DataReceiverThread(threading.Thread):
             else:
                 pass
                 # add levels of debug 
-                # print("PyBCI: LSL pull_sample timed out, no data on stream...")
 
     def ReceiveMarker(self, marker, timestamp): # timestamp will be used for non sample rate specific devices (pupil-labs gazedata)
-        #print(marker)
         if self.startCounting == False: # only one marker at a time allow, other in windowed timeframe ignored
             self.currentMarker = marker
             if len(self.customEpochSettings.keys())>0: #  custom marker received
@@ -103,4 +97,3 @@ class DataReceiverThread(threading.Thread):
             else: # no custom markers set, use global settings
                 self.desiredCount = int(self.globalEpochSettings.tmax * self.sr) # find number of samples after tmax to finish counting
                 self.startCounting = True
-            #print(self.desiredCount)

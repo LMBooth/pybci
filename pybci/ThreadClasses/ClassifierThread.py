@@ -1,4 +1,5 @@
 from ..Utils.Classifier import Classifier 
+from ..Utils.Logger import Logger
 import queue,threading, time
 
 class ClassifierThread(threading.Thread):
@@ -8,7 +9,7 @@ class ClassifierThread(threading.Thread):
     guess = None
     epochCounts = {} 
     def __init__(self, closeEvent,trainTestEvent, featureQueueTest,featureQueueTrain, classifierInfoQueue, classifierInfoRetrieveEvent, 
-                 classifierGuessMarkerQueue, classifierGuessMarkerEvent, printDebug = True, numStreamDevices = 1,
+                 classifierGuessMarkerQueue, classifierGuessMarkerEvent, logger = Logger(Logger.INFO), numStreamDevices = 1,
                  minRequiredEpochs = 10, clf = None, model = None, torchModel = None):
         super().__init__()
         self.trainTestEvent = trainTestEvent # responsible for tolling between train and test mode
@@ -22,7 +23,7 @@ class ClassifierThread(threading.Thread):
         self.classifierGuessMarkerQueue = classifierGuessMarkerQueue
         self.classifierGuessMarkerEvent = classifierGuessMarkerEvent
         self.numStreamDevices = numStreamDevices
-        self.printDebug = printDebug
+        self.logger = logger
 
     def run(self):
         if self.numStreamDevices > 1:
@@ -48,15 +49,14 @@ class ClassifierThread(threading.Thread):
                         # need to check if all device data is captured, then flatten and append
                             if len(self.epochCounts) > 1: # check if there is more then one test condition
                                 minNumKeyEpochs = min([self.epochCounts[key][1] for key in self.epochCounts]) # check minimum viable number of training eochs have been obtained
-                                #print("minNumKeyEpochs"+str(minNumKeyEpochs))
                                 if minNumKeyEpochs < self.minRequiredEpochs:
                                     pass
                                 else: 
                                     start = time.time()
                                     self.classifier.TrainModel(self.features, self.targets)
-                                    if (self.printDebug):
+                                    if (self.logger.level == Logger.INFO):
                                         end = time.time()
-                                        print(f"PyBCI: Info - classifier training time {end - start}")
+                                        self.logger.log(Logger.INFO, f" classifier training time {end - start}")
                             if self.classifierGuessMarkerEvent.is_set():
                                 self.classifierGuessMarkerQueue.put(None)
                     else:
@@ -64,15 +64,14 @@ class ClassifierThread(threading.Thread):
                         self.features.append(featuresSingle)
                         if len(self.epochCounts) > 1: # check if there is more then one test condition
                             minNumKeyEpochs = min([self.epochCounts[key][1] for key in self.epochCounts]) # check minimum viable number of training eochs have been obtained
-                            #print("minNumKeyEpochs"+str(minNumKeyEpochs))
                             if minNumKeyEpochs < self.minRequiredEpochs:
                                 pass
                             else: 
                                 start = time.time()
                                 self.classifier.TrainModel(self.features, self.targets)
-                                if (self.printDebug):
+                                if (self.logger.level == Logger.INFO):
                                     end = time.time()
-                                    print(f"PyBCI: Info - classifier training time {end - start}")
+                                    self.logger.log(Logger.INFO, f" classifier training time {end - start}")
                         if self.classifierGuessMarkerEvent.is_set():
                             self.classifierGuessMarkerQueue.put(None)
                 except queue.Empty:
@@ -87,18 +86,17 @@ class ClassifierThread(threading.Thread):
                             for value in tempdatatest.values():
                                 flattened_list.extend(value)
                             tempdatatest = {}
-                            #self.features.append(flattened_list)
                             start = time.time()
                             self.guess = self.classifier.TestModel(flattened_list)
-                            if (self.printDebug):
+                            if (self.logger.level == Logger.INFO):
                                 end = time.time()
-                                print(f"PyBCI: Info - classifier testing time {end - start}")
+                                self.logger.log(Logger.INFO, f" classifier testing time {end - start}")
                     else:
                         start = time.time()
                         self.guess = self.classifier.TestModel(featuresSingle)
-                        if (self.printDebug):
+                        if (self.logger.level == Logger.INFO):
                             end = time.time()
-                            print(f"PyBCI: Info - classifier testing time {end - start}")
+                            self.logger.log(Logger.INFO, f" classifier testing time {end - start}")
                     if self.classifierGuessMarkerEvent.is_set():
                         self.classifierGuessMarkerQueue.put(self.guess)
                 except queue.Empty:

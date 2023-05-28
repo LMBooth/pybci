@@ -1,10 +1,7 @@
 import threading, queue
 from ..Utils.FeatureExtractor import GenericFeatureExtractor
 from ..Configuration.EpochSettings import GlobalEpochSettings
-import time
-
 class FeatureProcessorThread(threading.Thread):
-
     tempDeviceEpochLogger = []
     def __init__(self, closeEvent, trainTestEvent, dataQueueTrain,dataQueueTest,
                 featureQueueTest,featureQueueTrain,  totalDevices,markerCountRetrieveEvent,markerCountQueue, customEpochSettings = {}, 
@@ -25,7 +22,6 @@ class FeatureProcessorThread(threading.Thread):
         self.customEpochSettings = customEpochSettings
         self.globalWindowSettings = globalEpochSettings
         self.tempDeviceEpochLogger = [0 for x in range(self.totalDevices)]
-        
     def run(self):
         while not self.closeEvent.is_set():
             if self.markerCountRetrieveEvent.is_set():

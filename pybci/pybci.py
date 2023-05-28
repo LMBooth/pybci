@@ -1,4 +1,5 @@
 from .Utils.LSLScanner import LSLScanner
+from .Utils.Logger import Logger
 from .ThreadClasses.FeatureProcessorThread import FeatureProcessorThread
 from .ThreadClasses.DataReceiverThread import DataReceiverThread
 from .ThreadClasses.AsyncDataReceiverThread import AsyncDataReceiverThread
@@ -8,12 +9,12 @@ from .Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSet
 from .Configuration.FeatureSettings import GeneralFeatureChoices
 import queue, threading, copy
 import tensorflow as tf
-import torch
+#import torch
 import torch.nn as nn
-tf.get_logger().setLevel('ERROR')
+
+#tf.get_logger().setLevel('ERROR')
 
 class PyBCI:
-    printDebug = True   # boolean, used to toggle print statements from LSLScanner class
     globalEpochSettings = GlobalEpochSettings()
     customEpochSettings = {}
     minimumEpochsRequired = 10
@@ -26,7 +27,7 @@ class PyBCI:
     epochCounts = {} # holds markers received, their target ids and number received of each
     classifierInformation = []
 
-    def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
+    def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
                  streamCustomFeatureExtract = {},
                  minimumEpochsRequired = 10, clf= None, model = None, torchModel = None):
@@ -39,7 +40,7 @@ class PyBCI:
         markerStream (List of strings): Allows user to set custom acceptable Marker stream definitions, if None defaults to markerTypes scan
         streamTypes (List of strings): Allows user to set custom acceptable EEG type definitions, ignored if dataStreams not None
         markerTypes (List of strings): Allows user to set custom acceptable Marker type definitions, ignored if markerStream not None
-        printDebug (bool): If true prints LSLScanner debug information
+        loggingLevel (string): Sets PyBCI print level, ('info' prints all statements, 'warning' is only warning messages, and 'none' is no prints from PyBCI)
         globalEpochSettings (GlobalEpochSettings): Sets global timing settings for epochs.
         customEpochSettings (dict {marker name string:IndividualEpochSettings()}): Sets individual timing settings for epochs.
         streamChsDropDict (dict {datastream name string: list(ints)}): Keys for dict should be respective datastreams with corresponding list of which channels to drop.
@@ -47,27 +48,32 @@ class PyBCI:
         minimumEpochsRequired (Int): minimm number of required epochs before model fitting begins, must be of each type of received markers and mroe then 1 type of marker to classify.
         clf (ClassifierMixin): Allows custom Sklearn model to be passed.
         model (model):Allows custom tensorflow model to be passed.
+        torchmodel ([torchModel(), torch.nn.Module] ): Currently a list where first item is torchmodel analysis function, second is torch model, check pytorch example - likely to change
         """
         self.streamCustomFeatureExtract = streamCustomFeatureExtract
         self.globalEpochSettings = globalEpochSettings
         self.customEpochSettings = customEpochSettings
         self.streamChsDropDict = streamChsDropDict
         self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes)
-        self.printDebug = printDebug
-        #if self.printDebug == False:
+        self.loggingLevel = loggingLevel
+        self.logger = Logger(self.loggingLevel)
         self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
         self.Connect()
        
-    def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, printDebug = True,
+    def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
-                 freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()): # with bci
-        self.freqbands = freqbands
-        self.featureChoices = featureChoices
+                 streamCustomFeatureExtract = {},
+                 minimumEpochsRequired = 10, clf= None, model = None, torchModel = None): # with bci
+        """
+        Please look at PyBCI.__init__ (same setup and description)
+        """
+        self.streamCustomFeatureExtract = streamCustomFeatureExtract
         self.globalEpochSettings = globalEpochSettings
         self.customEpochSettings = customEpochSettings
         self.streamChsDropDict = streamChsDropDict
         self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes)
-        self.printDebug = printDebug
+        self.loggingLevel = loggingLevel
+        self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
         self.Connect()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
@@ -85,16 +91,14 @@ class PyBCI:
     # set test and train boolean for changing  thread operation 
     def TrainMode(self):
         if self.connected:
-            if self.printDebug:
-                print("PyBCI: Started training...")
+            self.logger.log(Logger.INFO,"Started training...")
             self.trainTestEvent.set()
         else:
             self.Connect()
 
     def TestMode(self):
         if self.connected:
-            if self.printDebug:
-                print("PyBCI: Started testing...")
+            self.logger.log(Logger.INFO,"Started testing...")
             self.trainTestEvent.clear()
         else:
             self.Connect()
@@ -142,8 +146,7 @@ class PyBCI:
         self.featureRetrieveEvent = threading.Event() # still needs coding
 
         self.trainTestEvent.set() # if set we're in train mode, if not we're in test mode, always start in train...
-        if self.printDebug:
-            print("PyBCI: Starting threads initialisation...")
+        self.logger.log(Logger.INFO," Starting threads initialisation...")
         # setup data thread
         self.dataThreads = []
         self.featureThreads = []
@@ -186,7 +189,7 @@ class PyBCI:
         self.markerThread.start()
         self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueueTest,self.featureQueueTrain,
                                                  self.classifierInfoQueue, self.classifierInfoRetrieveEvent,
-                                                 self.classifierGuessMarkerQueue, self.classifierGuessMarkerEvent, self.printDebug,len(self.dataThreads),
+                                                 self.classifierGuessMarkerQueue, self.classifierGuessMarkerEvent, self.logger,len(self.dataThreads),
                                                 self.minimumEpochsRequired, clf = self.clf, model = self.model, torchModel = self.torchModel)
         self.classifierThread.start()
 
@@ -200,30 +203,27 @@ class PyBCI:
             ft.join()
         self.classifierThread.join()
         self.connected = False
-        if self.printDebug:
-            print("PyBCI: Threads stopped.")
+        self.logger.log(Logger.INFO," Threads stopped.")
 
     def ConfigureMachineLearning(self, minimumEpochsRequired = 10, clf = None, model = None, torchModel = None):
         from sklearn.base import ClassifierMixin
         self.minimumEpochsRequired = minimumEpochsRequired
+
         if isinstance(clf, ClassifierMixin):
             self.clf = clf
         else:
             self.clf = None
-            if self.printDebug:
-                print("PyBCI: Error - Invalid sklearn classifier passed to clf, setting to SVM if no tensorflow model passed either.")
-        if isinstance(model, tf.keras.Model):
-            self.model = model
-        else:
-            self.model = None
-            if self.printDebug:
-                print("PyBCI: Error - Invalid tensorflow model passed to model, setting to None.")
-        if callable(torchModel): # isinstance(torchModel, torch.nn.Module):
-            self.torchModel = model
-        else:
-            self.torchModel = None
-            if self.printDebug:
-                print("PyBCI: Error - Invalid PyTorch model passed to model, setting to None.")
+            self.logger.log(Logger.WARNING," Invalid or no sklearn classifier passed to clf, setting to SVM if no tensorflow or pytorch model passed.")
+            if isinstance(model, tf.keras.Model):
+                self.model = model
+            else:
+                self.model = None
+                self.logger.log(Logger.WARNING," Invalid or no tensorflow model passed to model.")
+                if callable(torchModel): # isinstance(torchModel, torch.nn.Module):
+                    self.torchModel = model
+                else:
+                    self.torchModel = None
+                    self.logger.log(Logger.WARNING," Invalid or no PyTorch model passed to model.")
     
 
     # Could move all configures to a configuration class, might make options into more descriptive classes?
@@ -235,16 +235,14 @@ class PyBCI:
                 valid = True
             else:
                 valid = False
-                if self.printDebug:
-                    print("PyBCI: Error - Invalid datatype passed for customWindowSettings, create dict of wanted markers \
-                          using class bci.IndividualEpochSetting() as value to configure individual epoch window settings.")
-                    break
+                self.logger.log(Logger.WARNING," Invalid datatype passed for customWindowSettings, create dict of wanted markers \
+                        using class bci.IndividualEpochSetting() as value to configure individual epoch window settings.")
+                break
         #if isinstance(customWindowSettings[key], GlobalEpochSettings()):
         if valid:   
             self.customEpochSettings = customEpochSettings
             if globalEpochSettings.windowLength > globalEpochSettings.tmax + globalEpochSettings.tmin:
-                if self.printDebug:
-                    print("PyBCI: Error - windowLength < (tmin+tmax), pass vaid settings to ConfigureEpochWindowSettings")
+                self.logger.log(Logger.WARNING," windowLength < (tmin+tmax), pass vaid settings to ConfigureEpochWindowSettings")
             else:
                 self.globalWindowglobalEpochSettingsSettings = globalEpochSettings
                 self.ResetThreadsAfterConfigs()
@@ -256,7 +254,6 @@ class PyBCI:
 
     def ResetThreadsAfterConfigs(self):
         if self.connected:
-            if self.printDebug:
-                print("PyBCI: Resetting threads after BCI reconfiguration...")
+            self.logger.log(Logger.INFO,"Resetting threads after BCI reconfiguration...")
             self.StopThreads()
             self.Connect()

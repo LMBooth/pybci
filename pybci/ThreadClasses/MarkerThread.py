@@ -3,7 +3,6 @@ import threading
 class MarkerThread(threading.Thread):
     """Receives Marker on chosen lsl Marker outlet. Pushes marker to data threads for framing epochs, 
     also sends markers to featureprocessing thread for epoch counting and multiple device synchronisation.
-    
     """
     def __init__(self,closeEvent, trainTestEvent, markerStreamInlet, dataThreads, featureThreads):#, lock):
         super().__init__()
@@ -23,7 +22,6 @@ class MarkerThread(threading.Thread):
                         thread.ReceiveMarker(marker, timestamp)
                     for thread in self.featureThreads:
                         thread.ReceiveMarker(marker, timestamp)
-                    #self.featureThread.ReceiveMarker(marker, timestamp)
                 else:
                     pass
                     # add levels of debug 
