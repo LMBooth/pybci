@@ -58,6 +58,6 @@ Finally a passable, customisable sklearn or tensorflow classifier can be giving 
 - run check on pytorch data type (may pass list with [pytorchmodel, pytrochcompilerinfo]
 - Run benchmark tests on DataReceiverThread.py and AsynDataReceiverThread.py, seeking potential optimisations.
 - ~~Levels of print debug (info, error, none)~~
-- Retrieve feature data  
+- ~~Retrieve feature data~~
 
 ## Curently in Beta, come back in a few days for updates!
