@@ -9,7 +9,8 @@ class ClassifierThread(threading.Thread):
     guess = None
     epochCounts = {} 
     def __init__(self, closeEvent,trainTestEvent, featureQueueTest,featureQueueTrain, classifierInfoQueue, classifierInfoRetrieveEvent, 
-                 classifierGuessMarkerQueue, classifierGuessMarkerEvent, logger = Logger(Logger.INFO), numStreamDevices = 1,
+                 classifierGuessMarkerQueue, classifierGuessMarkerEvent, queryFeaturesQueue, queryFeaturesEvent,
+                 logger = Logger(Logger.INFO), numStreamDevices = 1,
                  minRequiredEpochs = 10, clf = None, model = None, torchModel = None):
         super().__init__()
         self.trainTestEvent = trainTestEvent # responsible for tolling between train and test mode
@@ -22,6 +23,8 @@ class ClassifierThread(threading.Thread):
         self.classifierInfoQueue = classifierInfoQueue
         self.classifierGuessMarkerQueue = classifierGuessMarkerQueue
         self.classifierGuessMarkerEvent = classifierGuessMarkerEvent
+        self.queryFeaturesQueue = queryFeaturesQueue
+        self.queryFeaturesEvent = queryFeaturesEvent
         self.numStreamDevices = numStreamDevices
         self.logger = logger
 
@@ -33,19 +36,13 @@ class ClassifierThread(threading.Thread):
             if self.trainTestEvent.is_set(): # We're training!
                 try:
                     featuresSingle, devCount, target, self.epochCounts = self.featureQueueTrain.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
-                    if self.numStreamDevices > 1:
+                    if self.numStreamDevices > 1: # Collects multiple data strems feature sets and synchronise here
                         tempdatatrain[devCount] = featuresSingle
                         if len(tempdatatrain) == self.numStreamDevices:
-                            #print(tempdatatrain)
-                            #flattened_list = []
-                            #for value in tempdatatrain.values():
-                                #flattened_list.extend(value)
                             flattened_list = [item for sublist in tempdatatrain.values() for item in sublist]
                             tempdatatrain = {}
-                            #print(flattened_list)
                             self.targets.append(target)
                             self.features.append(flattened_list)
-
                         # need to check if all device data is captured, then flatten and append
                             if len(self.epochCounts) > 1: # check if there is more then one test condition
                                 minNumKeyEpochs = min([self.epochCounts[key][1] for key in self.epochCounts]) # check minimum viable number of training eochs have been obtained
@@ -59,7 +56,7 @@ class ClassifierThread(threading.Thread):
                                         self.logger.log(Logger.INFO, f" classifier training time {end - start}")
                             if self.classifierGuessMarkerEvent.is_set():
                                 self.classifierGuessMarkerQueue.put(None)
-                    else:
+                    else: # Only one device to collect from
                         self.targets.append(target)
                         self.features.append(featuresSingle)
                         if len(self.epochCounts) > 1: # check if there is more then one test condition
@@ -105,6 +102,13 @@ class ClassifierThread(threading.Thread):
                 classdata = {
                     "clf":self.classifier.clf,
                     "model":self.classifier.model,
+                    "torchModel":self.classifier.torchModel,
                     "accuracy":self.classifier.accuracy
                     }
                 self.classifierInfoQueue.put(classdata) 
+            if self.queryFeaturesEvent.is_set():
+                featureData = {
+                    "features":self.features,
+                    "targets":self.targets
+                }
+                self.queryFeaturesQueue.put(featureData) 

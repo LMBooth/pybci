@@ -1,6 +1,7 @@
 import time
 from pybci import PyBCI
-bci = PyBCI(minimumEpochsRequired = 6)
+import numpy as np
+bci = PyBCI(minimumEpochsRequired = 4)
 while not bci.connected: # check to see if lsl marker and datastream are available
     bci.Connect()
     time.sleep(1)
@@ -15,7 +16,7 @@ try:
             if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired:
                 classInfo = bci.CurrentClassifierInfo() # hangs if called too early
                 accuracy = classInfo["accuracy"]
-            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+3:  
+            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+2:  
                 bci.TestMode()
                 break
     while True:

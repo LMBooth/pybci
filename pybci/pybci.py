@@ -90,6 +90,9 @@ class PyBCI:
 
     # set test and train boolean for changing  thread operation 
     def TrainMode(self):
+        """
+         Starts BCI training If PyBCI is connected to valid LSL data and marker streams, if not tries to scan and connect.
+        """
         if self.connected:
             self.logger.log(Logger.INFO,"Started training...")
             self.trainTestEvent.set()
@@ -97,6 +100,10 @@ class PyBCI:
             self.Connect()
 
     def TestMode(self):
+        """
+         Starts BCI testing If PyBCI is connected to valid LSL data and marker streams, if not tries to scan and connect.
+         (Need to check if invalid number of epochs are obtained and this is set)
+        """
         if self.connected:
             self.logger.log(Logger.INFO,"Started testing...")
             self.trainTestEvent.clear()
@@ -105,6 +112,9 @@ class PyBCI:
 
     # Get data from threads
     def CurrentClassifierInfo(self):
+        """
+        
+        """
         if self.connected:
             self.classifierInfoRetrieveEvent.set()
             classInfo = self.classifierInfoQueue.get()
@@ -112,8 +122,17 @@ class PyBCI:
             return classInfo
         else:
             self.Connect()
+            return {"Not Connected": None}
 
     def CurrentClassifierMarkerGuess(self):
+        """
+        Gets classifier current marker guess and targets.
+        Returns
+        -------
+        int
+            Returned int correlates to value of key from dict from ReceivedMarkerCount() when in testmode. 
+            If in trainmode returns None.
+        """
         if self.connected:
             # probably needs check that we're in test mode, maybe debu print if not?
             self.classifierGuessMarkerEvent.set()
@@ -122,8 +141,35 @@ class PyBCI:
             return classGuess
         else:
             self.Connect()
+            return {"Not Connected": None}
+
+    def CurrentFeaturesTargets(self):
+        """
+        Gets classifier current features and targets.
+        Returns
+        -------
+        dict
+            dict of "features" and "targets" where features is 2d list of feature data and targets is a 1d list of epoch targets as ints.
+            If not connected returns {"Not Connected": None}
+        """
+        if self.connected:
+            self.queryFeaturesEvent.set()
+            featureTargets = self.queryFeaturesQueue.get()
+            self.queryFeaturesEvent.clear() # still needs coding
+            return featureTargets
+        else:
+            self.Connect()
+            return {"Not Connected": None}
 
     def ReceivedMarkerCount(self):
+        """
+        Gets number of received training marker, their strings and their respective values to correlate with CurrentClassifierMarkerGuess().
+        Returns
+        -------
+        dict
+            Every key is a string received on the selected LSL marker stream, the value is a list where the first item is the marker id value, 
+            use with CurrentClassifierMarkerGuess() the second value is a received count for that marker type.
+        """
         if self.connected:
             self.markerCountRetrieveEvent.set()
             markers = self.markerCountQueue.get()
@@ -143,7 +189,9 @@ class PyBCI:
         self.trainTestEvent = threading.Event()
         self.markerCountRetrieveEvent = threading.Event()
         self.classifierInfoRetrieveEvent = threading.Event()
-        self.featureRetrieveEvent = threading.Event() # still needs coding
+
+        self.queryFeaturesQueue = queue.Queue()
+        self.queryFeaturesEvent  = threading.Event() # still needs coding
 
         self.trainTestEvent.set() # if set we're in train mode, if not we're in test mode, always start in train...
         self.logger.log(Logger.INFO," Starting threads initialisation...")
@@ -189,11 +237,15 @@ class PyBCI:
         self.markerThread.start()
         self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueueTest,self.featureQueueTrain,
                                                  self.classifierInfoQueue, self.classifierInfoRetrieveEvent,
-                                                 self.classifierGuessMarkerQueue, self.classifierGuessMarkerEvent, self.logger,len(self.dataThreads),
+                                                 self.classifierGuessMarkerQueue, self.classifierGuessMarkerEvent, self.queryFeaturesQueue, self.queryFeaturesEvent,
+                                                 self.logger,len(self.dataThreads),
                                                 self.minimumEpochsRequired, clf = self.clf, model = self.model, torchModel = self.torchModel)
         self.classifierThread.start()
 
     def StopThreads(self):
+        """
+        Stops all PyBCI threads.
+        """
         self.closeEvent.set()
         self.markerThread.join()
         # wait for all threads to finish processing, probably worth pulling out finalised classifier information stored for later use.
@@ -213,17 +265,17 @@ class PyBCI:
             self.clf = clf
         else:
             self.clf = None
-            self.logger.log(Logger.WARNING," Invalid or no sklearn classifier passed to clf, setting to SVM if no tensorflow or pytorch model passed.")
+            self.logger.log(Logger.INFO," Invalid or no sklearn classifier passed to clf. Checking tensorflow model... ")
             if isinstance(model, tf.keras.Model):
                 self.model = model
             else:
                 self.model = None
-                self.logger.log(Logger.WARNING," Invalid or no tensorflow model passed to model.")
+                self.logger.log(Logger.INFO," Invalid or no tensorflow model passed to model.  Checking pytorch torchModel...")
                 if callable(torchModel): # isinstance(torchModel, torch.nn.Module):
                     self.torchModel = model
                 else:
                     self.torchModel = None
-                    self.logger.log(Logger.WARNING," Invalid or no PyTorch model passed to model.")
+                    self.logger.log(Logger.INFO," Invalid or no PyTorch model passed to model. Defaulting to SVM by SkLearn")
     
 
     # Could move all configures to a configuration class, might make options into more descriptive classes?
