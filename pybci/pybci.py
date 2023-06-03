@@ -3,6 +3,7 @@ from .Utils.Logger import Logger
 from .ThreadClasses.FeatureProcessorThread import FeatureProcessorThread
 from .ThreadClasses.DataReceiverThread import DataReceiverThread
 from .ThreadClasses.AsyncDataReceiverThread import AsyncDataReceiverThread
+from .ThreadClasses.OptimisedDataReceiverThread import OptimisedDataReceiverThread
 from .ThreadClasses.MarkerThread import MarkerThread
 from .ThreadClasses.ClassifierThread import ClassifierThread
 from .Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
@@ -26,7 +27,9 @@ class PyBCI:
     connected = False
     epochCounts = {} # holds markers received, their target ids and number received of each
     classifierInformation = []
-
+    clf= None
+    model = None 
+    torchModel = None
     def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
                  streamCustomFeatureExtract = {},
@@ -35,28 +38,42 @@ class PyBCI:
         The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
         and holds a configurable number of samples based on lsl marker strings.
         If no marker strings are available on the LSL the class will close and return an error.
-        Parameters:
-        dataStreams (List of strings): Allows user to set custom acceptable EEG stream definitions, if None defaults to streamTypes scan
-        markerStream (List of strings): Allows user to set custom acceptable Marker stream definitions, if None defaults to markerTypes scan
-        streamTypes (List of strings): Allows user to set custom acceptable EEG type definitions, ignored if dataStreams not None
-        markerTypes (List of strings): Allows user to set custom acceptable Marker type definitions, ignored if markerStream not None
-        loggingLevel (string): Sets PyBCI print level, ('info' prints all statements, 'warning' is only warning messages, and 'none' is no prints from PyBCI)
-        globalEpochSettings (GlobalEpochSettings): Sets global timing settings for epochs.
-        customEpochSettings (dict {marker name string:IndividualEpochSettings()}): Sets individual timing settings for epochs.
-        streamChsDropDict (dict {datastream name string: list(ints)}): Keys for dict should be respective datastreams with corresponding list of which channels to drop.
-        streamCustomFeatureExtract (dict {datastream type string: customClass()}): allows dict to be passed of datastream type with custom feature extractor class for analysing data.
-        minimumEpochsRequired (Int): minimm number of required epochs before model fitting begins, must be of each type of received markers and mroe then 1 type of marker to classify.
-        clf (ClassifierMixin): Allows custom Sklearn model to be passed.
-        model (model):Allows custom tensorflow model to be passed.
-        torchmodel ([torchModel(), torch.nn.Module] ): Currently a list where first item is torchmodel analysis function, second is torch model, check pytorch example - likely to change
+        Parameters
+        ----------
+        dataStreams: List[str] 
+            Allows user to set custom acceptable EEG stream definitions, if None defaults to streamTypes scan
+        markerStream: List[str] 
+            Allows user to set custom acceptable Marker stream definitions, if None defaults to markerTypes scan
+        streamTypes: List[str] 
+            Allows user to set custom acceptable EEG type definitions, ignored if dataStreams not None
+        markerTypes: List[str] 
+            Allows user to set custom acceptable Marker type definitions, ignored if markerStream not None
+        loggingLevel: string 
+            Sets PyBCI print level, ('info' prints all statements, 'warning' is only warning messages, and 'none' is no prints from PyBCI)
+        globalEpochSettings (GlobalEpochSettings): 
+            Sets global timing settings for epochs.
+        customEpochSettings: dict 
+            Sets individual timing settings for epochs. {markerstring1:IndividualEpochSettings(),markerstring2:IndividualEpochSettings()}
+        streamChsDropDict: dict 
+            Keys for dict should be respective datastreams with corresponding list of which channels to drop.  {datastreamstring1: list(ints), datastreamstring2: list(ints)}
+        streamCustomFeatureExtract: dict
+            Allows dict to be passed of datastream with custom feature extractor class for analysing data.  {datastreamstring1: customClass1(), datastreamstring2: customClass1(),}
+        minimumEpochsRequired: int 
+            Minimm number of required epochs before model fitting begins, must be of each type of received markers and mroe then 1 type of marker to classify.
+        clf: sklearn.base.ClassifierMixin 
+            Allows custom Sklearn model to be passed.
+        model: tf.keras.model
+            Allows custom tensorflow model to be passed.
+        torchmodel:  [torchModel(), torch.nn.Module]
+            Currently a list where first item is torchmodel analysis function, second is torch model, check pytorch example - likely to change in future updates.
         """
         self.streamCustomFeatureExtract = streamCustomFeatureExtract
         self.globalEpochSettings = globalEpochSettings
         self.customEpochSettings = customEpochSettings
         self.streamChsDropDict = streamChsDropDict
-        self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes)
         self.loggingLevel = loggingLevel
         self.logger = Logger(self.loggingLevel)
+        self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes, logger =self.logger)
         self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
         self.Connect()
        
@@ -65,7 +82,7 @@ class PyBCI:
                  streamCustomFeatureExtract = {},
                  minimumEpochsRequired = 10, clf= None, model = None, torchModel = None): # with bci
         """
-        Please look at PyBCI.__init__ (same setup and description)
+        Please look at PyBCI.__init__ (same parameters, setup and description)
         """
         self.streamCustomFeatureExtract = streamCustomFeatureExtract
         self.globalEpochSettings = globalEpochSettings
@@ -94,7 +111,7 @@ class PyBCI:
          Starts BCI training If PyBCI is connected to valid LSL data and marker streams, if not tries to scan and connect.
         """
         if self.connected:
-            self.logger.log(Logger.INFO,"Started training...")
+            self.logger.log(Logger.INFO," Started training...")
             self.trainTestEvent.set()
         else:
             self.Connect()
@@ -105,7 +122,7 @@ class PyBCI:
          (Need to check if invalid number of epochs are obtained and this is set)
         """
         if self.connected:
-            self.logger.log(Logger.INFO,"Started testing...")
+            self.logger.log(Logger.INFO," Started testing...")
             self.trainTestEvent.clear()
         else:
             self.Connect()
@@ -113,7 +130,12 @@ class PyBCI:
     # Get data from threads
     def CurrentClassifierInfo(self):
         """
-        
+        Gets dict with current clf, model, torchModel and accuracy. Accuracy will be 0 if not fiting has occurred.
+        Returns
+        -------
+        classInfo: dict
+            dict of "clf", "model, "torchModel"" and "accuracy" where accuracy is 0 if no model training/fitting has occurred. If mode not used corresponding value is None.
+            If not connected returns {"Not Connected": None}
         """
         if self.connected:
             self.classifierInfoRetrieveEvent.set()
@@ -129,7 +151,7 @@ class PyBCI:
         Gets classifier current marker guess and targets.
         Returns
         -------
-        int
+        classGuess: int | None
             Returned int correlates to value of key from dict from ReceivedMarkerCount() when in testmode. 
             If in trainmode returns None.
         """
@@ -141,14 +163,14 @@ class PyBCI:
             return classGuess
         else:
             self.Connect()
-            return {"Not Connected": None}
+            return None
 
     def CurrentFeaturesTargets(self):
         """
         Gets classifier current features and targets.
         Returns
         -------
-        dict
+        featureTargets: dict
             dict of "features" and "targets" where features is 2d list of feature data and targets is a 1d list of epoch targets as ints.
             If not connected returns {"Not Connected": None}
         """
@@ -166,9 +188,9 @@ class PyBCI:
         Gets number of received training marker, their strings and their respective values to correlate with CurrentClassifierMarkerGuess().
         Returns
         -------
-        dict
+        markers: dict
             Every key is a string received on the selected LSL marker stream, the value is a list where the first item is the marker id value, 
-            use with CurrentClassifierMarkerGuess() the second value is a received count for that marker type.
+            use with CurrentClassifierMarkerGuess() the second value is a received count for that marker type. Will be empty if no markers received.
         """
         if self.connected:
             self.markerCountRetrieveEvent.set()
@@ -202,21 +224,30 @@ class PyBCI:
             self.dataQueueTrain = queue.Queue()
             self.dataQueueTest = queue.Queue()
 
+            #if stream.info().nominal_srate() == 0:
+            #    if stream.info().name() in self.streamChsDropDict.keys():
+            #        dt = AsyncDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+            #                                self.globalEpochSettings, len(self.dataThreads), streamChsDropDict=self.streamChsDropDict[stream.info().name()])
+            #    else:
+            #        dt = AsyncDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+            #                                self.globalEpochSettings, len(self.dataThreads))
+            #else: # cold be desirable to capture samples only relative to timestammps with async, so maybe make this configurable?
             if stream.info().nominal_srate() == 0:
-                if stream.info().name() in self.streamChsDropDict.keys():
-                    dt = AsyncDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+                if stream.info().name() in self.streamChsDropDict.keys(): ## all use optimised now (pull_chunk and timestamp relative)
+                    #print(self.streamChsDropDict[stream.info().name()])
+                    dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
                                             self.globalEpochSettings, len(self.dataThreads), streamChsDropDict=self.streamChsDropDict[stream.info().name()])
                 else:
-                    dt = AsyncDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+                    dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
                                             self.globalEpochSettings, len(self.dataThreads))
-            else: # cold be desirable to capture samples only relative to timestammps with async, so maybe make this configurable?
-                if stream.info().name() in self.streamChsDropDict.keys():
-                    dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
-                                            self.globalEpochSettings, len(self.dataThreads), streamChsDropDict=self.streamChsDropDict[stream.info().name()])
+            else:
+                if stream.info().name() in self.streamChsDropDict.keys(): ## all use optimised now (pull_chunk and timestamp relative)
+                    #print(self.streamChsDropDict[stream.info().name()])
+                    dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+                                            self.globalEpochSettings, len(self.dataThreads), streamChsDropDict=self.streamChsDropDict[stream.info().name()], maxExpectedSampleRate = stream.info().nominal_srate())
                 else:
-                    dt = DataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
-                                            self.globalEpochSettings, len(self.dataThreads))
-
+                    dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+                                            self.globalEpochSettings, len(self.dataThreads),maxExpectedSampleRate = stream.info().nominal_srate())
             dt.start()
             self.dataThreads.append(dt)
             if stream.info().name() in self.streamCustomFeatureExtract.keys():
@@ -238,8 +269,8 @@ class PyBCI:
         self.classifierThread = ClassifierThread(self.closeEvent,self.trainTestEvent, self.featureQueueTest,self.featureQueueTrain,
                                                  self.classifierInfoQueue, self.classifierInfoRetrieveEvent,
                                                  self.classifierGuessMarkerQueue, self.classifierGuessMarkerEvent, self.queryFeaturesQueue, self.queryFeaturesEvent,
-                                                 self.logger,len(self.dataThreads),
-                                                self.minimumEpochsRequired, clf = self.clf, model = self.model, torchModel = self.torchModel)
+                                                 logger = self.logger, numStreamDevices = len(self.dataThreads), minRequiredEpochs = self.minimumEpochsRequired,
+                                                clf = self.clf, model = self.model, torchModel = self.torchModel)
         self.classifierThread.start()
 
     def StopThreads(self):
@@ -260,7 +291,7 @@ class PyBCI:
     def ConfigureMachineLearning(self, minimumEpochsRequired = 10, clf = None, model = None, torchModel = None):
         from sklearn.base import ClassifierMixin
         self.minimumEpochsRequired = minimumEpochsRequired
-
+        
         if isinstance(clf, ClassifierMixin):
             self.clf = clf
         else:
@@ -280,7 +311,9 @@ class PyBCI:
 
     # Could move all configures to a configuration class, might make options into more descriptive classes?
     def ConfigureEpochWindowSettings(self, globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}):
-        """allows globalWindowSettings to be modified, customWindowSettings is a dict with value names for marker strings which will appear on avalable markerStreams """
+        """
+        Allows globalWindowSettings to be modified, customWindowSettings is a dict with value names for marker strings which will appear on avalable markerStreams. 
+        """
         valid = False
         for key in customEpochSettings.keys():
             if isinstance(customEpochSettings[key], IndividualEpochSetting):

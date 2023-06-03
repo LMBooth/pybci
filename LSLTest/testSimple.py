@@ -1,21 +1,23 @@
 import time
 from pybci import PyBCI
-from pybci.Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
+from pybci.Utils.Logger import Logger
+import numpy as np
+from pybci.Utils.FeatureExtractor import GenericFeatureExtractor, GeneralFeatureChoices
 
-gs = GlobalEpochSettings()
-gs.tmax = 0.5 # grab 1 second after marker
-gs.tmin = 0.5 # grab 0.5 seconds before marker
-gs.splitCheck = True # splits samples between tmin and tmax
-gs.windowLength = 1 # 
-gs.windowOverlap = 0.5 # windows overap by 50%, so for a total len
+dropchs = range(20,60) 
+featureChoices = GeneralFeatureChoices()
+featureChoices.psdBand = False
+featureChoices.meanPSD = False
+featureChoices.medianPSD = False
 
-bci = PyBCI(globalEpochSettings=gs, minimumEpochsRequired=4) # create pybci object which auto scans for first available LSL marker and all accepted data streams
+streamCustomFeatureExtract = {"sendTest": GenericFeatureExtractor(logger = Logger(Logger.TIMING), featureChoices=featureChoices)}
 
-while not bci.connected: # check maker and data LSL streams available
-    bci.Connect() # if not trr to reconnect
+bci = PyBCI(minimumEpochsRequired = 4, streamChsDropDict={"sendTest":dropchs}, streamCustomFeatureExtract = streamCustomFeatureExtract)#, streamChsDropDict={"sendTest":dropchs})#, loggingLevel = Logger.NONE)
+while not bci.connected: # check to see if lsl marker and datastream are available
+    bci.Connect()
     time.sleep(1)
+bci.TrainMode() # now both marker and datastreams available start training on received epochs
 accuracy = 0
-bci.TrainMode() # Now connected start bci training (defaults to sklearn SVM and all general feature settings, found in PyBCI.Configuration.FeatureSettings.GeneralFeatureChoices)
 try:
     while(True):
         currentMarkers = bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
@@ -26,7 +28,7 @@ try:
             if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired:
                 classInfo = bci.CurrentClassifierInfo() # hangs if called too early
                 accuracy = classInfo["accuracy"]
-            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+2:  
+            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+10:  
                 bci.TestMode()
                 break
     while True:

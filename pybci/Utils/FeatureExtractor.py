@@ -2,7 +2,8 @@ import antropy as ant
 import numpy as np
 from scipy.signal import welch
 from scipy.integrate import simps
-import warnings
+import warnings, time
+from ..Utils.Logger import Logger
 from ..Configuration.FeatureSettings import GeneralFeatureChoices
 # Filter out UserWarning messages from the scipy package, could be worth moving to init and applying printdebug print levels? (typically nans, 0 and infs causing errors)
 warnings.filterwarnings("ignore", category=UserWarning, module="scipy") # used to reduce print statements from constant signals being applied
@@ -12,13 +13,15 @@ warnings.filterwarnings("ignore", category=RuntimeWarning, module="numpy") # use
 #warnings.filterwarnings("ignore", category=RuntimeWarning, module="pybci") # used to reduce print statements from constant signals being applied
 
 class GenericFeatureExtractor():
+    logger = Logger(Logger.INFO)
 
-    def __init__(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
+    def __init__(self, logger = Logger(Logger.INFO), freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
         super().__init__()
         self.freqbands = freqbands
         self.featureChoices = featureChoices
         #for key, value in self.featureChoices.__dict__.items():
         #    print(f"{key} = {value}")
+        self.logger = logger
         selFeats = sum([self.featureChoices.appr_entropy,
             self.featureChoices.perm_entropy,
             self.featureChoices.spec_entropy,
@@ -50,12 +53,15 @@ class GenericFeatureExtractor():
         NOTE: Any channels with a constant value will generate warnings in any frequency based features (constant level == no frequency components).
         """
         #print(np.array(epoch).shape)
-        numchs = len(epoch)
+        #print(epoch)
+        start = time.time()
+        numchs = epoch.shape[1]
         features = np.zeros(numchs * self.numFeatures)
-        for k, ch in enumerate(epoch):
+
+        for ch in range(epoch.shape[1]):
             #ch = np.isnan(ch)
             if self.featureChoices.psdBand: # get custom average power within given frequency band from freqbands
-                freqs, psd = welch(ch, sr)
+                freqs, psd = welch(epoch[:,ch], sr)
                 for l, band in enumerate(self.freqbands):
                     if len(freqs) > 0: # len(freqs) can be 0 if signal is all DC
                         idx_band = np.logical_and(freqs >= band[0], freqs <= band[1])
@@ -65,57 +71,60 @@ class GenericFeatureExtractor():
                         #else:
                         #    bp = simps(psd[idx_band], dx=(freqs[1]-freqs[0])) / (band[1] - band[0])
                             #bp = simpson(psd[idx_band], dx=freq_res)
-                        features[(k* self.numFeatures)+l] = bp
+                        features[(ch* self.numFeatures)+l] = bp
                     else:
-                        features[(k* self.numFeatures)+l] = 0
+                        features[(ch* self.numFeatures)+l] = 0
             else:
-                freqs, psd = welch(ch, sr)# calculate for mean and median
+                freqs, psd = welch(epoch[:,ch], sr)# calculate for mean and median
                 l = -1 # accounts for no freqbands being selected
             if self.featureChoices.meanPSD: # mean power
                 l += 1
-                if len(freqs) > 0: features[(k* self.numFeatures)+l] = np.mean(psd) # len(freqs) can be 0 if signal is all DC
-                else: features[(k* self.numFeatures)+l] = 0
+                if len(freqs) > 0: features[(ch* self.numFeatures)+l] = np.mean(psd) # len(freqs) can be 0 if signal is all DC
+                else: features[(ch* self.numFeatures)+l] = 0
             if self.featureChoices.medianPSD: # median Power
                 l += 1   
-                if len(freqs) > 0: features[(k* self.numFeatures)+l] = np.median(psd) # len(freqs) can be 0 if signal is all DC
-                else: features[(k* self.numFeatures)+l] = 0
-            if self.featureChoices.appr_entropy:  # Approximate entorpy(X,M,R) X = data, M is , R is 30% standard deviation of X 
+                if len(freqs) > 0: features[(ch* self.numFeatures)+l] = np.median(psd) # len(freqs) can be 0 if signal is all DC
+                else: features[(ch* self.numFeatures)+l] = 0
+            if self.featureChoices.appr_entropy:  # Approximate entropy(X,M,R) X = data, M is , R is 30% standard deviation of X 
                 l += 1
-                features[(k* self.numFeatures)+l] = ant.app_entropy(ch) 
+                features[(ch* self.numFeatures)+l] = ant.app_entropy(epoch[:,ch]) 
             if self.featureChoices.perm_entropy: # permutation_entropy
                 l += 1
-                features[(k* self.numFeatures)+l] = ant.perm_entropy(ch,normalize=True)
+                features[(ch* self.numFeatures)+l] = ant.perm_entropy(epoch[:,ch],normalize=True)
             if self.featureChoices.spec_entropy:  # spectral Entropy
                 l += 1
-                features[(k* self.numFeatures)+l] = ant.spectral_entropy(ch, sf=sr, method='welch', nperseg = len(ch), normalize=True)
+                features[(ch* self.numFeatures)+l] = ant.spectral_entropy(epoch[:,ch], sf=sr, method='welch', nperseg = len(epoch[:,ch]), normalize=True)
             if self.featureChoices.svd_entropy:# svd Entropy
                 l += 1
-                features[(k* self.numFeatures)+l] = ant.svd_entropy(ch, normalize=True)
+                features[(ch* self.numFeatures)+l] = ant.svd_entropy(epoch[:,ch], normalize=True)
             if self.featureChoices.samp_entropy: # sample Entropy
                 l += 1
-                features[(k* self.numFeatures)+l] = ant.sample_entropy(ch)
+                features[(ch* self.numFeatures)+l] = ant.sample_entropy(epoch[:,ch])
             if self.featureChoices.rms: # rms
                 l += 1
-                features[(k* self.numFeatures)+l] = np.sqrt(np.mean(np.array(ch)**2))
+                features[(ch* self.numFeatures)+l] = np.sqrt(np.mean(np.array(epoch[:,ch])**2))
             if self.featureChoices.variance: # variance
                 l += 1    
-                features[(k* self.numFeatures)+l] =  np.var(ch)
+                features[(ch* self.numFeatures)+l] =  np.var(epoch[:,ch])
             if self.featureChoices.meanAbs: # Mean Absolute Value 
                 l += 1
-                features[(k* self.numFeatures)+l] = sum([np.linalg.norm(c) for c in ch])/len(ch)
+                features[(ch* self.numFeatures)+l] = sum([np.linalg.norm(c) for c in epoch[:,ch]])/len(epoch[:,ch])
             #if self.featureChoices.waveformLength: # waveformLength
             #    l += 1
-            #    features[(k* self.numFeatures)+l] = sum([np.linalg.norm(c-ch[inum]) for inum, c in enumerate(ch[1:])])
+            #    features[(ch* self.numFeatures)+l] = sum([np.linalg.norm(c-ch[inum]) for inum, c in enumerate(ch[1:])])
             if self.featureChoices.zeroCross: # zeroCross
                 l += 1
-                features[(k* self.numFeatures)+l] = sum([1 if c*ch[inum+1]<0 else 0 for inum, c in enumerate(ch[:-1])])
+                features[(ch* self.numFeatures)+l] = sum([1 if c*epoch[:,ch][inum+1]<0 else 0 for inum, c in enumerate(epoch[:,ch][:-1])])
             #if self.featureChoices.slopeSignChange: # slopeSignChange
             #    l += 1    
             #    ssc = sum([1 if (c-ch[inum+1])*(c-ch[inum+1])>=0.1 else 0 for inum, c in enumerate(ch[:-1])])
-            #    features[(k* self.numFeatures)+l] = ssc
-        #features[np.isnan(features)] = 0 # checks for nans
-        #features[features == np.inf] = 0 # checks for infs
+            #    features[(ch self.numFeatures)+l] = ssc
+        features[np.isnan(features)] = 0 # checks for nans
+        features[features == np.inf] = 0#np.iinfo(np.int32).max
         #print(features)
+        if (self.logger.level == Logger.TIMING):
+            end = time.time()
+            self.logger.log(Logger.TIMING, f" Generic Feature Extraction time {end - start}")
         return features
     
 class GazeFeatureExtractor():

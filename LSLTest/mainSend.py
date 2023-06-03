@@ -31,7 +31,7 @@ class Window(QtWidgets.QWidget):
     commandDataConfigs = [PsuedoEMGDataConfig(), PsuedoEMGDataConfig(), PsuedoEMGDataConfig(), PsuedoEMGDataConfig(),PsuedoEMGDataConfig()]
     baselineConfig  = PsuedoEMGDataConfig()
     currentMarker = "Marker1"
-    totchs = 30
+    totchs = 60
     x = deque([x/250 for x in range(250*5)]) #np.zeros(250*5) # this can be edited to change width of x axis 
     y = [deque([0 for x in range(250*5)])  for y in range(totchs)]
     markerOccurred = False

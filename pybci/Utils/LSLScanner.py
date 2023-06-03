@@ -53,8 +53,8 @@ class LSLScanner:
             for s in dataStreams:
                 name = s.info().name()
                 if name not in self.dataStreamsNames:
-                    self.logger.log(Logger.WARNING,"Predefined LSL Data Stream name not present.")
-                    self.logger.log(Logger.WARNING, "Available Streams: "+str([s.info().name() for s in dataStreams]))
+                    self.logger.log(Logger.WARNING," Predefined LSL Data Stream name not present.")
+                    self.logger.log(Logger.WARNING, " Available Streams: "+str([s.info().name() for s in dataStreams]))
                 else:
                     self.dataStreams.append(s)
         else: # just add all datastreams as none were specified
@@ -74,8 +74,8 @@ class LSLScanner:
             for s in markerStreams:
                 name = s.info().name()
                 if name != self.markerStreamName:
-                    self.logger.log(Logger.WARNING,"Predefined LSL Marker Stream name not present.")
-                    self.logger.log(Logger.WARNING, "Available Streams: "+str([s.info().name() for s in markerStreams]))
+                    self.logger.log(Logger.WARNING," Predefined LSL Marker Stream name not present.")
+                    self.logger.log(Logger.WARNING, " Available Streams: "+str([s.info().name() for s in markerStreams]))
                 else:
                     self.markerStream = s
         else:
@@ -84,17 +84,20 @@ class LSLScanner:
 
     def CheckAvailableLSL(self):
         """Checks streaminlets available, 
-        Returns:
-            True = 1 marker stream present and available datastreams are present
-            False = If no datastreams are present and/or more or less then one marker stream is present, requires hard selection or markser stream if too many.
+        Returns
+        -------
+        bool :
+            True if 1 marker stream present and available datastreams are present.
+            False if no datastreams are present and/or more or less then one marker stream is present, requires hard selection or markser stream if too many.
         """
         self.ScanStreams()
         if self.markerStream == None:
-            self.logger.log(Logger.WARNING,"No Marker streams available, make sure your accepted marker data Type have been set in bci.lslScanner.markerTypes correctly.")
+            self.logger.log(Logger.WARNING," No Marker streams available, make sure your accepted marker data Type have been set in bci.lslScanner.markerTypes correctly.")
         if len(self.dataStreams) == 0:
-            self.logger.log(Logger.WARNING,"No data streams available, make sure your streamTypes have been set in bci.lslScanner.dataStream correctly.")
+            self.logger.log(Logger.WARNING," No data streams available, make sure your streamTypes have been set in bci.lslScanner.dataStream correctly.")
         if len(self.dataStreams) > 0 and self.markerStream !=None:
-            self.logger.log(Logger.INFO,"Success - "+str(len(self.dataStreams))+" data stream(s) found, 1 marker stream found")
+            self.logger.log(Logger.INFO," Success - "+str(len(self.dataStreams))+" data stream(s) found, 1 marker stream found")
+        
         if len(self.dataStreams) > 0 and self.markerStream != None:
             self.parent.dataStreams = self.dataStreams
             self.parent.markerStream = self.markerStream

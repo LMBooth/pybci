@@ -1,5 +1,5 @@
 class GlobalEpochSettings:
-    splitCheck = False  # checks whether or not subdivide epochs
+    splitCheck = True  # checks whether or not subdivide epochs
     tmin = 0      # time in seconds to capture samples before trigger
     tmax = 1      # time in seconds to capture samples after trigger
     windowLength = 0.5    # if splitcheck true - time in seconds to split epoch
@@ -8,6 +8,6 @@ class GlobalEpochSettings:
 
 # customWindowSettings should be dict with marker name and IndividualEpochSetting
 class IndividualEpochSetting:
-    splitCheck = False  # checks whether or not subdivide epochs
+    splitCheck = True  # checks whether or not subdivide epochs
     tmin = 0      # time in seconds to capture samples before trigger
     tmax=  1      # time in seconds to capture samples after trigger

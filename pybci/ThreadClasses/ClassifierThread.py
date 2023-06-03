@@ -6,7 +6,7 @@ class ClassifierThread(threading.Thread):
     features = []
     targets = []
     mode = "train"
-    guess = None
+    guess = " "
     epochCounts = {} 
     def __init__(self, closeEvent,trainTestEvent, featureQueueTest,featureQueueTrain, classifierInfoQueue, classifierInfoRetrieveEvent, 
                  classifierGuessMarkerQueue, classifierGuessMarkerEvent, queryFeaturesQueue, queryFeaturesEvent,
@@ -51,11 +51,11 @@ class ClassifierThread(threading.Thread):
                                 else: 
                                     start = time.time()
                                     self.classifier.TrainModel(self.features, self.targets)
-                                    if (self.logger.level == Logger.INFO):
+                                    if (self.logger.level == Logger.TIMING):
                                         end = time.time()
-                                        self.logger.log(Logger.INFO, f" classifier training time {end - start}")
+                                        self.logger.log(Logger.TIMING, f" classifier training time {end - start}")
                             if self.classifierGuessMarkerEvent.is_set():
-                                self.classifierGuessMarkerQueue.put(None)
+                                self.classifierGuessMarkerQueue.put(self.guess)
                     else: # Only one device to collect from
                         self.targets.append(target)
                         self.features.append(featuresSingle)
@@ -66,11 +66,11 @@ class ClassifierThread(threading.Thread):
                             else: 
                                 start = time.time()
                                 self.classifier.TrainModel(self.features, self.targets)
-                                if (self.logger.level == Logger.INFO):
+                                if (self.logger.level == Logger.TIMING):
                                     end = time.time()
-                                    self.logger.log(Logger.INFO, f" classifier training time {end - start}")
+                                    self.logger.log(Logger.TIMING, f" classifier training time {end - start}")
                         if self.classifierGuessMarkerEvent.is_set():
-                            self.classifierGuessMarkerQueue.put(None)
+                            self.classifierGuessMarkerQueue.put(self.guess)
                 except queue.Empty:
                     pass
             else: # We're testing!
@@ -85,25 +85,26 @@ class ClassifierThread(threading.Thread):
                             tempdatatest = {}
                             start = time.time()
                             self.guess = self.classifier.TestModel(flattened_list)
-                            if (self.logger.level == Logger.INFO):
+                            if (self.logger.level == Logger.TIMING):
                                 end = time.time()
-                                self.logger.log(Logger.INFO, f" classifier testing time {end - start}")
+                                self.logger.log(Logger.TIMING, f" classifier testing time {end - start}")
                     else:
                         start = time.time()
                         self.guess = self.classifier.TestModel(featuresSingle)
-                        if (self.logger.level == Logger.INFO):
+                        if (self.logger.level == Logger.TIMING):
                             end = time.time()
-                            self.logger.log(Logger.INFO, f" classifier testing time {end - start}")
+                            self.logger.log(Logger.TIMING, f" classifier testing time {end - start}")
                     if self.classifierGuessMarkerEvent.is_set():
                         self.classifierGuessMarkerQueue.put(self.guess)
                 except queue.Empty:
                     pass
             if self.classifierInfoRetrieveEvent.is_set():
+                a = self.classifier.accuracy
                 classdata = {
                     "clf":self.classifier.clf,
                     "model":self.classifier.model,
                     "torchModel":self.classifier.torchModel,
-                    "accuracy":self.classifier.accuracy
+                    "accuracy":a
                     }
                 self.classifierInfoQueue.put(classdata) 
             if self.queryFeaturesEvent.is_set():
