@@ -253,13 +253,13 @@ class PyBCI:
             if stream.info().name() in self.streamCustomFeatureExtract.keys():
                 self.ft = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueueTrain, self.dataQueueTest,
                                                 self.featureQueueTest,self.featureQueueTrain, len(self.dataStreams),
-                                                self.markerCountRetrieveEvent, self.markerCountQueue,
+                                                self.markerCountRetrieveEvent, self.markerCountQueue,logger=self.logger,
                                                 featureExtractor = self.streamCustomFeatureExtract[stream.info().name()],
                                                 globalEpochSettings = self.globalEpochSettings, customEpochSettings = self.customEpochSettings)
             else:
                 self.ft = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueueTrain, self.dataQueueTest,
                                                 self.featureQueueTest,self.featureQueueTrain, len(self.dataStreams),
-                                                self.markerCountRetrieveEvent, self.markerCountQueue,
+                                                self.markerCountRetrieveEvent, self.markerCountQueue,logger=self.logger,
                                                 globalEpochSettings = self.globalEpochSettings, customEpochSettings = self.customEpochSettings)
             self.ft.start()
             self.featureThreads.append(dt)

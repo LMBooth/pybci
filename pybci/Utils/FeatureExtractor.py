@@ -3,7 +3,6 @@ import numpy as np
 from scipy.signal import welch
 from scipy.integrate import simps
 import warnings, time
-from ..Utils.Logger import Logger
 from ..Configuration.FeatureSettings import GeneralFeatureChoices
 # Filter out UserWarning messages from the scipy package, could be worth moving to init and applying printdebug print levels? (typically nans, 0 and infs causing errors)
 warnings.filterwarnings("ignore", category=UserWarning, module="scipy") # used to reduce print statements from constant signals being applied
@@ -13,15 +12,12 @@ warnings.filterwarnings("ignore", category=RuntimeWarning, module="numpy") # use
 #warnings.filterwarnings("ignore", category=RuntimeWarning, module="pybci") # used to reduce print statements from constant signals being applied
 
 class GenericFeatureExtractor():
-    logger = Logger(Logger.INFO)
-
-    def __init__(self, logger = Logger(Logger.INFO), freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
+    def __init__(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
         super().__init__()
         self.freqbands = freqbands
         self.featureChoices = featureChoices
         #for key, value in self.featureChoices.__dict__.items():
         #    print(f"{key} = {value}")
-        self.logger = logger
         selFeats = sum([self.featureChoices.appr_entropy,
             self.featureChoices.perm_entropy,
             self.featureChoices.spec_entropy,
@@ -52,9 +48,6 @@ class GenericFeatureExtractor():
             target = same as input target, can be useful for using a baseline number differently
         NOTE: Any channels with a constant value will generate warnings in any frequency based features (constant level == no frequency components).
         """
-        #print(np.array(epoch).shape)
-        #print(epoch)
-        start = time.time()
         numchs = epoch.shape[1]
         features = np.zeros(numchs * self.numFeatures)
 
@@ -122,9 +115,7 @@ class GenericFeatureExtractor():
         features[np.isnan(features)] = 0 # checks for nans
         features[features == np.inf] = 0#np.iinfo(np.int32).max
         #print(features)
-        if (self.logger.level == Logger.TIMING):
-            end = time.time()
-            self.logger.log(Logger.TIMING, f" Generic Feature Extraction time {end - start}")
+        
         return features
     
 class GazeFeatureExtractor():

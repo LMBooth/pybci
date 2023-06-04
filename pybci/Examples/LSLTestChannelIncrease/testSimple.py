@@ -10,7 +10,7 @@ featureChoices.psdBand = False
 featureChoices.meanPSD = False
 featureChoices.medianPSD = False
 
-streamCustomFeatureExtract = {"sendTest": GenericFeatureExtractor(logger = Logger(Logger.TIMING), featureChoices=featureChoices)}
+streamCustomFeatureExtract = {"sendTest": GenericFeatureExtractor(logger = Logger(Logger.INFO), featureChoices=featureChoices)}
 
 bci = PyBCI(minimumEpochsRequired = 4, streamChsDropDict={"sendTest":dropchs}, streamCustomFeatureExtract = streamCustomFeatureExtract)#, streamChsDropDict={"sendTest":dropchs})#, loggingLevel = Logger.NONE)
 while not bci.connected: # check to see if lsl marker and datastream are available

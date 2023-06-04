@@ -3,7 +3,7 @@ from pybci import PyBCI
 from pybci.Utils.Logger import Logger
 import numpy as np
 
-bci = PyBCI(minimumEpochsRequired = 4)#, streamChsDropDict={"sendTest":dropchs})#, loggingLevel = Logger.NONE)
+bci = PyBCI(minimumEpochsRequired = 4)#, loggingLevel = Logger.TIMING)# loggingLevel = Logger.NONE)
 while not bci.connected: # check to see if lsl marker and datastream are available
     bci.Connect()
     time.sleep(1)
