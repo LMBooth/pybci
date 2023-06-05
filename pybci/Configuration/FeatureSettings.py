@@ -10,6 +10,6 @@ class GeneralFeatureChoices:
     medianPSD = True
     variance = True
     meanAbs = True
-    #waveformLength = False
+    waveformLength = False
     zeroCross = False
-    #slopeSignChange = False
+    slopeSignChange = False
