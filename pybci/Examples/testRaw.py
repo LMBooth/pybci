@@ -1,69 +1,79 @@
-import time, sys
-sys.path.append('../')  # add the parent directory of 'utils' to sys.path, whilst in beta build.
-from pybci import PyBCI
-from pybci.Configuration.EpochSettings import GlobalEpochSettings
-
-import torch
+import torch, time
 from torch.utils.data import DataLoader, TensorDataset
 from torch import nn
+from pybci import PyBCI
+import numpy as np
+from pybci.Utils.Logger import Logger
 
-class SimpleNN(nn.Module):
-    def __init__(self, input_size, hidden_size, num_classes):
-        super(SimpleNN, self).__init__()
-        self.fc1 = nn.Linear(input_size, hidden_size)
-        self.bn1 = nn.BatchNorm1d(hidden_size)
+num_chs = 1 # 8 channels re created in the PsuedoLSLGwnerator, but we drop 7 as time series is computationally expensive!
+sum_samps = 125 # sample rate is 250 in the PsuedoLSLGwnerator
+num_classes = 3 # number of different triggers (can include baseline) sent, defines if we use softmax of binary
+
+class ConvNet(nn.Module):
+    def __init__(self, num_channels, num_samples, num_classes):
+        super(ConvNet, self).__init__()
+        self.conv1 = nn.Conv1d(num_channels, 64, kernel_size=5, stride=1, padding=2)
         self.relu = nn.ReLU()
-        self.fc2 = nn.Linear(hidden_size, hidden_size)
-        self.bn2 = nn.BatchNorm1d(hidden_size)
-        self.fc3 = nn.Linear(hidden_size, num_classes)
-    
-    def forward(self, x):
-        out = self.fc1(x)
-        out = self.bn1(out)
-        out = self.relu(out)
-        out = self.fc2(out)
-        out = self.bn2(out)
-        out = self.relu(out)
-        out = self.fc3(out)
-        return out
+        self.pool = nn.MaxPool1d(kernel_size=2)
+        self.conv2 = nn.Conv1d(64, 128, kernel_size=5, stride=1, padding=2)
+        self.fc = nn.Linear(int(num_samples/2/2)*128, num_classes)  # Depending on your pooling and stride you might need to adjust the input size here
 
+    def forward(self, x):
+        out = self.conv1(x)
+        out = self.relu(out)
+        out = self.pool(out)
+        out = self.conv2(out)
+        out = self.relu(out)
+        out = self.pool(out)
+        out = out.reshape(out.size(0), -1)
+        out = self.fc(out)
+        return out
+    
 def PyTorchModel(x_train, x_test, y_train, y_test ):
-    input_size = 9*8  # Number of input features* channels
-    hidden_size = 100  # Size of hidden layer
-    num_classes = 3  # Number of output classes
-    print("build model...")
-    model = SimpleNN(input_size, hidden_size, num_classes)
+    model = ConvNet(num_chs, sum_samps, num_classes)
     model.train()
-    print("training...")
     #criterion = torch.nn.BCELoss()
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     #optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
     epochs = 10
-    train_data = TensorDataset(torch.Tensor(x_train), torch.Tensor(y_train))
+    train_data = TensorDataset(torch.Tensor(x_train), torch.Tensor(y_train).long())
     train_loader = DataLoader(dataset=train_data, batch_size=32, shuffle=True)
     for epoch in range(epochs):
         for inputs, labels in train_loader:
             optimizer.zero_grad()
             outputs = model(inputs)
-            loss = criterion(outputs, labels.long())
+            loss = criterion(outputs, labels)
             loss.backward()
             optimizer.step()
     model.eval()
     accuracy = 0
-    print("trained.")
     with torch.no_grad():
         test_outputs = model(torch.Tensor(x_test))
         _, predicted = torch.max(test_outputs.data, 1)
-        correct = (predicted == torch.Tensor(y_test)).sum().item()
+        correct = (predicted == torch.Tensor(y_test).long()).sum().item()
         accuracy = correct / len(y_test)
     return accuracy, model # must return accuracy and model for pytorch!
 
-generalEpochSettings = GlobalEpochSettings() # get general epoch time window settings (found in Configuration.EpochSettings.GlobalEpochSettings)
-#generalEpochSettings.windowLength = 1 # == tmax+tmin if generalEpochSettings.splitcheck is False, splits specified epochs in customEpochSettings
+class RawDecode():
+    desired_length = 0
+    def ProcessFeatures(self, epochData, sr, target): 
+        #print(epochData.T.shape)
+        d = epochData.T
+        if self.desired_length == 0: # needed as windows may be differing sizes due to timestamp varience on LSL
+            self.desired_length = d.shape[1]
+        if d.shape[1] != self.desired_length:
+            #for ch in range(d.shape[0]):
+            d = np.resize(d, (d.shape[0],self.desired_length))
+        #print("rawdecode shape: ", d.shape)
+        return d # we tranposeas using forloop for standardscalar normalises based on [channel,feature], whereas pull_chunk is [sample, channel]
+        # for time series data we want to normalise each channel relative to itself
 
-bci = PyBCI(minimumEpochsRequired = 4, globalEpochSettings = generalEpochSettings,  torchModel = PyTorchModel)
-
+dropchs = [x for x in range(1,8)] #
+print(dropchs)
+streamChsDropDict={"sendTest":dropchs}
+streamCustomFeatureExtract = {"sendTest" : RawDecode()} # we select psuedolslgenerator example
+bci = PyBCI(minimumEpochsRequired = 4, streamCustomFeatureExtract=streamCustomFeatureExtract,streamChsDropDict=streamChsDropDict, torchModel = PyTorchModel, loggingLevel = Logger.TIMING)
 while not bci.connected:
     bci.Connect()
     time.sleep(1)

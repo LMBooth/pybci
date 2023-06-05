@@ -13,4 +13,3 @@ class GeneralFeatureChoices:
     waveformLength = False
     zeroCross = False
     slopeSignChange = False
-

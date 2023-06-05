@@ -16,11 +16,12 @@ class PupilGazeDecode():
             bothmean = np.mean([(epochData[:,20][i] + epochData[:,21][i]) / 2 for i in range(len(epochData[:,20]))]) # mean of both eyes in 3d
             #print(np.nan_to_num([rightmean,leftmean,bothmean]))
             return np.nan_to_num([rightmean,leftmean,bothmean]) #  expects 1d
-    
+
 streamCustomFeatureExtract = {"pupil_capture" : PupilGazeDecode()}
 dataStreamName = ["pupil_capture"]
-# Recommended to probably drop alot of channels unused channels as Asynchronous data streams like pupil-gazr can be computationally more expensive then synchrnous slicing,
-# if finding performance issues or markers not received  consider add to streamChsDropDict = {"pupil_capture" = range(20)} to PyBCI intiialise, then changeephcData[20] and [21] to 0 and 1 in PupilGazeDecode()
+# Can drop unused channels to save some CPU time,
+# if finding performance issues or markers not received  consider add to streamChsDropDict = {"pupil_capture" = range(20)} to PyBCI intiialise, 
+# then changeephcData[20] and [21] to 0 and 1 in PupilGazeDecode()
 bci = PyBCI(dataStreams = dataStreamName,markerStream="TestMarkers", minimumEpochsRequired = 4, streamCustomFeatureExtract=streamCustomFeatureExtract)
 while not bci.connected: # check to see if lsl marker and datastream are available
     bci.Connect()

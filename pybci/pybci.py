@@ -272,6 +272,8 @@ class PyBCI:
                                                  logger = self.logger, numStreamDevices = len(self.dataThreads), minRequiredEpochs = self.minimumEpochsRequired,
                                                 clf = self.clf, model = self.model, torchModel = self.torchModel)
         self.classifierThread.start()
+        self.logger.log(Logger.INFO," Threads initialised.")
+
 
     def StopThreads(self):
         """
@@ -303,7 +305,7 @@ class PyBCI:
                 self.model = None
                 self.logger.log(Logger.INFO," Invalid or no tensorflow model passed to model.  Checking pytorch torchModel...")
                 if callable(torchModel): # isinstance(torchModel, torch.nn.Module):
-                    self.torchModel = model
+                    self.torchModel = torchModel
                 else:
                     self.torchModel = None
                     self.logger.log(Logger.INFO," Invalid or no PyTorch model passed to model. Defaulting to SVM by SkLearn")

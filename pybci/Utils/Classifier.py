@@ -21,7 +21,7 @@ class Classifier():
         elif model != None:
             self.model = model
         elif torchModel != None:
-            self.torchModel = model
+            self.torchModel = torchModel
         self.CheckClassifierLibrary()
 
     def CheckClassifierLibrary(self):
@@ -32,18 +32,24 @@ class Classifier():
         elif self.clf != None: # maybe requires actual check for sklearn clf
             self.classifierLibrary = "sklearn"
 
-
     def TrainModel(self, features, targets):
         x_train, x_test, y_train, y_test = train_test_split(features, targets, shuffle = True, test_size=0.2)
-        self.scaler = StandardScaler() # normalise our data (everything is a 0 or a 1 if you think about it, cheers georgey boy boole)
-        self.scaler.fit(x_train)  # Compute the mean and standard deviation based on the training data
-        x_train = self.scaler.transform(x_train)  # Scale the training data
-        x_test = self.scaler.transform(x_test)  # Scale the test data
+        #print(features.shape)
+        #print(x_train.shape)
+        if len(features.shape)==3:
+            self.scaler = [StandardScaler() for scaler in range(features.shape[1])] # normalise our data (everything is a 0 or a 1 if you think about it, cheers georgey boy boole)
+            for e in range(features.shape[1]): # this would normalise the channel, maybe better to normalise across other dimension
+                x_train[:,e,:] = self.scaler[e].fit_transform(x_train[:,e,:]) # Compute the mean and standard deviation based on the training data
+                x_test[:,e,:] = self.scaler[e].transform(x_test[:,e,:])  # Scale the test data
+        elif len(features.shape)== 2:    
+            self.scaler = StandardScaler() # normalise our data (everything is a 0 or a 1 if you think about it, cheers georgey boy boole)
+            x_train = self.scaler.fit_transform(x_train)  # Compute the mean and standard deviation based on the training data
+            x_test = self.scaler.transform(x_test)  # Scale the test data
         if all(item == y_train[0] for item in y_train):
             pass
         else:
             #print(x_train, y_train)
-            if self.classifierLibrary == "pytorch":
+            if self.classifierLibrary == "pyTorch":
                 self.accuracy, self.pymodel  = self.torchModel(x_train, x_test, y_train, y_test)
             elif self.classifierLibrary == "sklearn":
                 self.clf.fit(x_train, y_train)
@@ -57,7 +63,11 @@ class Classifier():
                 pass
 
     def TestModel(self, x):
-        x = self.scaler.transform([x])[0]  # Scale the test data
+        if len(x.shape)==2:
+            for e in range(x.shape[0]):
+                x[e,:] = self.scaler[e].transform([x[e,:]])[0]
+        elif len(x.shape)== 1:       
+            x = self.scaler.transform([x])[0]  # Scale the test data
         if self.classifierLibrary == "sklearn":
             x = np.expand_dims(x, axis=0)
             return self.clf.predict(x)

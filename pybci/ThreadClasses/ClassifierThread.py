@@ -1,10 +1,11 @@
 from ..Utils.Classifier import Classifier 
 from ..Utils.Logger import Logger
 import queue,threading, time
+import numpy as np
 
 class ClassifierThread(threading.Thread):
-    features = []
-    targets = []
+    features = np.array([])#[]
+    targets = np.array([])
     mode = "train"
     guess = " "
     epochCounts = {} 
@@ -27,6 +28,8 @@ class ClassifierThread(threading.Thread):
         self.queryFeaturesEvent = queryFeaturesEvent
         self.numStreamDevices = numStreamDevices
         self.logger = logger
+        #self.features = np.array([])#[]
+        #self.targets = np.array([])
 
     def run(self):
         if self.numStreamDevices > 1:
@@ -36,13 +39,15 @@ class ClassifierThread(threading.Thread):
             if self.trainTestEvent.is_set(): # We're training!
                 try:
                     featuresSingle, devCount, target, self.epochCounts = self.featureQueueTrain.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
+                    
                     if self.numStreamDevices > 1: # Collects multiple data strems feature sets and synchronise here
                         tempdatatrain[devCount] = featuresSingle
                         if len(tempdatatrain) == self.numStreamDevices:
                             flattened_list = [item for sublist in tempdatatrain.values() for item in sublist]
                             tempdatatrain = {}
-                            self.targets.append(target)
-                            self.features.append(flattened_list)
+                            self.targets = np.append(self.targets, [target], axis = 0)
+                            #print(self.features.shape)
+                            self.features = np.append(self.features, [flattened_list], axis = 0)
                         # need to check if all device data is captured, then flatten and append
                             if len(self.epochCounts) > 1: # check if there is more then one test condition
                                 minNumKeyEpochs = min([self.epochCounts[key][1] for key in self.epochCounts]) # check minimum viable number of training eochs have been obtained
@@ -57,8 +62,15 @@ class ClassifierThread(threading.Thread):
                             if self.classifierGuessMarkerEvent.is_set():
                                 self.classifierGuessMarkerQueue.put(self.guess)
                     else: # Only one device to collect from
-                        self.targets.append(target)
-                        self.features.append(featuresSingle)
+                        #self.targets.append(target)
+                        if self.features.shape[0] == 0:
+                            #print("reshaping")
+                            self.features = self.features.reshape((0,) + featuresSingle.shape)
+                        #self.features.append(featuresSingle)
+                        #print("target shape", self.targets.shape)
+                        self.targets = np.append(self.targets, [target], axis = 0)
+                        #print("feature shape ",self.features.shape)
+                        self.features = np.append(self.features, [featuresSingle], axis = 0)
                         if len(self.epochCounts) > 1: # check if there is more then one test condition
                             minNumKeyEpochs = min([self.epochCounts[key][1] for key in self.epochCounts]) # check minimum viable number of training eochs have been obtained
                             if minNumKeyEpochs < self.minRequiredEpochs:
@@ -90,6 +102,7 @@ class ClassifierThread(threading.Thread):
                                 self.logger.log(Logger.TIMING, f" classifier testing time {end - start}")
                     else:
                         start = time.time()
+                        #print(featuresSingle)
                         self.guess = self.classifier.TestModel(featuresSingle)
                         if (self.logger.level == Logger.TIMING):
                             end = time.time()
