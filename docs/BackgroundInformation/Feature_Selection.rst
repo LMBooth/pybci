@@ -1,12 +1,18 @@
 Feature Selection
 ############
+
+Recommended Debugging
+--------------------------------
+When initialisaing the :class:`PyBCI()` class we can set :class:`logger` to "TIMING" to time our feature extraction time, note a warning will be produced if the feature extraction time is longer then the windowLength*(1-windowOverlap), if this is the case a delay will continuously grow as data builds in the queues. To fix this reduce channel count, feature count, feature complexity, or sample rate until the feature extraction time is acceptable, this will help create near-real-time classification.
+
+
 .. _generic-extractor:
 Generic Time-Series Feature Extractor
 --------------------------------
 
 The `generic feature extractor class found here <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_ shows how :class:`GenericFeatureExtractor()` is computationally executed for each of the below boolean feature choices. The `FeatureSettings class GeneralFeatureChoices <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_ gives a quick method for selecting the time and/or frequency based feature extraction techniques - useful for reducing overall stored data.
 
-The features can be selected by setting the respective attributes in the GeneralFeatureChoices class to True. When initialising :class:`PyBCI()` we can pass :class:`configuration.GeneralFeatureChoices()` to :class:`featureChoices` which offers a list boolean for the following features:
+The features can be selected by setting the respective attributes in the GeneralFeatureChoices class to True. When initialising :class:`PyBCI()` we can pass :class:`configuration.GeneralFeatureChoices()` to :class:`featureChoices` which offers a list boolean for the following features, not all options are set by default to reduce computation time:
 
 .. code-block:: python
 
