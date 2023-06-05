@@ -3,7 +3,7 @@ Theory of Operation
 
 1. Requirements Prior Initialising with `bci = PyBCI()`
 =========================================================
-The bci must have ==1 LSL marker stream selected (if more then one LSL marker stream on system set the desired ML training marker stream with :class:`markerStream` to  :py:class:`PyBCI()`). Warning: If None set it picks first available in list, if more then one marker stream available to LSL then it is advised to hard select on intialisation.
+The bci must have ==1 LSL marker stream selected (if more then one LSL marker stream is on the system it is recommended to set the desired ML training marker stream with :class:`markerStream` to  :py:class:`PyBCI()`). Warning: If None set it picks first available in list.
 
 2. Thread Creation
 =========================================================
@@ -15,19 +15,19 @@ The marker stream has its own thread which recieves markers from the target LSL 
 
 2.2 Data Threads
 **********************************************
-Each data stream has its two threads created, one data and one feautre extractor, the thread is responsible for pipelining received data on `deque` FIFO's and optionally slicing and overlapping so many seconds before and after the marker appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_, set with :class:`globalEpochSettings` and :class:`customEpochSettings` when initialising :py:class:`PyBCI()`.
+Each data stream has two threads created, one data and one feature extractor. The data thread is responsible for setting pre-allocated numpy arrays for each data stream inlet which pulls chunks of data from the LSL. When in training mode it gathers data so many seconds before and after a marker to prepare for feature extraction, with the option of slicing and overlapping so many seconds before and after the marker appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_, set with :class:`globalEpochSettings` and :class:`customEpochSettings` when initialising :py:class:`PyBCI()`.
 
-Add desired dataStreams by passing a list of accepted data stream names with `dataStreams`.
+Add desired dataStreams by passing a list of accepted data stream names with :class:`dataStreams`. By setting :class:`dataStreams` all other data inlets will be ignored except those in this list.
 
-Upon data thread creation the effective sample rate is queried for each LSL data stream, if the sample rate is 0 an `Asynchronous thread <https://github.com/LMBooth/pybci/blob/main/pybci/ThreadClasses/AsyncDataReceiverThread.py>`_ is created for FIFO handling, though potentially more accurate, it is far more computationally intensive to slice data than the `synchronous data thread <https://github.com/LMBooth/pybci/blob/main/pybci/ThreadClasses/DataReceiverThread.py>`_. If n effective sample rate  greater than 0 is supplised by the LSL datastream a syncrhnous data thread is used for slicing epochs relative to markers in training mode and continously slices in testing mode.
+Note: Data so many seconds before and after the relative marker timestamp is decided by the data relative timestamps. If the LSL data stream pushes chunks infrequently [ > (windowLength - (1-windowOverlap))] and doesn't give each sample its own overwritten timestamp issues could occur. (Kept legacy data threads AsyncDataReceiver and DataReceiver in threads folder in case modifications needed based on so many samples before and after decided by expected sample rate if people find this becomes an issue for certain devices)
 
 2.3 Feature Extractor Threads
 **********************************************
-The feature extractor threads receive data from their corresponding data stream thread and prepares epoch data for reunification in the classification thread with other devices in the same epoch.
+The feature extractor threads receive data from their corresponding data thread and prepares epoch data for re-unification in the classification thread with other devices in the same epoch.
 
 The feature extraction techniques used can vary drastically between devices, to resolve this custom classes can be created to deal with specific stream types and passed to :class:`streamCustomFeatureExtract` when initialising  :py:class:`PyBCI()`, discussed more in :ref:`custom-extractor`.
 
-The default feature extraction used is :ref:`GeneralFeatureChoices` found in `FeatureSettings.py <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_, see :ref:`generic-extractor` for more details.
+The default feature extraction used is :ref:`GenericFeatureExtractor` found in `FeatureSettings.py <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_, with :ref:`GeneralFeatureChoices` found in `FeatureSettings.py <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_, see :ref:`generic-extractor` for more details.
 
 2.4 Classifier Thread
 **********************************************
