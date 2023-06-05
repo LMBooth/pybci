@@ -31,13 +31,15 @@ The default feature extraction used is :ref:`GenericFeatureExtractor` found in `
 
 Classifier Thread
 **********************************************
-The Classifier thread is responsible for receiving data from the various feature extraction threads, synchronising based on the number of target data streams, then uses the features and target marker values for testing and training the selected machine learning tensorflow or scikit-learn model or classifier. If a valid marker stream and datastream/s are available we can start the bci machine learning training by calling :func:`PyBCI.TrainMode()`.
+The Classifier thread is responsible for receiving data from the various feature extraction threads, synchronising based on the number of data streams, then uses the features and target marker values for testing and training the selected machine learning tensorflow or scikit-learn model or classifier. If a valid marker stream and datastream/s are available we can start the bci machine learning training by calling :func:`PyBCI.TrainMode()`.
 
 Once in test mode a datathreads continuously slice time windows of data and optionally overlap these windows - according to :class:`globalEpochSettings`when initialising :py:class:`PyBCI()` - nd test the extracted features against the currently fit model. 
 
 If the model is not performing well the user can always swap back to training model to gather more data with :func:`PyBCI.TestMode()`.
 
-To set you own clf and model see the examples found `here for sklearn <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_, and `here for tensorflow <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testTensorflow.py>`_.
+Custom Sci-Kit-Learn and Pytorch clf and models can be used, see the examples found `here for sklearn <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_, and  `here for PyTorch <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPyTorch.py>`_.
+
+Tensorflow can also be used `found here <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testTensorflow.py>`_, (Should be noted in PyBCI there is currently no suppression for tensorflow text prompts and the model training and tsting time can be substantially longer then pytorch and sklearn. Any recommendations are welcome in the issues on the git!)
 
 The figure below illustrates the general flow of data between threads on initialisation:
 
