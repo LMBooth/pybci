@@ -10,9 +10,11 @@ When initialisaing the :class:`PyBCI()` class we can set :class:`logger` to "TIM
 Generic Time-Series Feature Extractor
 --------------------------------
 
-The `generic feature extractor class found here <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_ shows how :class:`GenericFeatureExtractor()` is computationally executed for each of the below boolean feature choices. The `FeatureSettings class GeneralFeatureChoices <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_ gives a quick method for selecting the time and/or frequency based feature extraction techniques - useful for reducing overall stored data.
+The `generic feature extractor class found here <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_ is the default feature extractor for obtaining generic time-series features to a 1d list for classification, note this is used if nothing is passed to :class:`streamCustomFeatureExtract` for its respective datastream. See :ref:`custom-extractor` and :ref:`raw-extractor` for other feature extraction methods.
 
-The features can be selected by setting the respective attributes in the GeneralFeatureChoices class to True. When initialising :class:`PyBCI()` we can pass :class:`configuration.GeneralFeatureChoices()` to :class:`featureChoices` which offers a list boolean for the following features, not all options are set by default to reduce computation time:
+The available features can be  for each of the below boolean feature choices. The `FeatureSettings class GeneralFeatureChoices <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_ gives a quick method for selecting the time and/or frequency based feature extraction techniques - useful for reducing stored data and computational complexity.
+
+The features can be selected by setting the respective attributes in the :class:`GeneralFeatureChoices` class to True. When initialising :class:`PyBCI()` we can pass :class:`configuration.GeneralFeatureChoices()` to :class:`featureChoices` which offers a list of booleans to decide the following features, not all options are set by default to reduce computation time:
 
 .. code-block:: python
 
@@ -47,21 +49,21 @@ Due to the idiosyncratic nature of each LSL data stream and the potential pre-pr
 .. code-block:: python
 
   class EMGClassifier():
-    def ProcessFeatures(self, epochData, sr, epochNum):
+    def ProcessFeatures(self, epochData, sr, epochNum): # Every custom class requires a function with this name and structure to extract the featur data and epochData is always [Samples, Channels]
         rmsCh1 = np.sqrt(np.mean(np.array(epochData[:,0])**2)))
         rmsCh2 = np.sqrt(np.mean(np.array(epochData[:,1])**2))) 
         rmsCh3 = np.sqrt(np.mean(np.array(epochData[:,2])**2))) 
         rmsCh4 = np.sqrt(np.mean(np.array(epochData[:,3])**2))) 
-        varCh1 = np.var(epochData[0]) 
-        varCh2 = np.var(epochData[1]) 
-        varCh3 = np.var(epochData[2]) 
-        varCh4 = np.var(epochData[3]) 
+        varCh1 = np.var(epochData[:,0]) 
+        varCh2 = np.var(epochData[:,1]) 
+        varCh3 = np.var(epochData[:,2]) 
+        varCh4 = np.var(epochData[:,3]) 
         return [rmsCh1, rmsCh2,rmsCh3,rmsCh4,varCh1,varCh2,varCh3,varCh4]
         
   streamCustomFeatureExtract = {"EMG":EMGClassifier()}
   bci = PyBCI(streamTypes = ["EMG"], streamCustomFeatureExtract=streamCustomFeatureExtract)
 
-NOTE: Every custom class for processing features requires the features to be processed in a function labelled with corresponding arguements as above, namely  :class:`def ProcessFeatures(self, epochData, sr, epochNum):`, the epochNum may be handy for distinguishing baseline information and holding that baseline information in the class to use with features from other markers (pupil data: baseline diameter change compared to stimulus, ECG: resting heart rate vs stimulus, heart rate variability, etc.). Look at :ref:`examples` for more inspiriation of custom class creation and integration.
+NOTE: Every custom class for processing features requires the features to be processed in a function labelled with corresponding arguements as above, namely  :class:`def ProcessFeatures(self, epochData, sr, epochNum):`, the epochNum may be handy for distinguishing baseline information and holding that baseline information in the class to use with features from other markers (pupil data: baseline diameter change compared to stimulus, ECG: resting heart rate vs stimulus, heart rate variability, etc.). Look at :ref:`examples` for more inspiriation of custom class creation and integration. 
 
 :class:`epochData` is a 2D array in the shape of [samps,chs] where chs is the number of channels on the LSL datastream after any are dropped with the variable :class:`streamChsDropDict` and samps is the number of samples captured in the epoch time window depending on the :class:`globalEpochSettings` and :class:`customEpochSettings` - see :ref:`_epoch_timing` for more information on epoch time windows.
 
@@ -77,8 +79,8 @@ If the raw time-series data is wanted to be the input for the classifier we can 
 
 .. code-block:: python
 
-  num_chs = 8 # 8 channels re created in the PsuedoLSLGwnerator
-  sum_samps = 250 # sample rate is 250 in the PsuedoLSLGwnerator
+  num_chs = 8 # 8 channels are created in the PsuedoLSLGenerator
+  sum_samps = 125 # sample rate is 250 in the PsuedoLSLGenerator and windowLength is 125
   num_classes = 3 # number of different triggers (can include baseline) sent, defines if we use softmax of binary
   model = tf.keras.Sequential()
   model.add(tf.keras.layers.Reshape((num_chs,sum_samps, 1), input_shape=(num_chs,sum_samps)))
@@ -88,14 +90,21 @@ If the raw time-series data is wanted to be the input for the classifier we can 
   model.add(tf.keras.layers.Dense(units=512, activation='relu'))
   model.add(tf.keras.layers.Flatten())#   )tf.keras.layers.Dense(units=128, activation='relu'))
   model.add(tf.keras.layers.Dense(units=num_classes, activation='softmax')) # softmax as more then binary classification (sparse_categorical_crossentropy)
-  #model.add(tf.keras.layers.Dense(units=1, activation='sigmoid')) # sigmoid as binary classification (binary_crossentropy)
   model.summary()
   model.compile(loss='sparse_categorical_crossentropy',# using sparse_categorical as we expect multi-class (>2) output, sparse because we encode targetvalues with integers
                 optimizer='adam',
                 metrics=['accuracy'])
   class RawDecode():
-      def ProcessFeatures(self, epochData, sr, epochNum): 
-          return epochData.T # tensorflow wants [chs,samps] for testing model
+      desired_length = 0
+      def ProcessFeatures(self, epochData, sr, target): 
+          d = epochData.T
+          if self.desired_length == 0: # needed as windows may be differing sizes due to timestamp variance on LSL
+              self.desired_length = d.shape[1]
+          if d.shape[1] != self.desired_length:
+              d = np.resize(d, (d.shape[0],self.desired_length))
+          return d # we tranposeas using forloop for standardscalar normalises based on [channel,feature], whereas pull_chunk is [sample, channel]
+
   streamCustomFeatureExtract = {"sendTest" : RawDecode()} # we select EMG as that is the default type in the psuedolslgenerator example
   bci = PyBCI(minimumEpochsRequired = 4, model = model, streamCustomFeatureExtract=streamCustomFeatureExtract )
 
+NOTE: In the above we transpose the input as the standard scaler setup currently normalises across the dimension channels in [features,channels], this is done as we want every feaure type to be scaled against every other channel of the same feature, where as in raw time-series it's desirable to scale across the dimension samples in [channels, samples], so each channels is normalised to itself. Could be contentious, do bring it up on the git if you wish!
