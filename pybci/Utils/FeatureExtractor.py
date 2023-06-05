@@ -29,7 +29,11 @@ class GenericFeatureExtractor():
             self.featureChoices.variance,
             self.featureChoices.meanAbs,
             self.featureChoices.waveformLength,
+<<<<<<< Updated upstream
             self.featureChoices.zeroCross]
+=======
+            self.featureChoices.zeroCross,
+>>>>>>> Stashed changes
             self.featureChoices.slopeSignChange]
         )
         self.numFeatures = (len(self.freqbands)*self.featureChoices.psdBand)+selFeats
@@ -104,7 +108,11 @@ class GenericFeatureExtractor():
                 features[(ch* self.numFeatures)+l] = sum([np.linalg.norm(c) for c in epoch[:,ch]])/len(epoch[:,ch])
             if self.featureChoices.waveformLength: # waveformLength
                 l += 1
+<<<<<<< Updated upstream
                 features[(ch* self.numFeatures)+l] = sum([np.linalg.norm(c-epoch[inum,ch]]) for inum, c in enumerate(epoch[1:,ch])])
+=======
+                features[(ch* self.numFeatures)+l] = sum([np.linalg.norm(c-epoch[inum,ch]) for inum, c in enumerate(epoch[1:,ch])])
+>>>>>>> Stashed changes
             if self.featureChoices.zeroCross: # zeroCross
                 l += 1
                 features[(ch* self.numFeatures)+l] = sum([1 if c*epoch[inum+1,ch]<0 else 0 for inum, c in enumerate(epoch[:-1,ch])])

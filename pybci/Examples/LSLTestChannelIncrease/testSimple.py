@@ -4,15 +4,18 @@ from pybci.Utils.Logger import Logger
 import numpy as np
 from pybci.Utils.FeatureExtractor import GenericFeatureExtractor, GeneralFeatureChoices
 
-dropchs = range(20,60) 
+#dropchs = range(20,60) #streamChsDropDict={"sendTest":dropchs}, 
 featureChoices = GeneralFeatureChoices()
 featureChoices.psdBand = False
 featureChoices.meanPSD = False
-featureChoices.medianPSD = False
+featureChoices.slopeSignChange = True
+featureChoices.waveformLength = True
 
-streamCustomFeatureExtract = {"sendTest": GenericFeatureExtractor(logger = Logger(Logger.INFO), featureChoices=featureChoices)}
+featureChoices.zeroCross = True
 
-bci = PyBCI(minimumEpochsRequired = 4, streamChsDropDict={"sendTest":dropchs}, streamCustomFeatureExtract = streamCustomFeatureExtract)#, streamChsDropDict={"sendTest":dropchs})#, loggingLevel = Logger.NONE)
+streamCustomFeatureExtract = {"sendTest": GenericFeatureExtractor(featureChoices=featureChoices)}
+
+bci = PyBCI(minimumEpochsRequired = 4, streamCustomFeatureExtract = streamCustomFeatureExtract)#, streamChsDropDict={"sendTest":dropchs})#, loggingLevel = Logger.NONE)
 while not bci.connected: # check to see if lsl marker and datastream are available
     bci.Connect()
     time.sleep(1)
