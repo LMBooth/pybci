@@ -12,19 +12,19 @@ The features can be selected by setting the respective attributes in the General
 
   class GeneralFeatureChoices:
     psdBand = True
-    appr_entropy = True
-    perm_entropy = True
-    spec_entropy = True
-    svd_entropy = True
-    samp_entropy = True
+    appr_entropy = False
+    perm_entropy = False
+    spec_entropy = False
+    svd_entropy = False
+    samp_entropy = False
     rms = True
     meanPSD = True
     medianPSD = True
     variance = True
     meanAbs = True
-    waveformLength = True
-    zeroCross = True
-    slopeSignChange = True
+    waveformLength = False
+    zeroCross = False
+    slopeSignChange = False
 
 
 If :class:`psdBand == True` we can also pass custom :class:`freqbands` when initialising :class:`PyBCI()`, which can be an exensible list of lists, where each inner list has a length of two representing the upper and lower frequency band to get the mean power of. The :class:`freqbands` argument is a list of frequency bands for which the average power is to be calculated. By default, it is set to [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], corresponding to typical EEG frequency bands.
