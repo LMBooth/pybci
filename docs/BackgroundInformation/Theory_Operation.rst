@@ -31,16 +31,20 @@ The default feature extraction used is :ref:`GenericFeatureExtractor` found in `
 
 Classifier Thread
 **********************************************
-The Classifier thread is responsible for receiving data from the various feature extraction threads, synchronising based on the number of data streams, then uses the features and target marker values for testing and training the selected machine learning tensorflow or scikit-learn model or classifier. If a valid marker stream and datastream/s are available we can start the bci machine learning training by calling :func:`PyBCI.TrainMode()`.
+The Classifier thread is responsible for receiving data from the various feature extraction threads, synchronising based on the number of data streams, then using the features and target marker values for testing and training the selected machine learning tensorflow or scikit-learn model or classifier. 
 
-Once in test mode a datathreads continuously slice time windows of data and optionally overlap these windows - according to :class:`globalEpochSettings`when initialising :py:class:`PyBCI()` - nd test the extracted features against the currently fit model. 
+If a valid marker stream and datastream/s are available the bci can start machine learning training by calling :func:`TrainMode()` on the :py:class:`PyBCI()` object. In training mode strings are received on the selected LSL marker stream which signify a machine learning target value, once a set number of each type of marker are received the bci starts classifying, this minimum number is set with :class:`minimumEpochsRequired` to :py:class:`PyBCI()` on initialisation. Only after this number has been received of each and a suitable classification accuracy has been obtained should the bci start test mode. Call :func:`TestMode()` on the :py:class:`PyBCI()` object to start testing the machine learning model.
 
-If the model is not performing well the user can always swap back to training model to gather more data with :func:`PyBCI.TestMode()`.
+Once in test mode the data threads continuously slice time windows of data based on :class:`globalEpochSettings.windowLength` and optionally overlaps these windows, according to :class:`globalEpochSettings.windowOverlap`when initialising :py:class:`PyBCI()`, these windows have their features extracted the same as in test mode, then the extracted features are applied to the model/classifier to predict the current target. 
 
-Custom Sci-Kit-Learn and Pytorch clf and models can be used, see the examples found `here for sklearn <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_, and  `here for PyTorch <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPyTorch.py>`_.
+If the model is not performing well the user can always swap back to training model to gather more data with :func:`PyBCI.TestMode()`. It could also be worth to record your setup and view it in post to adjust yout epoch classifier timing windows accordingly.
+
+Custom Sci-Kit-Learn clf and Pytorch models can be used, see the examples found `here for sklearn <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_, and  `here for PyTorch <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPyTorch.py>`_.
 
 Tensorflow can also be used `found here <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testTensorflow.py>`_, (Should be noted in PyBCI there is currently no suppression for tensorflow text prompts and the model training and tsting time can be substantially longer then pytorch and sklearn. Any recommendations are welcome in the issues on the git!)
 
+Thread Overview
+**********************************************
 The figure below illustrates the general flow of data between threads on initialisation:
 
 .. image:: ../Images/flowchart/Flowchart.svg
