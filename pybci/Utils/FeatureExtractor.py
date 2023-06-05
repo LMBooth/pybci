@@ -28,9 +28,9 @@ class GenericFeatureExtractor():
             self.featureChoices.medianPSD,
             self.featureChoices.variance,
             self.featureChoices.meanAbs,
-            #self.featureChoices.waveformLength,
+            self.featureChoices.waveformLength,
             self.featureChoices.zeroCross]
-            #self.featureChoices.slopeSignChange]
+            self.featureChoices.slopeSignChange]
         )
         self.numFeatures = (len(self.freqbands)*self.featureChoices.psdBand)+selFeats
 
@@ -102,16 +102,16 @@ class GenericFeatureExtractor():
             if self.featureChoices.meanAbs: # Mean Absolute Value 
                 l += 1
                 features[(ch* self.numFeatures)+l] = sum([np.linalg.norm(c) for c in epoch[:,ch]])/len(epoch[:,ch])
-            #if self.featureChoices.waveformLength: # waveformLength
-            #    l += 1
-            #    features[(ch* self.numFeatures)+l] = sum([np.linalg.norm(c-ch[inum]) for inum, c in enumerate(ch[1:])])
+            if self.featureChoices.waveformLength: # waveformLength
+                l += 1
+                features[(ch* self.numFeatures)+l] = sum([np.linalg.norm(c-epoch[inum,ch]]) for inum, c in enumerate(epoch[1:,ch])])
             if self.featureChoices.zeroCross: # zeroCross
                 l += 1
-                features[(ch* self.numFeatures)+l] = sum([1 if c*epoch[:,ch][inum+1]<0 else 0 for inum, c in enumerate(epoch[:,ch][:-1])])
-            #if self.featureChoices.slopeSignChange: # slopeSignChange
-            #    l += 1    
-            #    ssc = sum([1 if (c-ch[inum+1])*(c-ch[inum+1])>=0.1 else 0 for inum, c in enumerate(ch[:-1])])
-            #    features[(ch self.numFeatures)+l] = ssc
+                features[(ch* self.numFeatures)+l] = sum([1 if c*epoch[inum+1,ch]<0 else 0 for inum, c in enumerate(epoch[:-1,ch])])
+            if self.featureChoices.slopeSignChange: # slopeSignChange
+                l += 1    
+                ssc = sum([1 if (c-epoch[inum+1,ch])*(c-epoch[inum+1,ch])>=0.1 else 0 for inum, c in enumerate(epoch[:-1,ch])])
+                features[(ch* self.numFeatures)+l] = ssc
         features[np.isnan(features)] = 0 # checks for nans
         features[features == np.inf] = 0#np.iinfo(np.int32).max
         #print(features)
