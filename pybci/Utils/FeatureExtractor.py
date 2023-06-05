@@ -29,11 +29,7 @@ class GenericFeatureExtractor():
             self.featureChoices.variance,
             self.featureChoices.meanAbs,
             self.featureChoices.waveformLength,
-<<<<<<< Updated upstream
-            self.featureChoices.zeroCross]
-=======
             self.featureChoices.zeroCross,
->>>>>>> Stashed changes
             self.featureChoices.slopeSignChange]
         )
         self.numFeatures = (len(self.freqbands)*self.featureChoices.psdBand)+selFeats
