@@ -1,7 +1,7 @@
 Feature Selection
 ############
 .. _generic-extractor:
-1. Generic Time-Series Feature Extractor
+Generic Time-Series Feature Extractor
 --------------------------------
 
 The `generic feature extractor class found here <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_ shows how :class:`GenericFeatureExtractor()` is computationally executed for each of the below boolean feature choices. The `FeatureSettings class GeneralFeatureChoices <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_ gives a quick method for selecting the time and/or frequency based feature extraction techniques - useful for reducing overall stored data.
@@ -32,7 +32,7 @@ If :class:`psdBand == True` we can also pass custom :class:`freqbands` when init
 The `FeatureExtractor.py <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_ file is part of the pybci project and is used to extract various features from time-series data, such as EEG, EMG, EOG or other consistent data with a consistent sample rate. The type of features to be extracted can be specified during initialization, and the code supports extracting various types of entropy features, average power within specified frequency bands, root mean square, mean and median of power spectral density (PSD), variance, mean absolute value, waveform length, zero-crossings, and slope sign changes.
 
 .. _custom-extractor:
-2. Passing Custom Feature Extractor classes 
+Passing Custom Feature Extractor classes 
 --------------------------------
 Due to the idiosyncratic nature of each LSL data stream and the potential pre-processing/filtering that may be required before data is passed to the machine learning classifier, it can be desirable to have custom feature extraction classes passed to :class:`streamCustomFeatureExtract` When initialising :class:`PyBCI()`. 
 
@@ -65,7 +65,7 @@ A practical example of custom datastream decoding can be found in the `Pupil Lab
 
 
 .. _raw-extractor:
-3. Raw time-series
+Raw time-series
 ----------------
 If the raw time-series data is wanted to be the input for the classifier we can pass a custom class which will allow us to retain a 2d array of channels by samples as the input for our model, though when doing this it is required to pass the correct shape as the input to the model, like the tensorflow example given below:
 
