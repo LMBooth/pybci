@@ -1,19 +1,19 @@
 Theory of Operation
 ############
 
-1. Requirements Prior Initialising with `bci = PyBCI()`
+Requirements Prior Initialising with `bci = PyBCI()`
 =========================================================
 The bci must have ==1 LSL marker stream selected (if more then one LSL marker stream is on the system it is recommended to set the desired ML training marker stream with :class:`markerStream` to  :py:class:`PyBCI()`). Warning: If None set it picks first available in list.
 
-2. Thread Creation
+Thread Creation
 =========================================================
 Once configuration settings are set various threads are created.
 
-2.1 Marker Thread
+Marker Thread
 **********************************************
 The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with :class:`markerStream` to  :py:class:`PyBCI()`.
 
-2.2 Data Threads
+Data Threads
 **********************************************
 Each data stream has two threads created, one data and one feature extractor. The data thread is responsible for setting pre-allocated numpy arrays for each data stream inlet which pulls chunks of data from the LSL. When in training mode it gathers data so many seconds before and after a marker to prepare for feature extraction, with the option of slicing and overlapping so many seconds before and after the marker appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_, set with :class:`globalEpochSettings` and :class:`customEpochSettings` when initialising :py:class:`PyBCI()`.
 
@@ -21,7 +21,7 @@ Add desired dataStreams by passing a list of accepted data stream names with :cl
 
 Note: Data so many seconds before and after the relative marker timestamp is decided by the data relative timestamps. If the LSL data stream pushes chunks infrequently [ > (windowLength - (1-windowOverlap))] and doesn't give each sample its own overwritten timestamp issues could occur. (Kept legacy data threads AsyncDataReceiver and DataReceiver in threads folder in case modifications needed based on so many samples before and after decided by expected sample rate if people find this becomes an issue for certain devices)
 
-2.3 Feature Extractor Threads
+Feature Extractor Threads
 **********************************************
 The feature extractor threads receive data from their corresponding data thread and prepares epoch data for re-unification in the classification thread with other devices in the same epoch.
 
@@ -29,7 +29,7 @@ The feature extraction techniques used can vary drastically between devices, to 
 
 The default feature extraction used is :ref:`GenericFeatureExtractor` found in `FeatureSettings.py <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_, with :ref:`GeneralFeatureChoices` found in `FeatureSettings.py <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_, see :ref:`generic-extractor` for more details.
 
-2.4 Classifier Thread
+Classifier Thread
 **********************************************
 The Classifier thread is responsible for receiving data from the various feature extraction threads, synchronising based on the number of target data streams, then uses the features and target marker values for testing and training the selected machine learning tensorflow or scikit-learn model or classifier. If a valid marker stream and datastream/s are available we can start the bci machine learning training by calling :func:`PyBCI.TrainMode()`.
 
@@ -44,12 +44,12 @@ The figure below illustrates the general flow of data between threads on initial
 .. image:: ../Images/flowchart/Flowchart.svg
    :alt: Alternative text describing the image
 
-3. Testing and Training the Model
+Testing and Training the Model
 =========================================================
 
-3.2 Training
+Training
 **********************************************
-3.2.1 Retrieiving current estimate
+Retrieiving current estimate
 -----------------------------------------
 Before the classifier can be run a minimum number of marker strings must be received for each type of target marker, set with the `minimumEpochsRequired` variable (default: 10) to :py:class:`PyBCI()`.
 
@@ -75,9 +75,9 @@ Where classInfo is a dict of:
 When in test mode data is captured :class:`tmin` seconds before the training marker and :class:`tmax` after the marker, if the :class:`splitCheck` otion is True then the epochs will be sliced up and overlapped set by the :class:`globalEpochSettings` :class:`windowLength` and :class:`overlap` options, see :ref:`set_custom_epoch_times` for more information and illustrations.
 
 
-3.2 Testing
+Testing
 **********************************************
-3.2.1 Retrieiving current estimate
+Retrieiving current estimate
 -----------------------------------------------
 When in test mode the data threads will continously pass time windows to the respective feature extractor threads. 
 
