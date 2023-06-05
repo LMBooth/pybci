@@ -107,4 +107,6 @@ If the raw time-series data is wanted to be the input for the classifier we can 
   streamCustomFeatureExtract = {"sendTest" : RawDecode()} # we select EMG as that is the default type in the psuedolslgenerator example
   bci = PyBCI(minimumEpochsRequired = 4, model = model, streamCustomFeatureExtract=streamCustomFeatureExtract )
 
+Another example of the above using a PyTorch C-NN can be found in the `testRaw.py file here <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testRaw.py>`_, multiple channels are dropped to reduce training and testing time.
+
 NOTE: The standard scaler setup normalises across the dimension channels in [features,channels], this is done as we want every feature type to be scaled against every same feature from other channels, whereas with raw time-series it's desirable to scale across the dimension samples in [channels, samples], so each channels is normalised to itself, so in the above we transpose our data to accommodate for this. (Metods for scaling could be contentious, do bring it up on the git if you wish, maybe options for scaling!)
