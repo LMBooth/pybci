@@ -12,8 +12,5 @@ class GeneralFeatureChoices:
     meanAbs = True
     waveformLength = False
     zeroCross = False
-<<<<<<< Updated upstream
     slopeSignChange = False
-=======
-    slopeSignChange = False
->>>>>>> Stashed changes
+
