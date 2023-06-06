@@ -2,7 +2,7 @@
 
 This folder holds multiple scripts illustrating the functions and configurations available within the PyBCI package.
 
-NOTE: All the examples shown that are not in a dedicated folder work with the PsuedoLSLStreamGenerator found in PsuedoLSLSreamGenerator/mainSend.py, if using with own LSL capable hardware you may need to adjust the scripts accordingly.
+NOTE: All the examples shown that are not in a dedicated folder work with the PsuedoLSLStreamGenerator found in [PsuedoLSLSreamGenerator/mainSend.py](https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PsuedoLSLStreamGenerator/mainSend.py), if using with own LSL capable hardware you may need to adjust the scripts accordingly.
 
 | Example File | Description |
 |--------------|-------------|
