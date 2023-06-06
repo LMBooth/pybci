@@ -9,27 +9,32 @@ port = 'COM9'
 baud_rate = 9600
 ser = serial.Serial(port, baud_rate)
 
-dropchs = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,22,23] 
+dropchs = [0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,23] 
 #sending = False
 featureChoices = GeneralFeatureChoices()
-featureChoices.psdBand =False
-featureChoices.appr_entropy = True
-featureChoices.perm_entropy = True
+featureChoices.psdBand =True
+featureChoices.appr_entropy = False
+featureChoices.perm_entropy = False
 featureChoices.spec_entropy = True
-featureChoices.svd_entropy = True
-featureChoices.samp_entropy = True
+featureChoices.svd_entropy = False
+featureChoices.samp_entropy = False
 featureChoices.zeroCross = True
-streamCustomFeatureExtract = {"EEGStream": GenericFeatureExtractor(logger = Logger(Logger.TIMING),freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0],[20.0, 30.0]], featureChoices=featureChoices)}
+featureChoices.waveformLength = True
+featureChoices.slopeSignChange = True
+streamCustomFeatureExtract = {"EEGStream": GenericFeatureExtractor(freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0],[20.0, 30.0]], featureChoices=featureChoices)}
 
 gs = GlobalEpochSettings()
 gs.tmax = 2.5 # grab 1 second after marker
-gs.tmin = 0 # grab 0.5 seconds before marker
+gs.tmin = -0.5 # grab 0.5 seconds before marker
 gs.splitCheck = True # splits samples between tmin and tmax
-gs.windowLength = 1  # 
+gs.windowLength = 0.7  # 
 gs.windowOverlap = 0.5 # windows overap by 50%, so for a total len
 
 
-bci = PyBCI(minimumEpochsRequired = 6, globalEpochSettings=gs, markerStream="TestMarkers", streamCustomFeatureExtract=streamCustomFeatureExtract,streamChsDropDict={"EEGStream":dropchs})#, loggingLevel = Logger.NONE)
+from sklearn.neural_network import MLPClassifier
+clf = MLPClassifier(max_iter = 1000, solver ="lbfgs")#solver=clf, alpha=alpha,hidden_layer_sizes=hid)
+
+bci = PyBCI(minimumEpochsRequired = 6, loggingLevel= Logger.INFO,clf=clf, globalEpochSettings=gs, markerStream="TestMarkers", streamCustomFeatureExtract=streamCustomFeatureExtract,streamChsDropDict={"EEGStream":dropchs})#, loggingLevel = Logger.NONE)
 while not bci.connected: # check to see if lsl marker and datastream are available
     bci.Connect()
     time.sleep(1)
@@ -48,7 +53,8 @@ try:
             if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired:
                 classInfo = bci.CurrentClassifierInfo() # hangs if called too early
                 accuracy = classInfo["accuracy"]
-            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+13:  
+            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+25:  
+                time.sleep(2)
                 bci.TestMode()
                 break
     while True:
