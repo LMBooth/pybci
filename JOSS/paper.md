@@ -27,14 +27,19 @@ PyBCI is a comprehensive, open-source Python framework developed to facilitate b
 
 # Statement of Need:
 
+
+There are a couple bci solutions in python available; BCpy2000 which offers great visualisation and post analysis combined with the BCI2000 analysis suite, BciPy offers multi-modal bci solutions within their own stimulus delivery system, but lack in customising feature extraction pipelines and available model/classifier creation catering to EEG data. 
+
+PyBCI puts emphasis on quick and easy customisation of applied time-series feature extraction techniques and machine learning models, live data classification, and integration in to other systems. Remaining lightweight with solely Python packages and no additional visualisation and recording tools. 
+
 BCIs have the potential to revolutionise the way we interact with computers and understand the brain. However, BCI research is often limited by the availability of open-source, comprehensive, and user-friendly software. PyBCI addresses this gap, offering a flexible and robust Python-based platform for conducting BCI research. It integrates seamlessly with the LSL for data acquisition and labelling, utilizing popular machine learning packages such as Scikit-learn and TensorFlow, and employing Antropy, NumPy, and SciPy for an example feature extraction or optionally allowing the user to pass a custom feature extractor to process specific device data. This combination of software features allows researchers to focus on their experiments rather than software development, expediting the advancement of BCI technology.
-
-
-(How are we different to bcipy and bcilab)
 
 # Software functionality and performance:
 
 PyBCI provides an end-to-end solution for BCI research. It uses the Lab Streaming Layer (LSL) to handle data acquisition and labelling, allowing for real-time, synchronous data collection from multiple devices (Kothe, 2014). Samples are streamed through datastream FIFOs and stored when in training mode based on a configurable time window before and after each marker type. When in test mode data is continuously processed and analysed based on the global epoch timing settings.  For feature extraction, PyBCI leverages the power of Antropy, NumPy, and SciPy, robust Python libraries known for their efficiency in handling numerical operations (Oliphant, 2006; Virtanen et al., 2020; Vallat, 2023). Machine learning, a crucial component of BCI research, is facilitated through Scikit-learn and TensorFlow. Scikit-learn offers a wide range of algorithms for classification, regression, and clustering (Pedregosa et al., 2011), while TensorFlow provides a comprehensive ecosystem for developing and training machine learning models (Abadi et al., 2016).
+
+Saved features and target data as well as current PyTorch/Tensorflow/Sklearn models can be extracted to be analysed or saved for use later. An LSL marker stream is required for receiving unique strings and epoching data from selected LSL datastreams when training.
+
 
 ## Theory of operation:
 1. Requirements Prior Initialising with bci = PyBCI()
@@ -109,6 +114,8 @@ By offering a comprehensive, open-source platform for BCI research, PyBCI has th
 Abadi, M., Agarwal, A., Barham, P., et al. (2016). TensorFlow: Large-scale machine learning on heterogeneous distributed systems.
 
 Vallat, R. (2023). Antropy. GitHub. Retrieved May 22, 2023, from https://github.com/raphaelvallat/antropy
+
+BCpy2000. GitHub. Retrieved June 22, 2023, from https://github.com/neurotechcenter/BCpy2000
 
 Kothe, C. (2014). Lab Streaming Layer (LSL).
 
