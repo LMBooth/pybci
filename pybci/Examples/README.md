@@ -2,6 +2,8 @@
 
 This folder holds multiple scripts illustrating the functions and configurations available within the PyBCI package.
 
+NOTE: All the examples shown that are not in a dedicated folder work with the PsuedoLSLStreamGenerator found in PsuedoLSLSreamGenerator/mainSend.py, if using with own LSL capable hardware you may need to adjust the scripts accordingly.
+
 | Example File | Description |
 |--------------|-------------|
 | [ArduinoHandGrasp/](https://github.com/LMBooth/pybci/blob/main/pybci/Examples/ArduinoHandGrasp/) | Folder contains LSL marker creator in MarkerMaker.py using PyQt5 as an on screen text stimulus, illustrates how LSL markers can be used to train. testArduinoHand.py is tailored for the io:bio (DOI: 10.1109/ACCESS.2021.3079992) device which had its 2nd and 3rd differential channels (channels 21 and 22 out of 24) attached to electrodes on the forearm with appropriate features extracted. The testArduinoHand.py also connected via a serial port to an arduino board which controls several servomotors for a motorised hand (see accompanying video), the .ino script for controlling this hand via the arduino can also be [found here.](https://github.com/LMBooth/pybci/blob/main/pybci/Examples/ArduinoHandGrasp/ServoControl/ServoControl.ino)|
