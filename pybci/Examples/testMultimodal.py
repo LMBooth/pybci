@@ -1,3 +1,6 @@
+"""
+WARNING! NEEDS TESTING AFTER NEW DATA RECEIVER THREAD CREATION AND SCALAR APPLICATION
+"""
 import time
 from pybci import PyBCI
 import numpy as np
