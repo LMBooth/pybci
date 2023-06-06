@@ -4,6 +4,8 @@ Examples
 
 The following examples can all be found on the `PyBCI github <https://github.com/LMBooth/pybci/tree/main/pybci/Examples>`_.
 
+Note all the examples shown that are not in a dedicated folder work with the PsuedoLSLStreamGenerator found in  `PsuedoLSLSreamGenerator/mainSend.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PsuedoLSLStreamGenerator/mainSend.py>`_, if using with own LSL capable hardware you may need to adjust the scripts accordingly.
+
 .. list-table:: PyBCI Examples
    :widths: 25 75
    :header-rows: 1
