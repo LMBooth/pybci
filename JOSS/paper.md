@@ -27,9 +27,6 @@ PyBCI is a comprehensive, open-source Python framework developed to facilitate b
 
 # Statement of Need:
 
-
-There are a couple bci solutions in python available; BCpy2000 which offers great visualisation and post analysis combined with the BCI2000 analysis suite, BciPy offers multi-modal bci solutions within their own stimulus delivery system, but lack in customising feature extraction pipelines and available model/classifier creation catering to EEG data. 
-
 PyBCI puts emphasis on quick and easy customisation of applied time-series feature extraction techniques and machine learning models, live data classification, and integration in to other systems. Remaining lightweight with solely Python packages and no additional visualisation and recording tools. 
 
 BCIs have the potential to revolutionise the way we interact with computers and understand the brain. However, BCI research is often limited by the availability of open-source, comprehensive, and user-friendly software. PyBCI addresses this gap, offering a flexible and robust Python-based platform for conducting BCI research. It integrates seamlessly with the LSL for data acquisition and labelling, utilizing popular machine learning packages such as Scikit-learn and TensorFlow, and employing Antropy, NumPy, and SciPy for an example feature extraction or optionally allowing the user to pass a custom feature extractor to process specific device data. This combination of software features allows researchers to focus on their experiments rather than software development, expediting the advancement of BCI technology.
