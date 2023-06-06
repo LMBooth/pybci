@@ -55,6 +55,7 @@ Finally a passable, customisable sklearn or tensorflow classifier can be giving 
 ## ToDo!
 - Update ReadTheDocs!
 - Finish arduino hand grasp demo and video.
+- Tst and likely Fix multimodal after new data thread creation
 - ~~Combine multiple data streams for multi modal bci!~~
 - ~~Add pytorch compatibility!~~ 
 - ~~run check on pytorch data type (may pass list with [pytorchmodel, pytrochcompilerinfo])~~
