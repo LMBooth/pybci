@@ -19,7 +19,7 @@ The following examples can all be found on the `PyBCI github <https://github.com
    * - `PupilLabs/RightLeftMarkers.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/RightLeftMarkers.py>`_
      - Uses tkinter to generate visual on-screen stimuli for only right, left or both eyes open, sends same onscreen stimuli as LSL markers, ideal for testing pupil-labs eyes classifier test.
    * - `testEpochTimingsConfig.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testEpochTimingsConfig.py>`_
-     - Simple example showing custom global epoch settings  changed on initialisation.
+     - Simple example showing custom global epoch settings  changed on initialisation. Instead of epoching data from 0 to 1 second after the marker we take it from 0.5 seconds before to 0.5 seconds after the marker. 
    * - `testMultimodal.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testMultimodal.py>`_ 
      - Advanced example illustrating two devices, pupil labs gaze device stream wth custom feature extractor class and Hull University ioBio EEG device with the generic feature extractor, each have set channels dropped to reduce computational strain (Async datathreads {LSLsample rate of 0Hz} can be heavy with lots of channels.
    * - `testPytorch.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPytorch.py>`_
