@@ -75,38 +75,17 @@ A practical example of custom datastream decoding can be found in the `Pupil Lab
 .. _raw-extractor:
 Raw time-series
 ----------------
-If the raw time-series data is wanted to be the input for the classifier we can pass a custom class which will allow us to retain a 2d array of channels by samples as the input for our model, though when doing this it is required to pass the correct shape as the input to the model, like the tensorflow example given below:
+If the raw time-series data is wanted to be the input for the classifier we can pass a custom class which will allow us to retain a 2d array of [samples, channels] as the input for our model, example given below:
 
 .. code-block:: python
-
-  num_chs = 8 # 8 channels are created in the PsuedoLSLGenerator
-  sum_samps = 125 # sample rate is 250 in the PsuedoLSLGenerator and windowLength is 125
-  num_classes = 3 # number of different triggers (can include baseline) sent, defines if we use softmax of binary
-  model = tf.keras.Sequential()
-  model.add(tf.keras.layers.Reshape((num_chs,sum_samps, 1), input_shape=(num_chs,sum_samps)))
-  model.add(tf.keras.layers.Permute((2, 1, 3)))
-  model.add(tf.keras.layers.Reshape((num_chs*sum_samps, 1)))
-  model.add(tf.keras.layers.GRU(units=256))#, input_shape=num_chs*num_feats)) # maybe should show this example as 2d with toggleable timesteps disabled
-  model.add(tf.keras.layers.Dense(units=512, activation='relu'))
-  model.add(tf.keras.layers.Flatten())#   )tf.keras.layers.Dense(units=128, activation='relu'))
-  model.add(tf.keras.layers.Dense(units=num_classes, activation='softmax')) # softmax as more then binary classification (sparse_categorical_crossentropy)
-  model.summary()
-  model.compile(loss='sparse_categorical_crossentropy',# using sparse_categorical as we expect multi-class (>2) output, sparse because we encode targetvalues with integers
-                optimizer='adam',
-                metrics=['accuracy'])
   class RawDecode():
-      desired_length = 0
+      desired_length = int(250 * 0.5) # based on testRaw.py example, windowlength of 0.5s and sample rate of 250Hz
       def ProcessFeatures(self, epochData, sr, target): 
           d = epochData.T
-          if self.desired_length == 0: # needed as windows may be differing sizes due to timestamp variance on LSL
-              self.desired_length = d.shape[1]
-          if d.shape[1] != self.desired_length:
+          if d.shape[1] != self.desired_length: # incorrect buffer length, fill out or trim to compensate
               d = np.resize(d, (d.shape[0],self.desired_length))
-          return d # we tranposeas using forloop for standardscalar normalises based on [channel,feature], whereas pull_chunk is [sample, channel]
+          return d 
 
-  streamCustomFeatureExtract = {"sendTest" : RawDecode()} # we select EMG as that is the default type in the psuedolslgenerator example
-  bci = PyBCI(minimumEpochsRequired = 4, model = model, streamCustomFeatureExtract=streamCustomFeatureExtract )
+NOTE: In the above example the expected buffer length is set with ``desired_length``, this is done to give a consistent input shape for the ML model - desired_Length should be sample rate (Hz) * window length (s) rounded down to an integer
 
-Another example of the above using a PyTorch C-NN can be found in the `testRaw.py file here <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testRaw.py>`_, multiple channels are dropped to reduce training and testing time.
-
-NOTE: The standard scaler setup normalises across the dimension channels in [features,channels], this is done as we want every feature type to be scaled against every same feature from other channels, whereas with raw time-series it's desirable to scale across the dimension samples in [channels, samples], so each channels is normalised to itself, so in the above we transpose our data to accommodate for this. (Chosen methods for scaling could vary, do bring it up on the git if you have other ideas for implementation!)
+The default ML model used is the sklearn svm which only accepts a 2D array of [epochs, features] not [epochs, samples, channels], however a pytorch CNN or RNN may be more approriate for multi-channel time-series data. A full example of raw time-series data being used as an input to a PyTorch CNN can be found in the `testRaw.py file here <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testRaw.py>`_.
