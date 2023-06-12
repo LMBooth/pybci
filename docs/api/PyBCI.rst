@@ -1,119 +1,57 @@
 PyBCI
 =====
-.. class:: PyBCI(dataStreams=None, markerStream=None, streamTypes=None, markerTypes=None, printDebug=True, globalEpochSettings=GlobalEpochSettings(), customEpochSettings={}, streamChsDropDict={}, streamCustomFeatureExtract={}, minimumEpochsRequired=10, clf=None, model=None)
 
-    The `PyBCI` object stores data from available LSL time series data streams (EEG, pupilometry, EMG, etc.) and holds a configurable number of samples based on LSL marker strings.
+.. automodule:: pybci.pybci
+    :members:
+    :undoc-members:
+    :show-inheritance:
 
-    **Parameters:**
+Class PyBCI
+-----------
 
-    :dataStreams: list(str) or None
-        Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
+.. autoclass:: PyBCI
+    :members:
+    
+    .. method:: __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO, globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {}, streamCustomFeatureExtract = {}, minimumEpochsRequired = 10, clf= None, model = None, torchModel = None)
 
-    :markerStream: list(str) or None
-        Allows the user to set custom acceptable Marker stream definitions. If `None`, it defaults to `markerTypes` scan.
+        The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.) and holds a configurable number of samples based on lsl marker strings. If no marker strings are available on the LSL the class will close and return an error&#8203;``oaicite:{"number":1,"metadata":{"title":"raw.githubusercontent.com","url":"https://raw.githubusercontent.com/LMBooth/pybci/main/pybci/pybci.py","text":"class PyBCI: globalEpochSettings = GlobalEpochSettings() customEpochSettings = {} minimumEpochsRequired = 10 markerThread = [] dataThreads = [] streamChsDropDict= {} dataStreams = [] markerStream = None connected = False epochCounts = {} # holds markers received, their target ids and number received of each classifierInformation = [] clf= None model = None  torchModel = None def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO, globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {}, streamCustomFeatureExtract = {}, minimumEpochsRequired = 10, clf= None, model = None, torchModel = None): \"\"\" The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.) and holds a configurable number of samples based on lsl marker strings. If no marker strings are available on the LSL the class will close and return an error. Parameters ---------- dataStreams: List[str]  Allows user to set custom acceptable EEG stream definitions, if None defaults to streamTypes scan markerStream: List[str]  Allows user to set custom acceptable Marker stream definitions, if None defaults to markerTypes scan streamTypes: List[str]  Allows user to set custom acceptable EEG type definitions, ignored if dataStreams not None markerTypes: List[str]  Allows user to set custom acceptable Marker type definitions, ignored if markerStream not None loggingLevel: string  Sets PyBCI print level, ('INFO' prints all statements, 'WARNING' is only warning messages, 'TIMING' gives estimated time for feature extraction, and classifier training or testing, 'NONE' means no prints from PyBCI) globalEpochSettings (GlobalEpochSettings):  Sets global timing settings for epochs. customEpochSettings: dict  Sets individual timing settings for epochs. {markerstring1:IndividualEpochSettings(),markerstring2:IndividualEpochSettings()} streamChsDropDict: dict  Keys for dict should be respective datastreams with corresponding list of which channels to drop. {datastreamstring1: list(ints), datastreamstring2: list(ints)} streamCustomFeatureExtract: dict Allows dict to be passed of datastream with custom feature extractor class for analysing data. {datastreamstring1: customClass1(), datastreamstring2: customClass1(),} minimumEpochsRequired: int  Minimm number of required epochs before model fitting begins, must be of each type of received markers and mroe then 1 type of marker to classify. clf: sklearn.base.ClassifierMixin  Allows custom Sklearn model to be passed. model: tf.keras.model Allows custom tensorflow model to be passed. torchmodel: [torchModel(), torch.nn.Module] Currently a list where first item is torchmodel analysis function, second is torch model, check pytorch example - likely to change in future updates","pub_date":null}}``&#8203;.
 
-    :streamTypes: list(str) or None
-        Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
+    .. method:: __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO, globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {}, streamCustomFeatureExtract = {}, minimumEpochsRequired = 10, clf= None, model = None, torchModel = None)
 
-    :markerTypes: list(str) or None
-        Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
+        Please look at PyBCI.__init__ (same parameters, setup and description)&#8203;``oaicite:{"number":1,"metadata":{"title":"raw.githubusercontent.com","url":"https://raw.githubusercontent.com/LMBooth/pybci/main/pybci/pybci.py","text":"def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO, globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {}, streamCustomFeatureExtract = {}, minimumEpochsRequired = 10, clf= None, model = None, torchModel = None): # with bci \"\"\" Please look at PyBCI.__init__ (same parameters, setup and description) \"\"\" self.streamCustomFeatureExtract = streamCustomFeatureExtract self.globalEpochSettings = globalEpochSettings self.customEpochSettings = customEpochSettings self.streamChsDropDict = streamChsDropDict self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes) self.loggingLevel = loggingLevel self.ConfigureMachineLearning(minimumEpochsRequired, clf, model, torchModel) # configure first, connect second self.Connect","pub_date":null}}``&#8203;.
 
-    :printDebug: bool
-        If `True`, prints LSLScanner debug information.
+    .. method:: __exit__(self, exc_type, exc_val, exc_tb)
 
-    :globalEpochSettings: GlobalEpochSettings
-        Sets global timing settings for epochs.
+        Stops threads&#8203;``oaicite:{"number":1,"metadata":{"title":"raw.githubusercontent.com","url":"https://raw.githubusercontent.com/LMBooth/pybci/main/pybci/pybci.py","text":"def __exit__(self, exc_type, exc_val, exc_tb): self.StopThreads","pub_date":null}}``&#8203;.
 
-    :customEpochSettings: dict{str: IndividualEpochSettings}
-        Sets individual timing settings for epochs. The keys of the dictionary are marker name strings, and the values are `IndividualEpochSettings` objects.
+    .. method:: Connect(self)
 
-    :streamChsDropDict: dict{str: list(int)}
-        Keys for dict should be respective datastreams with corresponding lists of which channels to drop.
+        Checks valid data and markers streams are present, controls dependant functions by setting self.connected&#8203;``oaicite:{"number":1,"metadata":{"title":"raw.githubusercontent.com","url":"https://raw.githubusercontent.com/LMBooth/pybci/main/pybci/pybci.py","text":"def Connect(self): # Checks valid data and markers streams are present, controls dependant functions by setting self.connected if self.lslScanner.CheckAvailableLSL(): self.__StartThreads() self.connected = True return True # uses return statements so user can check if connected with bool returned else: self.connected = False return False","pub_date":null}}``&#8203;.
 
-    :streamCustomFeatureExtract: dict{str:class}
-        Allows a dictionary to be passed with datastream type as the key and a custom feature extractor class for analyzing data as the value.
+    .. method:: TrainMode(self)
 
-    :minimumEpochsRequired: int
-        Minimum number of required epochs before model fitting begins, must be of each type of received markers and more than 1 type of marker to classify.
+        Starts BCI training If PyBCI is connected to valid LSL data and marker streams, if not tries to scan and connect&#8203;``oaicite:{"number":1,"metadata":{"title":"raw.githubusercontent.com","url":"https://raw.githubusercontent.com/LMBooth/pybci/main/pybci/pybci.py","text":"def TrainMode(self): \"\"\" Starts BCI training If PyBCI is connected to valid LSL data and marker streams, if not tries to scan and connect. \"\"\" if self.connect","pub_date":null}}``&#8203;.
 
-    :clf: ClassifierMixin or None
-        Allows a custom Sklearn model to be passed, if None and None model too defaults to sklearn SVM with 'rbf' kernel.
+    .. method:: TestMode(self)
 
-    :model: model or None
-        Allows a custom TensorFlow model to be passed, if None and None model too defaults to sklearn SVM with 'rbf' kernel.
+        Starts BCI testing If PyBCI is connected to valid LSL data and marker streams, if not tries to scan and connect&#8203;``oaicite:{"number":1,"metadata":{"title":"raw.githubusercontent.com","url":"https://raw.githubusercontent.com/LMBooth/pybci/main/pybci/pybci.py","text":"def TestMode(self): \"\"\" Starts BCI testing If PyBCI is connected to valid LSL data and marker streams, if not tries to scan and connect. (Need to check if invalid number of epochs are obtained and this is set) \"\"\" if self.connect","pub_date":null}}``&#8203;.
 
-.. py:method:: __enter__()
+    .. method:: CurrentClassifierInfo(self)
 
-   Connects to the BCI.
+        Gets dict with current clf, model, torchModel and accuracy. Accuracy will be 0 if not fiting has occurred&#8203;``oaicite:{"number":1,"metadata":{"title":"raw.githubusercontent.com","url":"https://raw.githubusercontent.com/LMBooth/pybci/main/pybci/pybci.py","text":"def CurrentClassifierInfo(self): \"\"\" Gets dict with current clf, model, torchModel and accuracy. Accuracy will be 0 if not fiting has occurred. Returns ------- classInfo: dict dict of \"clf\", \"model, \"torchModel\"\" and \"accuracy\" where accuracy is 0 if no model training/fitting has occurred. If mode not used corresponding value is None. If not connected returns {\"Not Connected\": None} \"\"\" if self.connected: self.classifierInfoRetrieveEvent.set() classInfo = self.classifierInfoQueue.get() self.classifierInfoRetrieveEvent.clear() return classInfo else: self.Connect() return {\"Not Connected\": None","pub_date":null}}``&#8203;.
 
-.. py:method:: __exit__(exc_type, exc_val, exc_tb)
+    .. method:: CurrentClassifierMarkerGuess(self)
 
-   Stops all threads of the BCI.
+        Gets classifier current marker guess and targets&#8203;``oaicite:{"number":1,"metadata":{"title":"raw.githubusercontent.com","url":"https://raw.githubusercontent.com/LMBooth/pybci/main/pybci/pybci.py","text":"def CurrentClassifierMarkerGuess(self): \"\"\" Gets classifier current marker guess and targets. Returns ------- classGuess: int | None Returned int correlates to value of key from dict from ReceivedMarkerCount() when in testmode.  If in trainmode returns None. \"\"\" if self.connected: # probably needs check that we're in test mode, maybe debu print if not? self.classifierGuessMarkerEvent.set() classGuess = self.classifierGuessMarkerQueue.get() self.classifierGuessMarkerEvent.clear() return classGuess else: self.Connect() return None","pub_date":null}}``&#8203;.
 
-.. py:method:: Connect()
+    .. method:: CurrentFeaturesTargets(self)
 
-   Checks valid data and markers streams are present, controls dependent functions by setting self.connected.
+        Gets classifier current features and targets&#8203;``oaicite:{"number":1,"metadata":{"title":"raw.githubusercontent.com","url":"https://raw.githubusercontent.com/LMBooth/pybci/main/pybci/pybci.py","text":"def CurrentFeaturesTargets(self): \"\"\" Gets classifier current features and targets. Returns ------- featureTargets: dict dict of \"features\" and \"targets\" where features is 2d list of feature data and targets is a 1d list of epoch targets as ints. If not connected returns {\"Not Connected\": None} \"\"\" if self.connected: self.queryFeaturesEvent.set() featureTargets = self.queryFeaturesQueue.get() self.queryFeaturesEvent.clear() # still needs coding return featureTargets else: self.Connect() return {\"Not Connected\": None","pub_date":null}}``&#8203;.
 
-.. py:method:: TrainMode()
+    .. method:: ReceivedMarkerCount(self)
 
-   Set the mode to Train.
+        Gets number of received training marker, their strings and their respective values to correlate with CurrentClassifierMarkerGuess()&#8203;``oaicite:{"number":1,"metadata":{"title":"raw.githubusercontent.com","url":"https://raw.githubusercontent.com/LMBooth/pybci/main/pybci/pybci.py","text":"def ReceivedMarkerCount(self): \"\"\" Gets number of received training marker, their strings and their respective values to correlate with CurrentClassifierMarkerGuess(). Returns ------- markers: dict Every key is a string received on the selected LSL marker stream, the value is a list where the first item is the marker id value,  use with CurrentClassifierMarkerGuess() the second value is a received count for that marker type. Will be empty if no markers received. \"\"\" if self.connect","pub_date":null}}``&#8203;.
 
-.. py:method:: TestMode()
+    .. method:: __StartThreads(self)
 
-   Set the mode to Test.
-
-.. py:method:: CurrentClassifierInfo()
-
-   Retrieve current classifier info. Give dict of current fit model, clf and the class accuracy, if sklearn is used model is None, if tensorflow is used clf is None. the clf or model is fit when the minimum number of training epochs have been recied for each marker, default 10.
-   
-   :returns: 
-        dict{
-            "clf": clf,
-            "model": model,
-            "accuracy": accuracy
-        }
-
-.. py:method:: CurrentClassifierMarkerGuess()
-
-   Retrieve current classifier marker guess.
-   
-   :returns: `int` if in test mode, `None` is in train mode. The int should relate to the dict value from :method:`ReceivedMarkerCount()`
-
-.. py:method:: ReceivedMarkerCount()
-
-   Retrieve received marker count.
-
-    :returns: dict{str:[int,int]}, where the string is the marker label receied on the LSL, the first int is the corresponding value returned by :method:`CurrentClassifierMarkerGuess()`, and the second int is the number of received markers of that key type.
-
-.. py:method:: __StartThreads()
-
-   Starts the threads of the BCI.
-
-.. py:method:: StopThreads()
-
-   Stops all threads of the BCI.
-
-.. py:method:: ConfigureMachineLearning(minimumEpochsRequired=10, clf=None, model=None)
-
-   Configure machine learning settings.
-
-   :param int minimumEpochsRequired: Minimum number of epochs required.
-   :param ClassifierMixin clf: Allows custom Sklearn model to be passed.
-   :param model model: Allows custom tensorflow model to be passed.
-
-.. py:method:: ConfigureEpochWindowSettings(globalEpochSettings=GlobalEpochSettings(), customEpochSettings={})
-
-    Configure epoch window settings.
-
-    :param GlobalEpochSettings globalEpochSettings: Sets global timing settings for epochs.
-    :param dict customEpochSettings: Sets individual timing settings for epochs.
-
-.. py:method:: ConfigureDataStreamChannels(streamChsDropDict={})
-
-   Configure data stream channels.
-
-   :param dict streamChsDropDict: Keys for dict should be respective datastreams with corresponding list of which channels to drop.
-
-.. py:method:: ResetThreadsAfterConfigs()
-
-   Reset threads after configurations.
+        Sets up necessary data structures and threads for the BCI&#8203;``oaicite:{"number":1,"metadata":{"title":"raw.githubusercontent.com","url":"https://raw.githubusercontent.com/LMBooth/pybci/main/pybci/pybci.py","text":"def __StartThreads(self): self.featureQueueTrain = queue.Queue() self.featureQueueTest = queue.Queue() self.classifierInfoQueue = queue.Queue() self.markerCountQueue = queue.Queue() self.classifierGuessMarkerQueue = queue.Queue() self.classifierGuessMarkerEvent = threading.Event() self.closeEvent = threading.Event() # used for closing threads self.trainTestEvent = threading.Event() self.markerCountRetrieveEvent = threading.Event() self.classifierInfoRetrieveEvent = threading.Event() self.queryFeaturesQueue = queue.Queue() self.queryFeaturesEvent = threading.Event() # still needs coding self.trainTestEvent.set() # if set we're in train mode, if not we're in test mode, always start in train","pub_date":null}}``&#8203;.
