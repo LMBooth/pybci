@@ -4,7 +4,7 @@ from torch import nn
 from pybci import PyBCI
 import numpy as np
 from pybci.Utils.Logger import Logger
-num_chs = 3 # 8 channels re created in the PsuedoLSLGwnerator, but we drop 5 to save compute
+num_chs = 3 # 8 channels are created in the PsuedoLSLGenerator, but we drop 5 to save compute (real-time CNN can be computationally heavy!)
 sum_samps = 125 # sample rate is 250 in the PsuedoLSLGwnerator
 num_classes = 3 # number of different triggers (can include baseline) sent, defines if we use softmax of binary
 class ConvNet(nn.Module):
