@@ -49,7 +49,7 @@ class PyBCI:
         markerTypes: List[str] 
             Allows user to set custom acceptable Marker type definitions, ignored if markerStream not None
         loggingLevel: string 
-            Sets PyBCI print level, ('info' prints all statements, 'warning' is only warning messages, and 'none' is no prints from PyBCI)
+            Sets PyBCI print level, ('INFO' prints all statements, 'WARNING' is only warning messages, 'TIMING' gives estimated time for feature extraction, and  classifier training or testing,  'NONE' means no prints from PyBCI)
         globalEpochSettings (GlobalEpochSettings): 
             Sets global timing settings for epochs.
         customEpochSettings: dict 
