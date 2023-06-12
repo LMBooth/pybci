@@ -79,13 +79,13 @@ If the raw time-series data is wanted to be the input for the classifier we can 
 
 .. code-block:: python
   class RawDecode():
-      desired_length = 0
+      desired_length = int(250 * 0.5) # based on testRaw.py example, windowlength of 0.5s and sample rate of 250Hz
       def ProcessFeatures(self, epochData, sr, target): 
           d = epochData.T
-          if self.desired_length == 0: # needed as windows may be differing sizes due to timestamp varience on LSL
-              self.desired_length = d.shape[1]
-          if d.shape[1] != self.desired_length:
+          if d.shape[1] != self.desired_length: # incorrect buffer length, fill out or trim to compensate
               d = np.resize(d, (d.shape[0],self.desired_length))
           return d 
 
-It should be noted that the default sklean svm used only accepts a 2D array of [epochs, features] not [epochs, samples, channels], however a pytorch CNN or RNN may be more approriate for multi-channel time-series data. A full example of the above using a PyTorch C-NN can be found in the `testRaw.py file here <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testRaw.py>`_, multiple channels are dropped to reduce training and testing time.
+NOTE: In the above example the expected buffer length is set with ``desired_length``, this is done to give a consistent input shape for the ML model - desired_Length should be sample rate (Hz) * window length (s) rounded down to an integer
+
+The default ML model used is the sklearn svm which only accepts a 2D array of [epochs, features] not [epochs, samples, channels], however a pytorch CNN or RNN may be more approriate for multi-channel time-series data. A full example of raw time-series data being used as an input to a PyTorch CNN can be found in the `testRaw.py file here <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testRaw.py>`_.
