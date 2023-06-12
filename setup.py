@@ -69,6 +69,9 @@ setup(
         # Indicate who your project is intended for
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
+        'Topic :: Neuroscience',
+        'Topic :: Brain Computer Interfaces',
+        'Topic :: Machine Learning :: Physiological measures',
         'Topic :: System :: Networking',
         'Topic :: Scientific/Engineering',
 
