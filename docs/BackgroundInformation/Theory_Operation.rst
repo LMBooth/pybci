@@ -7,7 +7,7 @@ The bci must have ==1 LSL marker stream selected and >=1 LSL data stream/s selec
 
 Thread Creation
 =========================================================
-Once configuration settings are set 4 types of threads are created; one classifier, one marker thread, with a feature and a data thread for each accepted LSL datastream.
+Once configuration settings are set 4 types of threaded operations are created; one classifier, one marker thread, with a feature and a data thread for each accepted LSL datastream.
 
 Marker Thread
 **********************************************
