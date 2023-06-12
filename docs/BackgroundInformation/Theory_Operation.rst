@@ -3,7 +3,7 @@ Theory of Operation
 
 Requirements Prior Initialising with `bci = PyBCI()`
 =========================================================
-The bci must have ==1 LSL marker stream selected (if more then one LSL marker stream is on the system it is recommended to set the desired ML training marker stream with :class:`markerStream` to  :py:class:`PyBCI()`). Warning: If None set it picks first available in list.
+The bci must have ==1 LSL marker stream selected and >=1 LSL data stream/s selected - if more then one LSL marker stream is on the system it is recommended to set the desired ML training marker stream with :parameter:`markerStream` to  :py:class:`PyBCI()`, otherwise first in list is selected. Similarly, if no set datastreams are selected with :parameter:`dataStream` to :py:class:`PyBCI()` all available datastreams will be used and decoded with the :reg:`generic-extractor`.
 
 Thread Creation
 =========================================================
