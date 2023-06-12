@@ -42,7 +42,7 @@ class FeatureProcessorThread(threading.Thread):
                     if (self.logger.level == Logger.TIMING):
                         end = time.time()
                         self.logger.log(Logger.TIMING, f" Feature Extraction time {end - start}")
-                        if (end-start) >(self.globalWindowSettings.windowLength*(1-self.globalWindowSettings.windowOverlap)):
+                        if (end-start) >self.globalWindowSettings.windowLength:
                             self.logger.log(Logger.WARNING, f" Feature Extraction time > globalEpochSetting.windowLength, will create lag in classification output. Recommended to reduce channels, smapling rate, and features or reduce feature computational complexity.")
                     self.featureQueueTrain.put( [features, devCount, target, self.epochCounts] )
                 except queue.Empty:
@@ -55,7 +55,7 @@ class FeatureProcessorThread(threading.Thread):
                     if (self.logger.level == Logger.TIMING):
                         end = time.time()
                         self.logger.log(Logger.TIMING, f" Feature Extraction time {end - start}")
-                        if (end-start) >(self.globalWindowSettings.windowLength*(1-self.globalWindowSettings.windowOverlap)):
+                        if (end-start) >self.globalWindowSettings.windowLength:
                             self.logger.log(Logger.WARNING, f" Feature Extraction time > globalEpochSetting.windowLength, will create lag in classification output. Recommended to reduce channels, smapling rate, and features or reduce feature computational complexity.")
                     self.featureQueueTest.put([features, devCount])
                 except queue.Empty:

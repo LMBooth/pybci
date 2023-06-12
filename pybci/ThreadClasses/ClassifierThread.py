@@ -8,7 +8,7 @@ class ClassifierThread(threading.Thread):
     targets = np.array([])
     mode = "train"
     guess = " "
-    epochCounts = {} 
+    epochCountsc = {} 
     def __init__(self, closeEvent,trainTestEvent, featureQueueTest,featureQueueTrain, classifierInfoQueue, classifierInfoRetrieveEvent, 
                  classifierGuessMarkerQueue, classifierGuessMarkerEvent, queryFeaturesQueue, queryFeaturesEvent,
                  logger = Logger(Logger.INFO), numStreamDevices = 1,
@@ -28,8 +28,6 @@ class ClassifierThread(threading.Thread):
         self.queryFeaturesEvent = queryFeaturesEvent
         self.numStreamDevices = numStreamDevices
         self.logger = logger
-        #self.features = np.array([])#[]
-        #self.targets = np.array([])
 
     def run(self):
         if self.numStreamDevices > 1:
@@ -37,54 +35,38 @@ class ClassifierThread(threading.Thread):
             tempdatatest = {}
         while not self.closeEvent.is_set():
             if self.trainTestEvent.is_set(): # We're training!
-                try:
-                    featuresSingle, devCount, target, self.epochCounts = self.featureQueueTrain.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
-                    
-                    if self.numStreamDevices > 1: # Collects multiple data strems feature sets and synchronise here
-                        tempdatatrain[devCount] = featuresSingle
-                        if len(tempdatatrain) == self.numStreamDevices:
-                            flattened_list = [item for sublist in tempdatatrain.values() for item in sublist]
-                            tempdatatrain = {}
+                if self.featureQueueTrain.empty():
+                    if len(self.epochCountsc) > 1: # check if there is more then one test condition
+                        minNumKeyEpochs = min([self.epochCountsc[key][1] for key in self.epochCountsc]) # check minimum viable number of training eochs have been obtained
+                        if minNumKeyEpochs < self.minRequiredEpochs:
+                            pass
+                        else: 
+                            start = time.time()
+                            self.classifier.TrainModel(self.features, self.targets)
+                            if (self.logger.level == Logger.TIMING):
+                                end = time.time()
+                                self.logger.log(Logger.TIMING, f" classifier training time {end - start}")
+                    if self.classifierGuessMarkerEvent.is_set():
+                        self.classifierGuessMarkerQueue.put(self.guess)
+                else:
+                    try:
+                        featuresSingle, devCount, target, self.epochCountsc = self.featureQueueTrain.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
+                        
+                        if self.numStreamDevices > 1: # Collects multiple data strems feature sets and synchronise here
+                            tempdatatrain[devCount] = featuresSingle
+                            if len(tempdatatrain) == self.numStreamDevices:
+                                flattened_list = [item for sublist in tempdatatrain.values() for item in sublist]
+                                tempdatatrain = {}
+                                self.targets = np.append(self.targets, [target], axis = 0)
+                                self.features = np.append(self.features, [flattened_list], axis = 0)
+                            # need to check if all device data is captured, then flatten and append  
+                        else: # Only one device to collect from
+                            if self.features.shape[0] == 0:
+                                self.features = self.features.reshape((0,) + featuresSingle.shape)
                             self.targets = np.append(self.targets, [target], axis = 0)
-                            #print(self.features.shape)
-                            self.features = np.append(self.features, [flattened_list], axis = 0)
-                        # need to check if all device data is captured, then flatten and append
-                            if len(self.epochCounts) > 1: # check if there is more then one test condition
-                                minNumKeyEpochs = min([self.epochCounts[key][1] for key in self.epochCounts]) # check minimum viable number of training eochs have been obtained
-                                if minNumKeyEpochs < self.minRequiredEpochs:
-                                    pass
-                                else: 
-                                    start = time.time()
-                                    self.classifier.TrainModel(self.features, self.targets)
-                                    if (self.logger.level == Logger.TIMING):
-                                        end = time.time()
-                                        self.logger.log(Logger.TIMING, f" classifier training time {end - start}")
-                            if self.classifierGuessMarkerEvent.is_set():
-                                self.classifierGuessMarkerQueue.put(self.guess)
-                    else: # Only one device to collect from
-                        #self.targets.append(target)
-                        if self.features.shape[0] == 0:
-                            #print("reshaping")
-                            self.features = self.features.reshape((0,) + featuresSingle.shape)
-                        #self.features.append(featuresSingle)
-                        #print("target shape", self.targets.shape)
-                        self.targets = np.append(self.targets, [target], axis = 0)
-                        #print("feature shape ",self.features.shape)
-                        self.features = np.append(self.features, [featuresSingle], axis = 0)
-                        if len(self.epochCounts) > 1: # check if there is more then one test condition
-                            minNumKeyEpochs = min([self.epochCounts[key][1] for key in self.epochCounts]) # check minimum viable number of training eochs have been obtained
-                            if minNumKeyEpochs < self.minRequiredEpochs:
-                                pass
-                            else: 
-                                start = time.time()
-                                self.classifier.TrainModel(self.features, self.targets)
-                                if (self.logger.level == Logger.TIMING):
-                                    end = time.time()
-                                    self.logger.log(Logger.TIMING, f" classifier training time {end - start}")
-                        if self.classifierGuessMarkerEvent.is_set():
-                            self.classifierGuessMarkerQueue.put(self.guess)
-                except queue.Empty:
-                    pass
+                            self.features = np.append(self.features, [featuresSingle], axis = 0)
+                    except queue.Empty:
+                        pass
             else: # We're testing!
                 try:
                     featuresSingle, devCount = self.featureQueueTest.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]

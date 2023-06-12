@@ -1,6 +1,6 @@
 #include <Servo.h>
 Servo handservos[5];  // create an array of servo objects
-
+#define ANALOG_PIN A0 
 void SetHand(Servo servos[], int pos[]){
   for (int i = 0; i < 5; i++) {
     servos[i].write(pos[i]);
@@ -24,6 +24,7 @@ void setup() {
   handservos[4].attach(10); // thumb
   SetHand(handservos, handPos[0]);
 }
+
 void loop() {
   if (Serial.available() > 0) {  // if there's data available to read
     char handIndex = Serial.read();  // read the incoming byte as a char
@@ -33,4 +34,6 @@ void loop() {
       SetHand(handservos, handPos[incomingInt]);
     }
   }
+  int analogValue = analogRead(ANALOG_PIN);  // read the input on analog pin
+  Serial.println(analogValue); 
 }

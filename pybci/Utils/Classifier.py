@@ -37,10 +37,14 @@ class Classifier():
         #print(features.shape)
         #print(x_train.shape)
         if len(features.shape)==3:
-            self.scaler = [StandardScaler() for scaler in range(features.shape[1])] # normalise our data (everything is a 0 or a 1 if you think about it, cheers georgey boy boole)
-            for e in range(features.shape[1]): # this would normalise the channel, maybe better to normalise across other dimension
-                x_train[:,e,:] = self.scaler[e].fit_transform(x_train[:,e,:]) # Compute the mean and standard deviation based on the training data
-                x_test[:,e,:] = self.scaler[e].transform(x_test[:,e,:])  # Scale the test data
+            self.scaler = [StandardScaler() for scaler in range(features.shape[2])] # normalise our data (everything is a 0 or a 1 if you think about it, cheers georgey boy boole)
+            for e in range(features.shape[2]): # this would normalise the channel, maybe better to normalise across other dimension
+                x_train_channel = x_train[:,:,e].reshape(-1, 1)
+                x_test_channel = x_test[:,:,e].reshape(-1, 1)
+                x_train[:,:,e] = self.scaler[e].fit_transform(x_train_channel).reshape(x_train[:,:,e].shape)
+                x_test[:,:,e] = self.scaler[e].transform(x_test_channel).reshape(x_test[:,:,e].shape)
+                #x_train[:,:,e] = self.scaler[e].fit_transform(x_train[:,:,e]) # Compute the mean and standard deviation based on the training data
+                #x_test[:,:,e] = self.scaler[e].transform(x_test[:,:,e])  # Scale the test data
         elif len(features.shape)== 2:    
             self.scaler = StandardScaler() # normalise our data (everything is a 0 or a 1 if you think about it, cheers georgey boy boole)
             x_train = self.scaler.fit_transform(x_train)  # Compute the mean and standard deviation based on the training data
@@ -64,8 +68,9 @@ class Classifier():
 
     def TestModel(self, x):
         if len(x.shape)==2:
-            for e in range(x.shape[0]):
-                x[e,:] = self.scaler[e].transform([x[e,:]])[0]
+            for e in range(x.shape[1]):
+                x[:,e] = self.scaler[e].transform(x[:,e].reshape(-1, 1)).reshape(x[:,e].shape)
+                #x[:,e] = self.scaler[e].transform([x[:,e]])[0]
         elif len(x.shape)== 1:       
             x = self.scaler.transform([x])[0]  # Scale the test data
         if self.classifierLibrary == "sklearn":

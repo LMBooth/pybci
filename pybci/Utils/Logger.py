@@ -1,13 +1,13 @@
 class Logger:
-    INFO = "info"
-    WARNING = "warning"
-    NONE = "none"
-    TIMING = "timing"
+    INFO = "INFO"
+    WARNING = "WARNING"
+    NONE = "NONE"
+    TIMING = "TIMING"
 
     def __init__(self, level=INFO):
         self.level = level
         self.check_level(level)
-
+        #print(self.level)
     def set_level(self, level):
         self.level = level
         self.check_level(level)
@@ -19,14 +19,14 @@ class Logger:
             self.level = level
 
     def log(self, level, message):
-        if self.level == 'none':
+        if self.level == self.NONE:
             return None
-        if level == 'info':
-            if self.level != 'none' and self.level != 'warning':
+        if level == self.INFO:
+            if self.level != self.NONE and self.level != self.WARNING:
                 print('PyBCI: [INFO] -' + message)
-        elif level == 'warning':
-            if self.level != 'none':
+        elif level == self.WARNING:
+            if self.level != self.NONE:
                 print('PyBCI: [WARNING] -' + message)
-        elif level == 'timing':
-            if self.level == 'timing':
+        elif level == self.TIMING:
+            if self.level == self.TIMING:
                 print('PyBCI: [TIMING] -' + message)
