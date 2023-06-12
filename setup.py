@@ -44,7 +44,7 @@ setup(
 
     version=version['__version__'],
 
-    description='A Python interface to create a BCI with the Lab Streaming Layer, scikit-learn and tensorflow packages',
+    description='A Python interface to create a BCI with the Lab Streaming Layer, Pytorch, SciKit-Learn and Tensorflow packages',
     long_description=long_description,
     long_description_content_type="text/markdown",
 
@@ -82,7 +82,7 @@ setup(
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: >=3.9',
     ],
     python_requires='>=3.9',
     # What does your project relate to?
