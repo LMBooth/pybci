@@ -53,8 +53,8 @@ Once the data has been epoched it is sent for feature extraction, there is a gen
 Finally a passable, customisable sklearn or tensorflow classifier can be giving to the bci class, once a defined number of epochs have been obtained for each received epoch/marker type the classifier can begin to fit the model. It's advised to use bci.ReceivedMarkerCount() to get the number of received training epochs received, once the min num epochs received of each type is >= pybci.minimumEpochsRequired (default 10 of each epoch) the model will begin to fit. Once fit the classifier info can be queried with CurrentClassifierInfo, this returns the model used and accuracy, is met or number of epochs TestMode() can be called. Once in test mode you can query (sould change function to own function and queue for quering testthread) what pybci estimates the current bci epoch is(typically bseline is used for no state). [Review the examples for sklearn and model implementations](https://pybci.readthedocs.io/en/latest/BackgroundInformation/Examples.html).
 
 ## ToDo!
-- Update ReadTheDocs!
-- Finish arduino hand grasp demo and video.
+- ~~Update ReadTheDocs!~~
+- ~~Finish arduino hand grasp demo and video.~~
 - Tst and likely Fix multimodal after new data thread creation
 - ~~Combine multiple data streams for multi modal bci!~~
 - ~~Add pytorch compatibility!~~ 
