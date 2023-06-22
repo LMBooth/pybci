@@ -26,7 +26,7 @@ bci.TrainMode() # assume both marker and datastreams available to start training
 accuracy = 0
 try:
     while(True): # training based on couple epochs more then min threshold for classifying
-        currentMarkers = bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
+        currentMarkers = bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent are too close together will be ignored till done processing
         time.sleep(1) # wait for marker updates
         print("Markers received: " + str(currentMarkers) +" Class accuracy: " + str(accuracy), end="\r")
         if len(currentMarkers) > 1:  # check there is more then one marker type received
