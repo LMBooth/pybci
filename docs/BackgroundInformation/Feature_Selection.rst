@@ -78,6 +78,7 @@ Raw time-series
 If the raw time-series data is wanted to be the input for the classifier we can pass a custom class which will allow us to retain a 2d array of [samples, channels] as the input for our model, example given below:
 
 .. code-block:: python
+
   class RawDecode():
       desired_length = int(250 * 0.5) # based on testRaw.py example, windowlength of 0.5s and sample rate of 250Hz
       def ProcessFeatures(self, epochData, sr, target): 
