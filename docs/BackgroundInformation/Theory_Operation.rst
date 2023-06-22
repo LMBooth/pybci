@@ -95,6 +95,6 @@ It is recommended to periodically query the current estimated marker with:
 
 where :class:`classGuess` is an integer relating to the marker value in the marker dict returned with :func:`PyBCI.ReceivedMarkerCount()`. See the :ref:`examples` for reference on how to setup sufficient training before switching to test mode and quering live classification esitmation. 
 
-3.2.2 Resetting or Adding to Train mode Feature Data
+Resetting or Adding to Train mode Feature Data
 -----------------------------------------------
 The user can call :func:`PyBCI.TrainMode()` again to go back to training the model and add to the existing feature data with new LSL markers signifying new epochs to be processed.
