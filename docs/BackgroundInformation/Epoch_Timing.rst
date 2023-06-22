@@ -59,4 +59,4 @@ By setting ``gs.windowOverlap`` to 0.5 we can turn overlap our 1 second epochs b
    
 Debugging Timing Errors
 ------------------------
-When initialising the :class:`PyBCI()` class set ``logger`` to “TIMING” to time the classification testing and training time and the feature extraction time for eah data inlet. These are the most computationally intensive tasks and will induce the most lag in the the system, both must be shorter then ``globalEpochSettings.windowLength*(1-globalEpochSettings.windowOverlap)`` individually.
+When initialising the :class:`PyBCI()` class set ``logger`` to “TIMING” to time the feature extraction time for each data inlet as well as classification testing and training times. These are the most computationally intensive tasks and will induce the most lag in the the system, each time must be shorter then ``globalEpochSettings.windowLength*(1-globalEpochSettings.windowOverlap)`` individually to minimise delays from input data action to classification output.
