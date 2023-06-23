@@ -69,10 +69,11 @@ setup(
         # Indicate who your project is intended for
         'Intended Audience :: Developers',
         'Intended Audience :: Science/Research',
-        'Topic :: Neuroscience',
-        'Topic :: Brain Computer Interfaces',
-        'Topic :: Machine Learning :: Physiological measures',
-        'Topic :: System :: Networking',
+        'Intended Audience :: Healthcare Industry',
+        'Topic :: Scientific/Engineering :: Human Machine Interfaces',
+        'Topic :: Scientific/Engineering :: Bio-Informatics',
+        'Topic :: Scientific/Engineering :: Medical Science Apps',
+        'Topic :: Scientific/Engineering :: Artificial Intelligence',
         'Topic :: Scientific/Engineering',
 
         # Pick your license as you wish (should match "license" above)
