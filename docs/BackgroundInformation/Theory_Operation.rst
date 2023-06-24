@@ -37,7 +37,7 @@ If a valid marker stream and datastream/s are available :py:class:`PyBCI()` can 
 
 Once in test mode the data threads continuously slice time windows of data based on :py:data:`globalEpochSettings`.windowLength and optionally overlaps these windows according to :py:data:`globalEpochSettings`.windowOverlap when initialising :py:class:`PyBCI()`. These windows have features extracted the same as in test mode, then the extracted features are applied to the model/classifier to predict the current target. 
 
-If the model is not performing well the user can always swap back to training model to gather more data with :py:meth:`TestMode`. It could also be worth to record your setup and view it in post to adjust yout epoch classifier timing windows accordingly. If the classifier output seem laggy look at :ref:`feature-debugging`, setting :py:data:`logger` to "TIMING" when initialising :class:`PyBCI()` prints classification testing and training times.
+If the model is not performing well the user can always swap back to training model to gather more data with :py:meth:`TestMode`. It could also be worth to record your setup and view it in post to adjust yout epoch classifier timing windows accordingly. If the classifier output seem laggy look at :ref:`feature-debugging`, setting :py:data:`loggingLevel` to "TIMING" when initialising :class:`PyBCI()` prints classification testing and training times.
 
 Custom Sci-Kit-Learn clf and Pytorch models can be used, see the examples found `here for sklearn <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_, and  `here for PyTorch <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPyTorch.py>`_.
 
