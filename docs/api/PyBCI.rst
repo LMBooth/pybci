@@ -6,44 +6,57 @@ PyBCI
 
     **Parameters:**
 
+    .. _pybci.datastreams:
     :dataStreams: list(str) or None
         Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
 
+    .. _pybci.markerStream:
     :markerStream: list(str) or None
         Allows the user to set custom acceptable Marker stream definitions. If `None`, it defaults to `markerTypes` scan.
 
+    .. _pybci.streamTypes:
     :streamTypes: list(str) or None
         Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
 
+    .. _pybci.markerTypes:
     :markerTypes: list(str) or None
         Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
 
+    .. _pybci.loggingLevel:
     :loggingLevel: string
         Sets PyBCI print level, ('INFO' prints all statements, 'WARNING' is only warning messages, 'TIMING' gives estimated time for feature extraction, and classifier training or testing, 'NONE' means no prints from PyBCI)
 
+    .. _pybci.globalEpochSettings:
     :globalEpochSettings: GlobalEpochSettings
         Sets global timing settings for epochs.
 
+    .. _pybci.customEpochSettings:
     :customEpochSettings: dict
         Sets individual timing settings for epochs. {markerstring1:IndividualEpochSettings(),markerstring2:IndividualEpochSettings()}
 
+    .. _pybci.streamChsDropDict:
     :streamChsDropDict: dict
         Keys for dict should be respective datastreams with corresponding list of which channels to drop. {datastreamstring1: list(ints), datastreamstring2: list(ints)}
 
+    .. _pybci.streamCustomFeatureExtract:
     :streamCustomFeatureExtract: dict
         Allows dict to be passed of datastream with custom feature extractor class for analysing data. {datastreamstring1: customClass1(), datastreamstring2: customClass1(),}
 
+    .. _pybci.minimumEpochsRequired:
     :minimumEpochsRequired: int
         Minimum number of required epochs before model fitting begins, must be of each type of received markers and more than 1 type of marker to classify.
 
+    .. _pybci.clf:
     :clf: sklearn.base.ClassifierMixin or None
         Allows custom Sklearn model to be passed.
 
+    .. _pybci.model:
     :model: tf.keras.model or None
         Allows custom tensorflow model to be passed.
 
-    :torchModel: [torchModel(), torch.nn.Module] or None
-        Currently a list where first item is torchmodel analysis function, second is torch model, check pytorch example - likely to change in future updates.
+    .. _pybci.torchModel:
+    :torchModel: custom def or None
+        Custom torch function should be passed with 4 inputs (x_train, x_test, y_train, y_test). Needs to return [accuracy, model], look at testPyTorch.py in examples for reference.
 
 .. py:method:: __enter__()
 
@@ -67,5 +80,5 @@ PyBCI
 
 .. py:method:: CurrentClassifierInfo()
 
-   Retrieve current classifier information including clf, model, torchModel and accuracy.quote("class PyBCI:\n    globalEpochSettings =", "likely to change in future updates")
+   Retrieve current classifier information including clf, model, torchModel 
 
