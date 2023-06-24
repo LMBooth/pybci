@@ -6,22 +6,15 @@ PyBCI
    The `PyBCI` object stores data from available LSL time series data streams (EEG, pupilometry, EMG, etc.) and holds a configurable number of samples based on LSL marker strings.
 
    **Parameters:**
-
-   .. py:parameter:: dataStreams
-      :type dataStreams: list(str) or None
-      :dataStreams: Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
-
-   .. py:parameter:: markerStream
-      :type markerStream: list(str) or None
-      :markerStream: Allows the user to set custom acceptable Marker stream definitions. If `None`, it defaults to `markerTypes` scan.
-
-   .. py:parameter:: streamTypes
-      :type streamTypes: list(str) or None
-      :streamTypes: Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
-
-   .. py:parameter:: markerTypes
-      :type markerTypes: list(str) or None
-      :markerTypes: Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
+:parent: class: Parent object.
+.. py:parameter:: dataStreams
+:type dataStreams: list(str) or None: Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
+.. py:parameter:: markerStream
+:type markerStream: list(str) or None: Allows the user to set custom acceptable Marker stream definitions. If `None`, it defaults to `markerTypes` scan.
+.. py:parameter:: streamTypes
+:type streamTypes: list(str) or None: Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
+.. py:parameter:: markerTypes
+:type markerTypes: list(str) or None: Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
 
    .. py:parameter:: loggingLevel
       :type loggingLevel: string
