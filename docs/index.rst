@@ -5,6 +5,8 @@ Welcome to the PyBCI documentation!
 
 The goal of PyBCI is to enable quick iteration when creating pipelines for testing human machine and brain computer interfaces, namely testing applied data processing and feature extraction techniques on custom machine learning models. Training the BCI requires LSL enabled devices and an LSL marker stream for training stimuli. (The `examples folder <https://github.com/LMBooth/pybci/tree/main/pybci/Examples>`_ found on the github has a `pseudo LSL data generator and marker creator <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/PsuedoLSLStreamGenerator>`_ in the `mainSend.py <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/PsuedoLSLStreamGenerator/mainSend.py>`_ file so the examples can run without the need of LSL capable hardware.)
 
+`Github repo here! <https://github.com/LMBooth/pybci/>`_
+
 
 
 Check out the :doc:`BackgroundInformation/Introduction` section for further information, specifically for :ref:`installation` of the project.
