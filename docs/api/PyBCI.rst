@@ -90,42 +90,42 @@ PyBCI
 
 .. _pybci-enter:
 
-.. py:method:: __enter__()
+.. py:automethod:: __enter__()
 
    Connects to the BCI.
 
 .. _pybci-exit:
 
-.. py:method:: __exit__(exc_type, exc_val, exc_tb)
+.. py:automethod:: __exit__(exc_type, exc_val, exc_tb)
 
    Stops all threads of the BCI.
 
 .. _pybci-connect:
 
-.. py:method:: Connect()
+.. py:automethod:: Connect()
 
    Checks if valid data and marker streams are present, controls dependent functions by setting self.connected. Returns a boolean indicating the connection status.
 
-.. py:method:: TrainMode()
+.. py:automethod:: TrainMode()
 
    Set the mode to Train. The BCI will try to connect if it is not already connected.
 
-.. py:method:: TestMode()
+.. py:automethod:: TestMode()
 
    Set the mode to Test. The BCI will try to connect if it is not already connected.
 
-.. py:method:: CurrentClassifierInfo()
+.. py:automethod:: CurrentClassifierInfo()
 
    :returns: a dictionary containing "clf", "model," "torchModel," and "accuracy." The accuracy is 0 if no model training/fitting has occurred. If the mode is not used, the corresponding value is None. If not connected, returns `{"Not Connected": None}`.
 
-.. py:method:: CurrentClassifierMarkerGuess()
+.. py:automethod:: CurrentClassifierMarkerGuess()
 
    :returns: an integer or None. The returned integer corresponds to the value of the key from the dictionary obtained from `ReceivedMarkerCount()` when in test mode. If in train mode, returns None.
 
-.. py:method:: CurrentFeaturesTargets()
+.. py:automethod:: CurrentFeaturesTargets()
 
    :returns: a dictionary containing "features" and "targets." "features" is a 2D list of feature data, and "targets" is a 1D list of epoch targets as integers. If not connected, returns `{"Not Connected": None}`.
 
-.. py:method:: ReceivedMarkerCount()
+.. py:automethod:: ReceivedMarkerCount()
 
    :returns: a dictionary. Each key is a string received on the selected LSL marker stream, and the value is a list. The first item is the marker id value, to be used with `CurrentClassifierMarkerGuess()`. The second value is a received count for that marker type. Will be empty if no markers are received.
