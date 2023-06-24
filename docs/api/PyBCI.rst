@@ -80,20 +80,20 @@ PyBCI
 
 .. py:method:: CurrentClassifierInfo()
 
-   Returns dict. dict of "clf", "model, "torchModel"" and "accuracy" where accuracy is 0 if no model training/fitting has occurred. If mode not used corresponding value is None.
-        If not connected returns {"Not Connected": None}
+   Returns dict. 
+        dict of "clf", "model, "torchModel"" and "accuracy" where accuracy is 0 if no model training/fitting has occurred. If mode not used corresponding value is None. If not connected returns {"Not Connected": None}
 
 .. py:method:: CurrentClassifierMarkerGuess()
 
-   Returns int | None. Returned int correlates to value of key from dict from ReceivedMarkerCount() when in testmode. 
-            If in trainmode returns None.
+   Returns int | None. 
+        Returned int correlates to value of key from dict from ReceivedMarkerCount() when in testmode. If in trainmode returns None.
 
 .. py:method:: CurrentFeaturesTargets()
 
-    Returns dict. dict of "features" and "targets" where features is 2d list of feature data and targets is a 1d list of epoch targets as ints.
-            If not connected returns {"Not Connected": None}
+    Returns dict. 
+        dict of "features" and "targets" where features is 2d list of feature data and targets is a 1d list of epoch targets as ints. If not connected returns {"Not Connected": None}
 
 .. py:method:: ReceivedMarkerCount()
 
-    Returns dict. Every key is a string received on the selected LSL marker stream, the value is a list where the first item is the marker id value, 
-            use with CurrentClassifierMarkerGuess() the second value is a received count for that marker type. Will be empty if no markers received.
+    Returns dict. 
+        Every key is a string received on the selected LSL marker stream, the value is a list where the first item is the marker id value, use with CurrentClassifierMarkerGuess() the second value is a received count for that marker type. Will be empty if no markers received.
