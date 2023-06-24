@@ -10,6 +10,8 @@
 
 This folder contains an example of how to push ADC recordings from an arduino to the LSL, use the PyBCI package to classify the incoming data, then pushes command data back to the arduino in test moded to control servo positions.
 
+This is an extremely simple example setup, using a single [Myoware Sensor](https://myoware.com/products/muscle-sensor/) as an input to an arduino ADC, then the 3D printed finger positions are controlled with pulleys on servomotors. 
+
 An example video can be found here:
 
 [![PyBCI Arduino Hand Demo](https://img.youtube.com/vi/InEbiykeinQ/0.jpg)](https://www.youtube.com/watch?v=InEbiykeinQ)
