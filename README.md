@@ -57,7 +57,7 @@ Finally a passable, customisable sklearn or tensorflow classifier can be giving 
 - fix psuedo plotter, when gui inactive for long period seems to crash plotter when reactivated, LSL data is still generated and button remain active though.
 - I think first stable release after the two above are done?
 - ~~Run benchmark tests on DataReceiverThread.py and AsynDataReceiverThread.py, seeking potential optimisations.~~ (Added universal optimised thread to handle all cases)
-- ~~Levels of print debug (info, error, none)~~
+- ~~Levels of print debug (info, error, none, timing)~~
 - ~~Retrieve feature data~~
 
 ## Curently in Beta, come back in a few days for updates!
