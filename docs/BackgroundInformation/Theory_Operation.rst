@@ -53,7 +53,7 @@ The figure below illustrates the general flow of data between threads on initial
 
 Another representation is given here for data flor operation between processes:
 
-.. image:: https://github.com/LMBooth/pybci/blob/main/docs/Images/operation.svg
+.. image:: ../Images/operation.svg
    :alt: Pybci data connections
 
 Testing and Training the Model
