@@ -6,7 +6,7 @@ PyBCI
    The `PyBCI` object stores data from available LSL time series data streams (EEG, pupilometry, EMG, etc.) and holds a configurable number of samples based on LSL marker strings.
 
    **Parameters:**
-:parent: class: Parent object.
+
 .. py:parameter:: dataStreams
 :type dataStreams: list(str) or None: Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
 .. py:parameter:: markerStream
