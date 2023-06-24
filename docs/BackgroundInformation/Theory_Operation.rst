@@ -48,13 +48,13 @@ Thread Overview
 The figure below illustrates the general flow of data between threads on initialisation:
 
 .. image:: ../Images/flowchart/Flowchart.svg
-   :alt: Alternative text describing the image
+   :alt: flowchart for pybci init
 
 
-Another representation is given here:
+Another representation is given here for data flor operation between processes:
 
 .. image:: https://github.com/LMBooth/pybci/blob/main/docs/Images/operation.svg
-   :alt: Alternative text describing the image
+   :alt: Pybci data connections
 
 Testing and Training the Model
 =========================================================
