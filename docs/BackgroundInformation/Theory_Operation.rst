@@ -65,7 +65,7 @@ Retrieiving current estimate
 -----------------------------------------
 Before the classifier can be run a minimum number of marker strings must be received for each type of target marker, set with the `minimumEpochsRequired` variable (default: 10) to :py:class:`PyBCI()`.
 
-An sklearn classifier of the users choosing can be passed with the `clf` variable, or a tensorflow model with passed to `model` when instantiating with :py:class:`PyBCI()`.
+An sklearn classifier of the users choosing can be passed with the :ref:`clf` variable, Pytorch with :ref:'torchModel' or a tensorflow model with passed to :ref:`model` when instantiating with :py:class:`PyBCI()`, only one should be passed the others will default to :class:`None`.
 
 The classifier performance or updated model/clf types can be queried by calling :func:`PyBCI.CurrentClassifierInfo()` example:
 
@@ -81,6 +81,7 @@ Where classInfo is a dict of:
    classinfo = {
       "clf":self.classifier.clf,
       "model":self.classifier.model,
+      "torchModel":self.classifier.torchModel,
       "accuracy":self.classifier.accuracy
    }
 
