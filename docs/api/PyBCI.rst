@@ -41,14 +41,13 @@ PyBCI
 
 .. py:attribute:: globalEpochSettings
     :type: GlobalEpochSettings
-    :value: Sets global timing settings for epochs. See :ref:`set_custom_epoch_times`.                                                                                    
-                                                 
+    :value: Sets global timing settings for epochs. See PyBCI.GlobalEpochSettings() and Epoch Timing for more information.                                                                                    
 
 .. _pybci-customepochsettings:
 
 .. py:attribute:: customEpochSettings
     :type: dict
-    :value: Sets individual timing settings for epochs. {markerstring1:IndividualEpochSettings(),markerstring2:IndividualEpochSettings()}
+    :value: Sets individual timing settings for epochs. {markerstring1:IndividualEpochSettings(),markerstring2:IndividualEpochSettings()}, See PyBCI.InidividualEpochSettings() and Epoch Timing for more information.
 
 .. _pybci-streamchsdropdict:
 
