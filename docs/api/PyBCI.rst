@@ -41,7 +41,8 @@ PyBCI
 
 .. py:attribute:: globalEpochSettings
     :type: GlobalEpochSettings
-    :value: Sets global timing settings for epochs. See :ref:`set_custom_epoch_times`.                                                                   
+    :value: Sets global timing settings for epochs. See :ref:`set_custom_epoch_times`.                                                                                    
+                                                 
 
 .. _pybci-customepochsettings:
 
@@ -71,13 +72,15 @@ PyBCI
 
 .. py:attribute:: clf
     :type: sklearn.base.ClassifierMixin or None
-    :value: Allows custom Sklearn model to be passed.                                                                  
+    :value: Allows custom Sklearn model to be passed.                                                                          
+                                                          
 
 .. _pybci-model:
 
 .. py:attribute:: model
     :type: tf.keras.model or None
-    :value: Allows custom TensorFlow model to be passed.                                                                  
+    :value: Allows custom TensorFlow model to be passed.                                                                                                                                    
+
 
 .. _pybci-torchmodel:
 
