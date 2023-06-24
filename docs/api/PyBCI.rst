@@ -94,5 +94,6 @@ PyBCI
             If not connected returns {"Not Connected": None}
 
 .. py:method:: ReceivedMarkerCount()
+
     Returns dict. Every key is a string received on the selected LSL marker stream, the value is a list where the first item is the marker id value, 
             use with CurrentClassifierMarkerGuess() the second value is a received count for that marker type. Will be empty if no markers received.
