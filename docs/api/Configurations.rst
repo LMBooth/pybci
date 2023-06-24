@@ -1,4 +1,4 @@
-pybci.Configuration.GlobalEpochSettings
+pybci.Configuration.EpochSettings import GlobalEpochSettings
 ===============
 .. class:: GlobalEpochSettings()
 
@@ -10,7 +10,7 @@ GlobalEpochSettings class holds global time related variables for slicing epochs
 :windowLength: float: If splitcheck true - time in seconds to split epoch.
 :windowOverlap: float: If splitcheck true - percentage value > 0 and < 1, example; if epoch has tmin of 0 and tmax of 1 with window length of 0.5 we have 1 epoch between t 0 and t0.5 another at 0.25 to 0.75, 0.5 to 1
 
-pybci.Configuration.IndividualEpochSetting
+pybci.Configuration.EpochSettings import IndividualEpochSetting
 ===============
 .. class:: IndividualEpochSetting()
 
@@ -20,7 +20,7 @@ IndividualEpochSetting class holds time related variables for slicing epoch mark
 :tmin: float: Time in seconds to capture samples before trigger.
 :tmax: float: Time in seconds to capture samples after trigger.
 
-pybci.Configuration.GeneralFeatureChoices
+pybci.Configuration.FeatureSettings import GeneralFeatureChoices
 ===============
 .. class:: GeneralFeatureChoices()
 
