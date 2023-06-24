@@ -14,7 +14,7 @@ The `generic feature extractor class found here <https://github.com/LMBooth/pybc
 
 The available features can be  for each of the below boolean feature choices. The `FeatureSettings class GeneralFeatureChoices <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_ gives a quick method for selecting the time and/or frequency based feature extraction techniques - useful for reducing stored data and computational complexity.
 
-The features can be selected by setting the respective attributes in the :class:`GeneralFeatureChoices` class to True. When initialising :class:`PyBCI()` we can pass :class:`configuration.GeneralFeatureChoices()` to :class:`featureChoices` which offers a list of booleans to decide the following features, not all options are set by default to reduce computation time:
+The features can be selected by setting the respective attributes in the :class:`GeneralFeatureChoices` class to True. When initialising :class:`PyBCI()` we can pass :class:`GeneralFeatureChoices()` to :py:data:`featureChoices` which offers a list of booleans to decide the following features, not all options are set by default to reduce computation time:
 
 .. code-block:: python
 
