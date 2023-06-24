@@ -8,13 +8,13 @@ Epochs are periods of time.
 
 In relation to training models on set actions for brain computer interfaces, it is useful to define epochs by the amount of time-series data before and after a marker has been received indicating a desired classification action has been executed. A selected LSL marker stream is used to send strings which represent unique target training markers. Once data is sliced in to epochs it may be processed for feature extraction, or in some cases passed as raw time-series input, see :ref:`custom-extractor` and :ref:`raw-extractor` for more information on feature extraction.
 
-Setting the :class:`PyBCI.globalEpochSettings` with the :class:`GlobalEpochSettings()` class sets the target window length and overlap for the training time windows. It is desirable to have a single global window length that all epochs are sliced to match, this gives a uniform array when passing to the classifier. When in testing mode a having a continuous rolling window of data is sliced to this size and overlapped based on the windowOverlap, see :ref:`set_custom_epoch_times` for more info.
+Setting the :ref:`pybci.globalEpochSettings` with the :class:`GlobalEpochSettings()` class sets the target window length and overlap for the training time windows. It is desirable to have a single global window length that all epochs are sliced to match, this gives a uniform array when passing to the classifier. When in testing mode a having a continuous rolling window of data is sliced to this size and overlapped based on the windowOverlap, see :ref:`set_custom_epoch_times` for more info.
 
 .. _set_custom_epoch_times:
 Setting Custom Epoch Times
 ------------------------
 
-The figure below illustrates when you may have epochs of differing lengths received on the LSL marker stream. A baseline marker may signify an extended period, in this case 10 seconds, and our motor task is only 1 second long. To account for this set :class:`PyBCI.customEpochSettings` and :class:`PyBCI.globalEpochSettings` accordingly:
+The figure below illustrates when you may have epochs of differing lengths received on the LSL marker stream. A baseline marker may signify an extended period, in this case 10 seconds, and our motor task is only 1 second long. To account for this set :ref:`pybci.customEpochSettings` and :ref:`pybci.globalEpochSettings` accordingly:
 
 .. code-block:: python
 
