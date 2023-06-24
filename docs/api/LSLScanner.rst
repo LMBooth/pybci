@@ -1,4 +1,4 @@
-pybci.LSLScanner
+pybci.Utils.LSLScanner import LSLScanner
 ===============
 .. class:: LSLScanner(parent, dataStreamsNames=None, markerStreamName=None, streamTypes=None, markerTypes=None, printDebug=True)
 
