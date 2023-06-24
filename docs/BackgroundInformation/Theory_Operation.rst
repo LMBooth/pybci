@@ -17,9 +17,9 @@ Data Threads
 **********************************************
 Each data stream has two threads created, one data and one feature extractor. The data thread is responsible for setting pre-allocated numpy arrays for each data stream inlet which pulls chunks of data from the LSL. When in training mode it gathers data so many seconds before and after a marker to prepare for feature extraction, with the option of slicing and overlapping so many seconds before and after the marker appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_, set with :py:data:`globalEpochSettings` and :py:data:`customEpochSettings` when initialising :py:class:`PyBCI()`.
 
-Add desired dataStreams by passing a list of strings containing accepted data stream names with :parameter:`dataStreams`. By setting :parameter:`dataStreams` all other data inlets will be ignored except those in the list.
+Add desired dataStreams by passing a list of strings containing accepted data stream names with:py:data:`dataStreams`. By setting :py:data:`dataStreams` all other data inlets will be ignored except those in the list.
 
-Note: Data so many seconds before and after the LSL marker timestamp is decided by the corresponding LSL data timestamps. If the LSL data stream pushes chunks infrequently (>[windowLength*(1-windowOverlap)]) and doesn't overwrite each sample with linear equidistant timestamps errors in classification output will occur - Kept legacy data threads AsyncDataReceiver and DataReceiver in threads folder in case modifications needed based on so many samples before and after decided by expected sample rate if people find this becomes an issue for certain devices.
+Note: Data so many seconds before and after the LSL marker timestamp is decided by the corresponding LSL data timestamps. If the LSL data stream pushes chunks infrequently (>[:py:data:`globalEpochSettings`.windowLength*(1-:py:data:`globalEpochSettings`.windowOverlap)]) and doesn't overwrite each sample with linear equidistant timestamps, errors in classification output will occur - Kept legacy data threads AsyncDataReceiver and DataReceiver in threads folder in case modifications needed based on so many samples before and after decided by expected sample rate if people find this becomes an issue for certain devices.
 
 Feature Extractor Threads
 **********************************************
@@ -33,11 +33,11 @@ Classifier Thread
 **********************************************
 The Classifier thread is responsible for receiving data from the various feature extraction threads, synchronising based on the number of data streams, then using the features and target marker values for testing and training the selected machine learning pytorch, tensorflow or scikit-learn model or classifier. 
 
-If a valid marker stream and datastream/s are available :py:class:`PyBCI()` can start machine learning training by calling :method:`TrainMode()`. In training mode strings are received on the selected LSL marker stream which signify a machine learning target value has occured. A minimum number of each type of string type are required before classification beings, which can be modied with :class:`minimumEpochsRequired` to :py:class:`PyBCI()` on initialisation. Only after this number has been received of each and a suitable classification accuracy has been obtained should the bci start test mode. Call :func:`TestMode()` on the :py:class:`PyBCI()` object to start testing the machine learning model.
+If a valid marker stream and datastream/s are available :py:class:`PyBCI()` can start machine learning training by calling :py:meth:`TrainMode()`. In training mode strings are received on the selected LSL marker stream which signify a machine learning target value has occured. A minimum number of each type of string type are required before classification beings, which can be modied with :py:data:`minimumEpochsRequired` to :py:class:`PyBCI()` on initialisation. Only after this number has been received of each and a suitable classification accuracy has been obtained should the bci start test mode. Call :py:meth:`TestMode()` on the :py:class:`PyBCI()` object to start testing the machine learning model.
 
-Once in test mode the data threads continuously slice time windows of data based on :class:`globalEpochSettings.windowLength` and optionally overlaps these windows according to :class:`globalEpochSettings.windowOverlap` when initialising :py:class:`PyBCI()`. These windows have features extracted the same as in test mode, then the extracted features are applied to the model/classifier to predict the current target. 
+Once in test mode the data threads continuously slice time windows of data based on :py:data:`globalEpochSettings`.windowLength and optionally overlaps these windows according to :py:data:`globalEpochSettings`.windowOverlap when initialising :py:class:`PyBCI()`. These windows have features extracted the same as in test mode, then the extracted features are applied to the model/classifier to predict the current target. 
 
-If the model is not performing well the user can always swap back to training model to gather more data with :func:`PyBCI.TestMode()`. It could also be worth to record your setup and view it in post to adjust yout epoch classifier timing windows accordingly. If the classifier output seem laggy look at :ref:`feature-debugging`, setting :class:`logger` to "TIMING" when initialising :class:`PyBCI()` prints classification testing and training times.
+If the model is not performing well the user can always swap back to training model to gather more data with :py:meth:`TestMode`. It could also be worth to record your setup and view it in post to adjust yout epoch classifier timing windows accordingly. If the classifier output seem laggy look at :ref:`feature-debugging`, setting :py:data:`logger` to "TIMING" when initialising :class:`PyBCI()` prints classification testing and training times.
 
 Custom Sci-Kit-Learn clf and Pytorch models can be used, see the examples found `here for sklearn <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_, and  `here for PyTorch <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPyTorch.py>`_.
 
@@ -63,11 +63,11 @@ Training
 **********************************************
 Retrieiving current estimate
 -----------------------------------------
-Before the classifier can be run a minimum number of marker strings must be received for each type of target marker, set with the `minimumEpochsRequired` variable (default: 10) to :py:class:`PyBCI()`.
+Before the classifier can be run a minimum number of marker strings must be received for each type of target marker, set with the :py:data:`minimumEpochsRequired` variable (default: 10) to :py:class:`PyBCI()`.
 
-An sklearn classifier of the users choosing can be passed with the :ref:`clf` variable, Pytorch with :ref:'torchModel' or a tensorflow model with passed to :ref:`model` when instantiating with :py:class:`PyBCI()`, only one should be passed the others will default to :class:`None`.
+An sklearn classifier of the users choosing can be passed with the :py:data:`clf` variable, Pytorch with :py:data:'torchModel' or a tensorflow model with passed to :py:data:`model` when instantiating with :py:class:`PyBCI()`, only one should be passed the others will default to :class:`None`.
 
-The classifier performance or updated model/clf types can be queried by calling :func:`PyBCI.CurrentClassifierInfo()` example:
+The classifier performance or updated model/clf types can be queried by calling :py:meth:`CurrentClassifierInfo()` example:
 
 .. code-block:: python
 
@@ -85,7 +85,7 @@ Where classInfo is a dict of:
       "accuracy":self.classifier.accuracy
    }
 
-When in test mode data is captured :class:`tmin` seconds before the training marker and :class:`tmax` after the marker, if the :class:`splitCheck` otion is True then the epochs will be sliced up and overlapped set by the :class:`globalEpochSettings` :class:`windowLength` and :class:`overlap` options, see :ref:`set_custom_epoch_times` for more information and illustrations.
+When in test mode data is captured :class:`tmin` seconds before the training marker and :class:`tmax` after the marker, if the :class:`splitCheck` otion is True then the epochs will be sliced up and overlapped set by the :py:data:`globalEpochSettings` :class:`windowLength` and :class:`overlap` options, see :ref:`set_custom_epoch_times` for more information and illustrations.
 
 
 Testing
@@ -100,7 +100,7 @@ It is recommended to periodically query the current estimated marker with:
 
     classGuess = bci.CurrentClassifierMarkerGuess()
 
-where :class:`classGuess` is an integer relating to the marker value in the marker dict returned with :func:`PyBCI.ReceivedMarkerCount()`. See the :ref:`examples` for reference on how to setup sufficient training before switching to test mode and quering live classification esitmation. 
+where :class:`classGuess` is an integer relating to the marker value in the marker dict returned with :py:meth:`ReceivedMarkerCount()`. See the :ref:`examples` for reference on how to setup sufficient training before switching to test mode and quering live classification esitmation. 
 
 Resetting or Adding to Train mode Feature Data
 -----------------------------------------------
