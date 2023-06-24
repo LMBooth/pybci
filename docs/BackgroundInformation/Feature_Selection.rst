@@ -3,7 +3,7 @@ Feature Selection
 .. _feature-debugging:
 Recommended Debugging
 --------------------------------
-When initialisaing the :class:`PyBCI()` class we can set :py:data:`logger` to "TIMING" to time our feature extraction time, note a warning will be produced if the feature extraction time is longer then the :py:data:`globalEpochSettings`.windowLength*(1-:py:data:`globalEpochSettings`.windowOverlap), if this is the case a delay will continuously grow as data builds in the queues. To fix this reduce channel count, feature count, feature complexity, or sample rate until the feature extraction time is acceptable, this will help create near-real-time classification.
+When initialisaing the :class:`PyBCI()` class we can set :py:data:`loggingLevel` to "TIMING" to time our feature extraction time, note a warning will be produced if the feature extraction time is longer then the :py:data:`globalEpochSettings`.windowLength*(1-:py:data:`globalEpochSettings`.windowOverlap), if this is the case a delay will continuously grow as data builds in the queues. To fix this reduce channel count, feature count, feature complexity, or sample rate until the feature extraction time is acceptable, this will help create near-real-time classification.
 
 
 .. _generic-extractor:
