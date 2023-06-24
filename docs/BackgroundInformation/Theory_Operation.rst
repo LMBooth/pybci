@@ -53,7 +53,7 @@ The figure below illustrates the general flow of data between threads on initial
 
 Another representation is given here:
 
-.. image:: https://github.com/LMBooth/pybci/blob/main/docs/Images/operations.PNG
+.. image:: https://github.com/LMBooth/pybci/blob/main/docs/Images/operations.svg
    :alt: Alternative text describing the image
 
 Testing and Training the Model
