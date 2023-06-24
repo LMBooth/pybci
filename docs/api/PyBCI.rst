@@ -16,8 +16,8 @@ PyBCI
 .. _pybci-markerstream:
 
 .. py:attribute:: markerStream
-    :type: list(str) or None
-    :value: Allows the user to set custom acceptable Marker stream definitions. If `None`, it defaults to `markerTypes` scan.
+    :type: str or None
+    :value: Allows the user to set custom acceptable Marker stream definition. If `None`, it defaults to `markerTypes` scan.
 
 .. _pybci-streamtypes:
 
@@ -29,7 +29,7 @@ PyBCI
 
 .. py:attribute:: markerTypes
     :type: list(str) or None
-    :value: Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
+    :value: Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`, if both None then grabs first LSL markerstream available.
 
 .. _pybci-logginglevel:
 
