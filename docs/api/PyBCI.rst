@@ -41,7 +41,7 @@ PyBCI
 
 .. py:attribute:: globalEpochSettings
     :type: GlobalEpochSettings
-    :value: Sets global timing settings for epochs.
+    :value: Sets global timing settings for epochs. See :ref:`set_custom_epoch_times`. 
 
 .. _pybci-customepochsettings:
 
