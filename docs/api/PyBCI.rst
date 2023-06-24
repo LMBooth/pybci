@@ -7,50 +7,32 @@ PyBCI
 
    **Parameters:**
 
-.. py:parameter:: dataStreams
+.. py:attribute:: dataStreams
 :dataStreams: list(str) or None: Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
-.. py:parameter:: markerStream
+.. py:attribute:: markerStream
 :markerStream: list(str) or None: Allows the user to set custom acceptable Marker stream definitions. If `None`, it defaults to `markerTypes` scan.
-.. py:parameter:: streamTypes
+.. py:attribute:: streamTypes
 :streamTypes: list(str) or None: Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
-.. py:parameter:: markerTypes
+.. py:attribute:: markerTypes
 :markerTypes: list(str) or None: Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
-
-   .. py:parameter:: loggingLevel
-      :type loggingLevel: string
-      :loggingLevel: Sets PyBCI print level, ('INFO' prints all statements, 'WARNING' is only warning messages, 'TIMING' gives estimated time for feature extraction, and classifier training or testing, 'NONE' means no prints from PyBCI)
-
-   .. py:parameter:: globalEpochSettings
-      :type globalEpochSettings: GlobalEpochSettings
-      :globalEpochSettings: Sets global timing settings for epochs.
-
-   .. py:parameter:: customEpochSettings
-      :type customEpochSettings: dict
-      :customEpochSettings: Sets individual timing settings for epochs. {markerstring1:IndividualEpochSettings(),markerstring2:IndividualEpochSettings()}
-
-   .. py:parameter:: streamChsDropDict
-      :type streamChsDropDict: dict
-      :streamChsDropDict: Keys for dict should be respective datastreams with corresponding list of which channels to drop. {datastreamstring1: list(ints), datastreamstring2: list(ints)}
-
-   .. py:parameter:: streamCustomFeatureExtract
-      :type streamCustomFeatureExtract: dict
-      :streamCustomFeatureExtract: Allows dict to be passed of datastream with custom feature extractor class for analyzing data. {datastreamstring1: customClass1(), datastreamstring2: customClass1()}
-
-   .. py:parameter:: minimumEpochsRequired
-      :type minimumEpochsRequired: int
-      :minimumEpochsRequired: Minimum number of required epochs before model fitting begins, must be of each type of received markers and more than 1 type of marker to classify.
-
-   .. py:parameter:: clf
-      :type clf: sklearn.base.ClassifierMixin or None
-      :clf: Allows custom Sklearn model to be passed.
-
-   .. py:parameter:: model
-      :type model: tf.keras.model or None
-      :model: Allows custom TensorFlow model to be passed.
-
-   .. py:parameter:: torchModel
-      :type torchModel: custom def or None
-      :torchModel: Custom torch function should be passed with 4 inputs (x_train, x_test, y_train, y_test). Needs to return [accuracy, model], look at testPyTorch.py in examples for reference.
+.. py:attribute:: loggingLevel
+:loggingLevel: string: Sets PyBCI print level, ('INFO' prints all statements, 'WARNING' is only warning messages, 'TIMING' gives estimated time for feature extraction, and classifier training or testing, 'NONE' means no prints from PyBCI)
+.. py:attribute:: globalEpochSettings
+:globalEpochSettings: GlobalEpochSettings: Sets global timing settings for epochs. 
+.. py:attribute:: customEpochSettings
+:customEpochSettings: dict: Sets individual timing settings for epochs. {markerstring1:IndividualEpochSettings(),markerstring2:IndividualEpochSettings()}
+.. py:attribute:: streamChsDropDict
+:streamChsDropDict: dict: Keys for dict should be respective datastreams with corresponding list of which channels to drop. {datastreamstring1: list(ints), datastreamstring2: list(ints)}
+.. py:attribute:: streamCustomFeatureExtract
+:streamCustomFeatureExtract: dict::streamCustomFeatureExtract: Allows dict to be passed of datastream with custom feature extractor class for analyzing data. {datastreamstring1: customClass1(), datastreamstring2: customClass1()}
+.. py:attribute:: minimumEpochsRequired
+:type minimumEpochsRequired: int: Minimum number of required epochs before model fitting begins, must be of each type of received markers and more than 1 type of marker to classify.
+.. py:attribute:: clf
+:type clf: sklearn.base.ClassifierMixin or None: Allows custom Sklearn model to be passed.
+.. py:attribute:: model
+:type model: tf.keras.model or None: Allows custom TensorFlow model to be passed.
+.. py:attribute:: torchModel
+:type torchModel: custom def or None: Custom torch function should be passed with 4 inputs (x_train, x_test, y_train, y_test). Needs to return [accuracy, model], look at testPyTorch.py in examples for reference.
 
 .. py:method:: __enter__()
 
