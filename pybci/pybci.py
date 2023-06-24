@@ -35,9 +35,8 @@ class PyBCI:
                  streamCustomFeatureExtract = {},
                  minimumEpochsRequired = 10, clf= None, model = None, torchModel = None):
         """
-        The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
-        and holds a configurable number of samples based on lsl marker strings.
-        If no marker strings are available on the LSL the class will close and return an error.
+        The `PyBCI` object is the main controller for interfacing with all relevant threads. 
+        When initialised sets up the main operation of the BCI and can be queried for relevant information.
         Parameters
         ----------
         dataStreams: List[str] 
