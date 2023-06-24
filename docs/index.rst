@@ -32,3 +32,4 @@ Contents
 
    api/PyBCI
    api/LSLScanner
+   api/Configuration
