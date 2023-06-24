@@ -8,7 +8,7 @@
 | testArduinoHand.py | PyBCI script which receives lsl datastream from ArduinoToLSL.py and uses MarkerMaker.py to deliver training stimulus markers. When in test mdoe outputs LSL marker stream to send commands to the arduino via ArduinoToLSL.py. |
 | testArduinoPytorch.py | Similar to testArduinoHand.py but using PyTorch. |
 
-This folder contains an example of how to push ADC recordings from an arduino to the LSL, use the PyBCI package to classify the incoming data, then pushes command data back to the arduino in test moded to control servo positions.
+This folder contains an example of how to push ADC recordings from an arduino to the LSL, use the PyBCI package to classify the incoming data, then pushes command data back to the arduino in test moded to control servo positions. More channels and devices with more stable sample rates can potentially perform more classes more accurately.
 
 This is an extremely simple example setup, using a single [Myoware Sensor](https://myoware.com/products/muscle-sensor/) as an input to an arduino ADC, then the 3D printed finger positions are controlled with pulleys on servomotors. 
 
