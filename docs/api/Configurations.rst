@@ -14,7 +14,7 @@ PyBCI.IndividualEpochSetting
 ===============
 .. class:: IndividualEpochSetting()
 
-IndividualEpochSetting class holds time related variables for slicing epochs individual epochs.
+IndividualEpochSetting class holds time related variables for slicing epoch markers with differing time windows to the global window settings, will be sliced and overlapped to create windows in shape of GlobalEpochSettings.windowLength.
 
 :splitCheck: bool: Checks whether or not subdivide epochs.
 :tmin: float: Time in seconds to capture samples before trigger.
