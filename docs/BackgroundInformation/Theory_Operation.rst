@@ -3,7 +3,7 @@ Theory of Operation
 
 Requirements Prior Initialising with `bci = PyBCI()`
 =========================================================
-The bci must have ==1 LSL marker stream selected and >=1 LSL data stream/s selected - if more then one LSL marker stream is on the system it is recommended to set the desired ML training marker stream with :pybci:parameter:`markerStream` to  :py:class:`PyBCI()`, otherwise the first in list is selected. If no set datastreams are selected with :pybci:parameter:`dataStream` to :py:class:`PyBCI()` all available datastreams will be used and decoded with the :ref:`generic-extractor`.
+The bci must have ==1 LSL marker stream selected and >=1 LSL data stream/s selected - if more then one LSL marker stream is on the system it is recommended to set the desired ML training marker stream with :parameter:`markerStream` to  :py:class:`PyBCI()`, otherwise the first in list is selected. If no set datastreams are selected with :parameter:`dataStream` to :py:class:`PyBCI()` all available datastreams will be used and decoded with the :ref:`generic-extractor`.
 
 Thread Creation
 =========================================================
@@ -11,13 +11,13 @@ Once configuration settings are set 4 types of threaded operations are created; 
 
 Marker Thread
 **********************************************
-The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with :pybci:parameter:`markerStream` to  :py:class:`PyBCI()`.
+The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with :parameter:`markerStream` to  :py:class:`PyBCI()`.
 
 Data Threads
 **********************************************
 Each data stream has two threads created, one data and one feature extractor. The data thread is responsible for setting pre-allocated numpy arrays for each data stream inlet which pulls chunks of data from the LSL. When in training mode it gathers data so many seconds before and after a marker to prepare for feature extraction, with the option of slicing and overlapping so many seconds before and after the marker appropriately based on the classes `GlobalEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_  and `IndividualEpochSettings <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_, set with :ref:`pybci.globalEpochSettings` and :ref:`pybci.customEpochSettings` when initialising :py:class:`PyBCI()`.
 
-Add desired dataStreams by passing a list of strings containing accepted data stream names with :ref:`pybci.dataStreams`. By setting :ref:`pybci.dataStreams` all other data inlets will be ignored except those in the list.
+Add desired dataStreams by passing a list of strings containing accepted data stream names with :parameter:`dataStreams`. By setting :parameter:`dataStreams` all other data inlets will be ignored except those in the list.
 
 Note: Data so many seconds before and after the LSL marker timestamp is decided by the corresponding LSL data timestamps. If the LSL data stream pushes chunks infrequently (>[windowLength*(1-windowOverlap)]) and doesn't overwrite each sample with linear equidistant timestamps errors in classification output will occur - Kept legacy data threads AsyncDataReceiver and DataReceiver in threads folder in case modifications needed based on so many samples before and after decided by expected sample rate if people find this becomes an issue for certain devices.
 
