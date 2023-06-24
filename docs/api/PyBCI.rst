@@ -6,55 +6,55 @@ PyBCI
 
     **Parameters:**
 
-    .. pybci:datastreams::
+    .. pybci:parameter:: datastreams
     :dataStreams: list(str) or None
         Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
 
-    .. pybci:markerStream::
+    .. pybci:parameter:: markerStream
     :markerStream: list(str) or None
         Allows the user to set custom acceptable Marker stream definitions. If `None`, it defaults to `markerTypes` scan.
 
-    .. pybci:streamTypes::
+    .. pybci:parameter:: streamTypes
     :streamTypes: list(str) or None
         Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
 
-    .. pybci:markerTypes::
+    .. pybci:parameter:: markerTypes
     :markerTypes: list(str) or None
         Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
 
-    .. pybci:loggingLevel::
+    .. pybci:parameter:: loggingLevel
     :loggingLevel: string
         Sets PyBCI print level, ('INFO' prints all statements, 'WARNING' is only warning messages, 'TIMING' gives estimated time for feature extraction, and classifier training or testing, 'NONE' means no prints from PyBCI)
 
-    .. pybci:globalEpochSettings::
+    .. pybci:parameter:: globalEpochSettings
     :globalEpochSettings: GlobalEpochSettings
         Sets global timing settings for epochs.
 
-    .. pybci:customEpochSettings::
+    .. pybci:parameter:: customEpochSettings::
     :customEpochSettings: dict
         Sets individual timing settings for epochs. {markerstring1:IndividualEpochSettings(),markerstring2:IndividualEpochSettings()}
 
-    .. pybci:streamChsDropDict::
+    .. pybci:parameter:: streamChsDropDict
     :streamChsDropDict: dict
         Keys for dict should be respective datastreams with corresponding list of which channels to drop. {datastreamstring1: list(ints), datastreamstring2: list(ints)}
 
-    .. pybci:streamCustomFeatureExtract::
+    .. pybci:parameter:: streamCustomFeatureExtract
     :streamCustomFeatureExtract: dict
         Allows dict to be passed of datastream with custom feature extractor class for analysing data. {datastreamstring1: customClass1(), datastreamstring2: customClass1(),}
 
-    .. pybci:minimumEpochsRequired::
+    .. pybci:parameter:: minimumEpochsRequired
     :minimumEpochsRequired: int
         Minimum number of required epochs before model fitting begins, must be of each type of received markers and more than 1 type of marker to classify.
 
-    .. pybci:clf::
+    .. pybci:parameter:: clf
     :clf: sklearn.base.ClassifierMixin or None
         Allows custom Sklearn model to be passed.
 
-    .. pybci:model::
+    .. pybci:parameter:: model
     :model: tf.keras.model or None
         Allows custom tensorflow model to be passed.
 
-    .. pybci:torchModel::
+    .. pybci:parameter:: torchModel
     :torchModel: custom def or None
         Custom torch function should be passed with 4 inputs (x_train, x_test, y_train, y_test). Needs to return [accuracy, model], look at testPyTorch.py in examples for reference.
 
