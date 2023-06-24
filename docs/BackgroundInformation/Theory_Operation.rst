@@ -3,7 +3,7 @@ Theory of Operation
 
 Requirements Prior Initialising with `bci = PyBCI()`
 =========================================================
-The bci must have ==1 LSL marker stream selected and >=1 LSL data stream/s selected - if more then one LSL marker stream is on the system it is recommended to set the desired ML training marker stream with :ref:`pybci.markerStream` to  :py:class:`PyBCI()`, otherwise the first in list is selected. If no set datastreams are selected with :ref:`pybci.dataStream` to :py:class:`PyBCI()` all available datastreams will be used and decoded with the :ref:`generic-extractor`.
+The bci must have ==1 LSL marker stream selected and >=1 LSL data stream/s selected - if more then one LSL marker stream is on the system it is recommended to set the desired ML training marker stream with :pybci:parameter:`markerStream` to  :py:class:`PyBCI()`, otherwise the first in list is selected. If no set datastreams are selected with :pybci:parameter:`dataStream` to :py:class:`PyBCI()` all available datastreams will be used and decoded with the :ref:`generic-extractor`.
 
 Thread Creation
 =========================================================
@@ -11,7 +11,7 @@ Once configuration settings are set 4 types of threaded operations are created; 
 
 Marker Thread
 **********************************************
-The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with :ref:`pybci.markerStream` to  :py:class:`PyBCI()`.
+The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with :pybci:parameter:`markerStream` to  :py:class:`PyBCI()`.
 
 Data Threads
 **********************************************
