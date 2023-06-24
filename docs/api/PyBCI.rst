@@ -92,7 +92,7 @@ PyBCI
 
 .. py:method:: __enter__()
 
-   Connects to the BCI.
+   Connects to the BCI. Same as __init__.
 
 .. _pybci-exit:
 
@@ -110,7 +110,7 @@ PyBCI
 
    Set the mode to Train. The BCI will try to connect if it is not already connected.
 
-.. py:amethod:: TestMode()
+.. py:method:: TestMode()
 
    Set the mode to Test. The BCI will try to connect if it is not already connected.
 
