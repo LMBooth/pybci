@@ -1,62 +1,63 @@
 PyBCI
 =====
+
 .. class:: PyBCI(dataStreams=None, markerStream=None, streamTypes=None, markerTypes=None, loggingLevel=Logger.INFO, globalEpochSettings=GlobalEpochSettings(), customEpochSettings={}, streamChsDropDict={}, streamCustomFeatureExtract={}, minimumEpochsRequired=10, clf=None, model=None, torchModel=None)
 
-    The `PyBCI` object stores data from available LSL time series data streams (EEG, pupilometry, EMG, etc.) and holds a configurable number of samples based on LSL marker strings.
+   The `PyBCI` object stores data from available LSL time series data streams (EEG, pupilometry, EMG, etc.) and holds a configurable number of samples based on LSL marker strings.
 
-    **Parameters:**
+   **Parameters:**
 
-    .. py:parameter:: datastreams
-    :dataStreams: list(str) or None
-        Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
+   .. py:parameter:: dataStreams
+      :type dataStreams: list(str) or None
+      :dataStreams: Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
 
-    .. py:parameter:: markerStream
-    :markerStream: list(str) or None
-        Allows the user to set custom acceptable Marker stream definitions. If `None`, it defaults to `markerTypes` scan.
+   .. py:parameter:: markerStream
+      :type markerStream: list(str) or None
+      :markerStream: Allows the user to set custom acceptable Marker stream definitions. If `None`, it defaults to `markerTypes` scan.
 
-    .. py:parameter:: streamTypes
-    :streamTypes: list(str) or None
-        Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
+   .. py:parameter:: streamTypes
+      :type streamTypes: list(str) or None
+      :streamTypes: Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
 
-    .. py:parameter:: markerTypes
-    :markerTypes: list(str) or None
-        Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
+   .. py:parameter:: markerTypes
+      :type markerTypes: list(str) or None
+      :markerTypes: Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
 
-    .. py:parameter:: loggingLevel
-    :loggingLevel: string
-        Sets PyBCI print level, ('INFO' prints all statements, 'WARNING' is only warning messages, 'TIMING' gives estimated time for feature extraction, and classifier training or testing, 'NONE' means no prints from PyBCI)
+   .. py:parameter:: loggingLevel
+      :type loggingLevel: string
+      :loggingLevel: Sets PyBCI print level, ('INFO' prints all statements, 'WARNING' is only warning messages, 'TIMING' gives estimated time for feature extraction, and classifier training or testing, 'NONE' means no prints from PyBCI)
 
-    .. py:parameter:: globalEpochSettings
-    :globalEpochSettings: GlobalEpochSettings
-        Sets global timing settings for epochs.
+   .. py:parameter:: globalEpochSettings
+      :type globalEpochSettings: GlobalEpochSettings
+      :globalEpochSettings: Sets global timing settings for epochs.
 
-    .. py:parameter:: customEpochSettings::
-    :customEpochSettings: dict
-        Sets individual timing settings for epochs. {markerstring1:IndividualEpochSettings(),markerstring2:IndividualEpochSettings()}
+   .. py:parameter:: customEpochSettings
+      :type customEpochSettings: dict
+      :customEpochSettings: Sets individual timing settings for epochs. {markerstring1:IndividualEpochSettings(),markerstring2:IndividualEpochSettings()}
 
-    .. py:parameter:: streamChsDropDict
-    :streamChsDropDict: dict
-        Keys for dict should be respective datastreams with corresponding list of which channels to drop. {datastreamstring1: list(ints), datastreamstring2: list(ints)}
+   .. py:parameter:: streamChsDropDict
+      :type streamChsDropDict: dict
+      :streamChsDropDict: Keys for dict should be respective datastreams with corresponding list of which channels to drop. {datastreamstring1: list(ints), datastreamstring2: list(ints)}
 
-    .. py:parameter:: streamCustomFeatureExtract
-    :streamCustomFeatureExtract: dict
-        Allows dict to be passed of datastream with custom feature extractor class for analysing data. {datastreamstring1: customClass1(), datastreamstring2: customClass1(),}
+   .. py:parameter:: streamCustomFeatureExtract
+      :type streamCustomFeatureExtract: dict
+      :streamCustomFeatureExtract: Allows dict to be passed of datastream with custom feature extractor class for analyzing data. {datastreamstring1: customClass1(), datastreamstring2: customClass1()}
 
-    .. py:parameter:: minimumEpochsRequired
-    :minimumEpochsRequired: int
-        Minimum number of required epochs before model fitting begins, must be of each type of received markers and more than 1 type of marker to classify.
+   .. py:parameter:: minimumEpochsRequired
+      :type minimumEpochsRequired: int
+      :minimumEpochsRequired: Minimum number of required epochs before model fitting begins, must be of each type of received markers and more than 1 type of marker to classify.
 
-    .. py:parameter:: clf
-    :clf: sklearn.base.ClassifierMixin or None
-        Allows custom Sklearn model to be passed.
+   .. py:parameter:: clf
+      :type clf: sklearn.base.ClassifierMixin or None
+      :clf: Allows custom Sklearn model to be passed.
 
-    .. py:parameter:: model
-    :model: tf.keras.model or None
-        Allows custom tensorflow model to be passed.
+   .. py:parameter:: model
+      :type model: tf.keras.model or None
+      :model: Allows custom TensorFlow model to be passed.
 
-    .. py:parameter:: torchModel
-    :torchModel: custom def or None
-        Custom torch function should be passed with 4 inputs (x_train, x_test, y_train, y_test). Needs to return [accuracy, model], look at testPyTorch.py in examples for reference.
+   .. py:parameter:: torchModel
+      :type torchModel: custom def or None
+      :torchModel: Custom torch function should be passed with 4 inputs (x_train, x_test, y_train, y_test). Needs to return [accuracy, model], look at testPyTorch.py in examples for reference.
 
 .. py:method:: __enter__()
 
@@ -68,7 +69,7 @@ PyBCI
 
 .. py:method:: Connect()
 
-   Checks valid data and markers streams are present, controls dependent functions by setting self.connected. Returns a boolean indicating the connection status.
+   Checks if valid data and marker streams are present, controls dependent functions by setting self.connected. Returns a boolean indicating the connection status.
 
 .. py:method:: TrainMode()
 
@@ -80,20 +81,16 @@ PyBCI
 
 .. py:method:: CurrentClassifierInfo()
 
-   Returns dict. 
-        dict of "clf", "model, "torchModel"" and "accuracy" where accuracy is 0 if no model training/fitting has occurred. If mode not used corresponding value is None. If not connected returns {"Not Connected": None}
+   Returns a dictionary containing "clf", "model," "torchModel," and "accuracy." The accuracy is 0 if no model training/fitting has occurred. If the mode is not used, the corresponding value is None. If not connected, returns `{"Not Connected": None}`.
 
 .. py:method:: CurrentClassifierMarkerGuess()
 
-   Returns int | None. 
-        Returned int correlates to value of key from dict from ReceivedMarkerCount() when in testmode. If in trainmode returns None.
+   Returns an integer or None. The returned integer corresponds to the value of the key from the dictionary obtained from `ReceivedMarkerCount()` when in test mode. If in train mode, returns None.
 
 .. py:method:: CurrentFeaturesTargets()
 
-    Returns dict. 
-        dict of "features" and "targets" where features is 2d list of feature data and targets is a 1d list of epoch targets as ints. If not connected returns {"Not Connected": None}
+   Returns a dictionary containing "features" and "targets." "features" is a 2D list of feature data, and "targets" is a 1D list of epoch targets as integers. If not connected, returns `{"Not Connected": None}`.
 
 .. py:method:: ReceivedMarkerCount()
 
-    Returns dict. 
-        Every key is a string received on the selected LSL marker stream, the value is a list where the first item is the marker id value, use with CurrentClassifierMarkerGuess() the second value is a received count for that marker type. Will be empty if no markers received.
+   Returns a dictionary. Each key is a string received on the selected LSL marker stream, and the value is a list. The first item is the marker id value, to be used with `CurrentClassifierMarkerGuess()`. The second value is a received count for that marker type. Will be empty if no markers are received.
