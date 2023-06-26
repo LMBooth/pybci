@@ -21,7 +21,7 @@ Note all the examples shown that are not in a dedicated folder work with the Psu
    * - `testEpochTimingsConfig.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testEpochTimingsConfig.py>`_
      - Simple example showing custom global epoch settings  changed on initialisation. Instead of epoching data from 0 to 1 second after the marker we take it from 0.5 seconds before to 0.5 seconds after the marker. 
    * - `testMultimodal.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testMultimodal.py>`_ 
-     - Advanced example illustrating two devices, pupil labs gaze device stream wth custom feature extractor class and Hull University ioBio EEG device with the generic feature extractor, each have set channels dropped to reduce computational strain (Async datathreads {LSLsample rate of 0Hz} can be heavy with lots of channels.
+     - Advanced example illustrating two devices, pupil labs gaze device stream wth custom feature extractor class and Hull University ioBio EEG device, specifically channels Fp1 and Fp2. The PupilLabsRightLeftEyeClose folder has a youtube video illustrating the multimodal example in action.
    * - `testPytorch.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPytorch.py>`_
      - Provides an example of how to use a Pytorch Neural net Model as the classifier. (testRaw.py also has a Pytorch example with a C-NN).
    * - `testRaw.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testRaw.py>`_
