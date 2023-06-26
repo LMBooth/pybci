@@ -20,7 +20,7 @@ authors:
 affiliations:
  - name: Faculty of Science and Engineering, University of Hull.
    index: 1
- - name: Hull York Medical School.
+ - name: Centre for Anatomical and Human Sciences, Hull York Medical School, University of Hull.
    index: 2
 date: 26 June 2023
 bibliography: paper.bib
