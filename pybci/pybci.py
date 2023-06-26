@@ -35,8 +35,9 @@ class PyBCI:
                  streamCustomFeatureExtract = {},
                  minimumEpochsRequired = 10, clf= None, model = None, torchModel = None):
         """
-        The `PyBCI` object is the main controller for interfacing with all relevant threads. 
-        When initialised sets up the main operation of the BCI and can be queried for relevant information.
+        The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
+        and holds a configurable number of samples based on lsl marker strings.
+        If no marker strings are available on the LSL the class will close and return an error.
         Parameters
         ----------
         dataStreams: List[str] 
@@ -231,22 +232,24 @@ class PyBCI:
             #        dt = AsyncDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
             #                                self.globalEpochSettings, len(self.dataThreads))
             #else: # cold be desirable to capture samples only relative to timestammps with async, so maybe make this configurable?
-            if stream.info().nominal_srate() == 0:
-                if stream.info().name() in self.streamChsDropDict.keys(): ## all use optimised now (pull_chunk and timestamp relative)
-                    #print(self.streamChsDropDict[stream.info().name()])
-                    dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
-                                            self.globalEpochSettings, len(self.dataThreads), streamChsDropDict=self.streamChsDropDict[stream.info().name()])
-                else:
-                    dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
-                                            self.globalEpochSettings, len(self.dataThreads))
+            #if stream.info().nominal_srate() == 0:
+            print(len(self.dataThreads))
+            print(stream.info().name())
+            if stream.info().name() in self.streamChsDropDict.keys(): ## all use optimised now (pull_chunk and timestamp relative)
+                #print(self.streamChsDropDict[stream.info().name()])
+                dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+                                        self.globalEpochSettings, len(self.dataThreads), streamChsDropDict=self.streamChsDropDict[stream.info().name()])
             else:
-                if stream.info().name() in self.streamChsDropDict.keys(): ## all use optimised now (pull_chunk and timestamp relative)
-                    #print(self.streamChsDropDict[stream.info().name()])
-                    dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
-                                            self.globalEpochSettings, len(self.dataThreads), streamChsDropDict=self.streamChsDropDict[stream.info().name()], maxExpectedSampleRate = stream.info().nominal_srate())
-                else:
-                    dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
-                                            self.globalEpochSettings, len(self.dataThreads),maxExpectedSampleRate = stream.info().nominal_srate())
+                dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+                                        self.globalEpochSettings, len(self.dataThreads))
+            #else:
+            #    if stream.info().name() in self.streamChsDropDict.keys(): ## all use optimised now (pull_chunk and timestamp relative)
+            #        #print(self.streamChsDropDict[stream.info().name()])
+            #        dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+            #                                self.globalEpochSettings, len(self.dataThreads), streamChsDropDict=self.streamChsDropDict[stream.info().name()], maxExpectedSampleRate = stream.info().nominal_srate())
+            #    else:
+            #        dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
+            #                                self.globalEpochSettings, len(self.dataThreads),maxExpectedSampleRate = stream.info().nominal_srate())
             dt.start()
             self.dataThreads.append(dt)
             if stream.info().name() in self.streamCustomFeatureExtract.keys():

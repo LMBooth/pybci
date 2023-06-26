@@ -101,10 +101,16 @@ class GenericFeatureExtractor():
                 features[(ch* self.numFeatures)+l] =  np.var(epoch[:,ch])
             if self.featureChoices.meanAbs: # Mean Absolute Value 
                 l += 1
-                features[(ch* self.numFeatures)+l] = sum([np.linalg.norm(c) for c in epoch[:,ch]])/len(epoch[:,ch])
+                try:
+                    features[(ch* self.numFeatures)+l] = sum([np.linalg.norm(c) for c in epoch[:,ch]])/len(epoch[:,ch])
+                except:
+                    features[(ch* self.numFeatures)+l] = 0
             if self.featureChoices.waveformLength: # waveformLength
                 l += 1
-                features[(ch* self.numFeatures)+l] = sum([np.linalg.norm(c-epoch[inum,ch]) for inum, c in enumerate(epoch[1:,ch])])
+                try:    
+                    features[(ch* self.numFeatures)+l] = sum([np.linalg.norm(c-epoch[inum,ch]) for inum, c in enumerate(epoch[1:,ch])])
+                except:
+                    features[(ch* self.numFeatures)+l] = 0
             if self.featureChoices.zeroCross: # zeroCross
                 l += 1
                 features[(ch* self.numFeatures)+l] = sum([1 if c*epoch[inum+1,ch]<0 else 0 for inum, c in enumerate(epoch[:-1,ch])])

@@ -8,7 +8,7 @@ class ClassifierThread(threading.Thread):
     targets = np.array([])
     mode = "train"
     guess = " "
-    epochCountsc = {} 
+    #epochCountsc = {} 
     def __init__(self, closeEvent,trainTestEvent, featureQueueTest,featureQueueTrain, classifierInfoQueue, classifierInfoRetrieveEvent, 
                  classifierGuessMarkerQueue, classifierGuessMarkerEvent, queryFeaturesQueue, queryFeaturesEvent,
                  logger = Logger(Logger.INFO), numStreamDevices = 1,
@@ -30,14 +30,15 @@ class ClassifierThread(threading.Thread):
         self.logger = logger
 
     def run(self):
+        epochCountsc={}
         if self.numStreamDevices > 1:
             tempdatatrain = {}
             tempdatatest = {}
         while not self.closeEvent.is_set():
             if self.trainTestEvent.is_set(): # We're training!
                 if self.featureQueueTrain.empty():
-                    if len(self.epochCountsc) > 1: # check if there is more then one test condition
-                        minNumKeyEpochs = min([self.epochCountsc[key][1] for key in self.epochCountsc]) # check minimum viable number of training eochs have been obtained
+                    if len(epochCountsc) > 1: # check if there is more then one test condition
+                        minNumKeyEpochs = min([epochCountsc[key][1] for key in epochCountsc]) # check minimum viable number of training eochs have been obtained
                         if minNumKeyEpochs < self.minRequiredEpochs:
                             pass
                         else: 
@@ -50,15 +51,17 @@ class ClassifierThread(threading.Thread):
                         self.classifierGuessMarkerQueue.put(self.guess)
                 else:
                     try:
-                        featuresSingle, devCount, target, self.epochCountsc = self.featureQueueTrain.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
-                        
+                        featuresSingle, devCount, target, epochCountsc = self.featureQueueTrain.get_nowait() #[dataFIFOs, self.currentMarker, self.sr, self.dataType]
                         if self.numStreamDevices > 1: # Collects multiple data strems feature sets and synchronise here
                             tempdatatrain[devCount] = featuresSingle
                             if len(tempdatatrain) == self.numStreamDevices:
-                                flattened_list = [item for sublist in tempdatatrain.values() for item in sublist]
+                                flattened_list = np.array([item for sublist in tempdatatrain.values() for item in sublist])
                                 tempdatatrain = {}
                                 self.targets = np.append(self.targets, [target], axis = 0)
-                                self.features = np.append(self.features, [flattened_list], axis = 0)
+                                #self.features = np.append(self.features, [flattened_list], axis = 0)
+                                if self.features.shape[0] == 0:
+                                    self.features = self.features.reshape((0,) + flattened_list.shape)
+                                self.features = np.append(self.features, [flattened_list], axis=0)
                             # need to check if all device data is captured, then flatten and append  
                         else: # Only one device to collect from
                             if self.features.shape[0] == 0:
@@ -74,8 +77,7 @@ class ClassifierThread(threading.Thread):
                         tempdatatest[devCount] = featuresSingle
                         if len(tempdatatest) == self.numStreamDevices:
                             flattened_list = []
-                            for value in tempdatatest.values():
-                                flattened_list.extend(value)
+                            flattened_list = np.array([item for sublist in tempdatatest.values() for item in sublist])
                             tempdatatest = {}
                             start = time.time()
                             self.guess = self.classifier.TestModel(flattened_list)
@@ -84,7 +86,6 @@ class ClassifierThread(threading.Thread):
                                 self.logger.log(Logger.TIMING, f" classifier testing time {end - start}")
                     else:
                         start = time.time()
-                        #print(featuresSingle)
                         self.guess = self.classifier.TestModel(featuresSingle)
                         if (self.logger.level == Logger.TIMING):
                             end = time.time()

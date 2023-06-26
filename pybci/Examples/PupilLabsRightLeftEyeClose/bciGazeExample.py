@@ -1,7 +1,12 @@
 import time
 from pybci import PyBCI
 import numpy as np
-
+# pupil-labs channels:
+#['confidence',  1
+# 'norm_pos_x', 'norm_pos_y', 'gaze_point_3d_x', 'gaze_point_3d_y', 'gaze_point_3d_z',  + 5
+# 'eye_center0_3d_x', 'eye_center0_3d_y', 'eye_center0_3d_z', 'eye_center1_3d_x', 'eye_center1_3d_y',  + 5
+# 'eye_center1_3d_z', # 'gaze_normal0_x', 'gaze_normal0_y', 'gaze_normal0_z', 'gaze_normal1_x',  + 5
+# 'gaze_normal1_y', 'gaze_normal1_z', 'diameter0_2d', 'diameter1_2d', 'diameter0_3d',  'diameter1_3d'] + 6 = 22 channels
 class PupilGazeDecode():
     def __init__(self):
         super().__init__()
@@ -37,7 +42,7 @@ try:
             if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired:
                 classInfo = bci.CurrentClassifierInfo() # hangs if called too early
                 accuracy = classInfo["accuracy"]
-            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+12:  
+            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+15:  
                 bci.TestMode()
                 break
     while True:

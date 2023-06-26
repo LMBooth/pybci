@@ -24,7 +24,6 @@ class OptimisedDataReceiverThread(threading.Thread):
         self.globalEpochSettings = globalEpochSettings
         self.streamChsDropDict = streamChsDropDict
         self.sr = maxExpectedSampleRate
-        #self.dataType = dataStreamInlet.info().type()
         self.devCount = devCount # used for tracking which device is sending data to feature extractor
         
     def run(self):
@@ -42,7 +41,6 @@ class OptimisedDataReceiverThread(threading.Thread):
         dataBuffers = np.zeros((minfifoLength,chCount))
         chs_to_drop = np.ones(chCount, dtype=bool)
         chs_to_drop[self.streamChsDropDict] = False
-        #print(chs_to_drop)
         fifoLength = int(self.sr * (maxTime+20)) # adds twenty seconds to give more timestamps when buffering  (assuming devices dont timeout for longer then 20.0 seconds, migth be worth making configurable)
         permanentDataBuffers = np.zeros((fifoLength, chCount - len(self.streamChsDropDict)))
         permanentTimestampBuffer = np.zeros(fifoLength)
@@ -50,9 +48,6 @@ class OptimisedDataReceiverThread(threading.Thread):
         while not self.closeEvent.is_set():
             _, timestamps = self.dataStreamInlet.pull_chunk(timeout=0.0, max_samples=dataBuffers.shape[0], dest_obj=dataBuffers) # optimised method of getting data to pull_sample, dest_obj saves memory re-allocation
             if timestamps:
-                #print(timestamps)
-                #if self.markerReceived:
-                #    print(self.markerTimestamp)
                 if len(self.streamChsDropDict) == 0:
                     dataBufferView = dataBuffers[:len(timestamps), :] # [:, :len(timestamps)]
                 else:

@@ -24,9 +24,9 @@ class App:
         self.label.grid(row=0, column=0, columnspan=2, padx=20, pady=20, sticky="nsew")
 
         self.button = tk.Button(root, text="Start", command=self.toggle_iteration, font=("Helvetica", 18))
-        self.button.grid(row=1, column=0, padx=20, pady=20, sticky="nsew")
-        self.custom_button = tk.Button(root, text="Start Testing", command=self.custom_function, font=("Helvetica", 18))
-        self.custom_button.grid(row=1, column=1, padx=20, pady=20, sticky="nsew")
+        self.button.grid(row=1, column=0,columnspan=2, padx=20, pady=20, sticky="nsew")
+        #self.custom_button = tk.Button(root, text="Start Testing", command=self.custom_function, font=("Helvetica", 18))
+        #self.custom_button.grid(row=1, column=1, padx=20, pady=20, sticky="nsew")
         self.close_button = tk.Button(root, text="Close", command=self.root.destroy, font=("Helvetica", 18))
         self.close_button.grid(row=2, column=0, columnspan=2, padx=20, pady=20, sticky="nsew")
 
@@ -72,9 +72,9 @@ class App:
                 self.root.after_cancel(self.after_id)
                 self.after_id = None
     
-    def custom_function(self):
-        # Define your custom function here
-        print("Custom function called")
+    #def custom_function(self):
+    #    # Define your custom function here
+    #    print("Custom function called")
 
 root = tk.Tk()
 app = App(root)

@@ -2,6 +2,8 @@ import threading, queue, time
 from ..Utils.FeatureExtractor import GenericFeatureExtractor
 from ..Utils.Logger import Logger
 from ..Configuration.EpochSettings import GlobalEpochSettings
+import copy
+
 class FeatureProcessorThread(threading.Thread):
     tempDeviceEpochLogger = []
     def __init__(self, closeEvent, trainTestEvent, dataQueueTrain,dataQueueTest,
@@ -44,7 +46,7 @@ class FeatureProcessorThread(threading.Thread):
                         self.logger.log(Logger.TIMING, f" Feature Extraction time {end - start}")
                         if (end-start) >self.globalWindowSettings.windowLength:
                             self.logger.log(Logger.WARNING, f" Feature Extraction time > globalEpochSetting.windowLength, will create lag in classification output. Recommended to reduce channels, smapling rate, and features or reduce feature computational complexity.")
-                    self.featureQueueTrain.put( [features, devCount, target, self.epochCounts] )
+                    self.featureQueueTrain.put( [features, devCount, target, dict(self.epochCounts)] )
                 except queue.Empty:
                     pass
             else:

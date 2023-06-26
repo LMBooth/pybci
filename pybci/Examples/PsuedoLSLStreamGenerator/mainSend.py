@@ -44,6 +44,7 @@ class Window(QtWidgets.QWidget):
     def __init__(self, *args, **kwargs):
         super(Window, self).__init__(*args, **kwargs)
         #self.showMaximized()
+        self.lock = threading.Lock()  # Lock for thread safety
         # setting up different signal varables
         self.commandDataConfigs[0].amplitude = 1
         self.commandDataConfigs[0].noise_level = 1
@@ -97,29 +98,34 @@ class Window(QtWidgets.QWidget):
         self.ChangeString()
         
     def update(self):
-        if self.markerOccurred:
-            for i, command in enumerate(self.commandStrings):
-                if self.currentMarker == command:
-                    num_samples = int(self.commandDataConfigs[i].duration/10 * self.sampleRate)
-                    [self.y[0].popleft() for d in range(num_samples)] 
-                    num = self.GeneratePseudoEMG(self.sampleRate,self.commandDataConfigs[i].duration/10, self.commandDataConfigs[i].noise_level, 
-                                                    self.commandDataConfigs[i].amplitude, self.commandDataConfigs[i].frequency)
-            self.chunkCount += 1
-            if self.chunkCount >= 10:
-                self.markerOccurred = False
-                self.chunkCount = 0 
-        else:# send baseline
-            num_samples = int(self.baselineConfig.duration/10 * self.sampleRate)
-            [self.y[0].popleft() for d in range(num_samples)] 
-            num = self.GeneratePseudoEMG(self.sampleRate,self.baselineConfig.duration/10, self.baselineConfig.noise_level, 
-                                            self.baselineConfig.amplitude, self.baselineConfig.frequency)
-        [self.y[0].extend([num[0][d]]) for d in range(num_samples)] 
-        for n in range(num.shape[1]):
-            self.outlet.push_sample(num[:,n])
-
-        #self.outlet.push_chunk(num.)
-
-        self.plot.setData(list(self.x),list(self.y[0]), pen=pg.mkPen(1), clear=True)#pen = self.colours[x], 
+        with self.lock:  # Acquire the lock
+            if self.markerOccurred:
+                for i, command in enumerate(self.commandStrings):
+                    if self.currentMarker == command:
+                        num_samples = int(self.commandDataConfigs[i].duration/10 * self.sampleRate)
+                        [self.y[0].popleft() for d in range(num_samples)] 
+                        num = self.GeneratePseudoEMG(self.sampleRate,self.commandDataConfigs[i].duration/10, self.commandDataConfigs[i].noise_level, 
+                                                        self.commandDataConfigs[i].amplitude, self.commandDataConfigs[i].frequency)
+                self.chunkCount += 1
+                if self.chunkCount >= 10:
+                    self.markerOccurred = False
+                    self.chunkCount = 0 
+            else:# send baseline
+                num_samples = int(self.baselineConfig.duration/10 * self.sampleRate)
+                [self.y[0].popleft() for d in range(num_samples)] 
+                num = self.GeneratePseudoEMG(self.sampleRate,self.baselineConfig.duration/10, self.baselineConfig.noise_level, 
+                                                self.baselineConfig.amplitude, self.baselineConfig.frequency)
+            [self.y[0].extend([num[0][d]]) for d in range(num_samples)] 
+            for n in range(num.shape[1]):
+                self.outlet.push_sample(num[:,n])
+            #print(num.T.shape)
+            #chunk = num.T
+            #print(chunk)
+            #for sample in chunk:
+            #    if len(sample) != 8:
+            #        print(f"Invalid sample: {sample}")
+            #self.outlet.push_chunk(chunk)
+            self.plot.setData(list(self.x),list(self.y[0]), pen=pg.mkPen(1), clear=True)#pen = self.colours[x], 
 
     def GeneratePseudoEMG(self,samplingRate, duration, noise_level, amplitude, frequency):
         """
@@ -171,9 +177,10 @@ class Window(QtWidgets.QWidget):
         self.button.setText("Start Test")
         self.button.clicked.connect(self.BeginTest)
         
-    def SendMarker(self):   
-        self.markerOutlet.push_sample([self.currentMarker])
-        self.markerOccurred = True
+    def SendMarker(self):
+        with self.lock:  # Acquire the lock
+            self.markerOutlet.push_sample([self.currentMarker])
+            self.markerOccurred = True
     
     def SendBaseline(self):
         self.markerOutlet.push_sample(["Baseline"])
