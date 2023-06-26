@@ -12,17 +12,17 @@ authors:
    orcid: 0000-0002-8749-9726
    affiliation: "1"
  - name: Anthony Bateson
-   orcid: ----
+   orcid: 0000-0002-4780-4458
    affiliation: "1"
  - name: Aziz Asghar
-   orcid: ----
+   orcid: 0000-0002-3735-4449
    affiliation: "2"
 affiliations:
  - name: Faculty of Science and Engineering, University of Hull.
    index: 1
  - name: Hull York Medical School.
    index: 2
-date: 14 June 2023
+date: 26 June 2023
 bibliography: paper.bib
 ---
 
