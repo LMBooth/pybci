@@ -26,7 +26,7 @@ date: 26 June 2023
 bibliography: paper.bib
 ---
 
-# Abstract:
+# Summary:
 
 PyBCI is a comprehensive, open-source Python framework developed to facilitate brain-computer interface (BCI) research. It encompasses data acquisition, data labelling, feature extraction, and machine learning. PyBCI provides a streamlined, user-friendly platform for conducting real-time BCI applications. The software uses the Lab Streaming Layer (LSL) (Kothe, 2014) protocol for data acquisition on various LSL enabled data streams, where a (LSL) marker stream is used for labelling training data. PyTorch (Paszke et al., 2019), SciKit-learn (Pedregosa et al., 2011) and TensorFlow (Abadi et al., 2016) are leveraged for machine learning. NumPy (Oliphant, 2006), SciPy (Virtanen et al., 2020), and Antropy (Vallat, 2023) are utilised for generic feature extraction examples.
 
