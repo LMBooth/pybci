@@ -11,7 +11,7 @@ Once configuration settings are set 4 types of threaded operations are created; 
 
 Marker Thread
 **********************************************
-The marker stream has its own thread which recieves markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with :py:data:`markerStream` to  :py:class:`PyBCI()`.
+The marker stream has its own thread which receives markers from the target LSL marker stream and when in train mode, the marker thread pushed the marker to all available data threads informing when to slice the data, see :ref:`set_custom_epoch_times`. Set the desired ML training marker stream with :py:data:`markerStream` to  :py:class:`PyBCI()`.
 
 Data Threads
 **********************************************
