@@ -92,7 +92,7 @@ setup(
     ],
     python_requires='>=3.9',
     # What does your project relate to?
-    keywords='machine learning and data synchronisation on the Lab Streaming Layer',
+    keywords='machine-learning tensorflow sklearn pytorch human-computer-interaction bci lsl brain-computer-interface labstreaminglayer',
 
     cmdclass={
         'bdist_wheel': bdist_wheel
