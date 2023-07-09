@@ -11,7 +11,7 @@ For stable releases use: ```pip install install-pybci```
 
 For unstable dev installations and up-to-date git pushes use: ```pip install --index-url https://test.pypi.org/simple/ install-pybci```
 
-(currently using install-pybci due to pybci having name too similar with another package on pypi)
+(currently using install-pybci due to pybci having name too similar with another package on pypi, [issue here.](https://github.com/pypi/support/issues/2840))
 
 [ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/)      [Examples found here!](https://github.com/LMBooth/pybci/tree/main/pybci/Examples)
 
