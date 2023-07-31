@@ -46,7 +46,7 @@ By offering a comprehensive, open-source platform for BCI research, PyBCI has th
 
 # Acknowledgements
 
-The io:bio mobile EEG device [@2021bateson_asghar] which was used to create an initial port for streaming time-series physiological data in to the Lab Streaming Layer, so we could receive, analyse, record, and classify EMG, ECG and EEG data - enabling prior required experimentation to creating PyBCI.
+The io:bio mobile EEG device [@2021bateson_asghar] was used to create an initial port for streaming time-series physiological data in to the Lab Streaming Layer, so we could receive, analyse, record, and classify EMG, ECG and EEG data - enabling prior required experimentation to creating PyBCI.
 
 The work carried out by Christian Kothe creating the Lab Streaming Layer and continuous maintenance to the pylsl repository by Chadwick Boulay enables unification across many off shelf devices. Chadwick Boulay also gave helpful recommendations in the GitHub issue: https://github.com/labstreaminglayer/pylsl/issues/70.
 
