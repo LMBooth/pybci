@@ -28,7 +28,7 @@ bibliography: paper.bib
 
 # Summary:
 
-PyBCI is a comprehensive, open-source Python framework developed to facilitate brain-computer interface (BCI) research. It encompasses data acquisition, data labelling, feature extraction, and machine learning. PyBCI provides a streamlined, user-friendly platform for conducting real-time BCI applications. The software uses the Lab Streaming Layer (LSL) (Kothe, 2014) protocol for data acquisition on various LSL enabled data streams, where a (LSL) marker stream is used for labelling training data. PyTorch (Paszke et al., 2019), SciKit-learn (Pedregosa et al., 2011) and TensorFlow (Abadi et al., 2016) are leveraged for applying machine learning classifiers. NumPy (Oliphant, 2006), SciPy (Virtanen et al., 2020), and Antropy (Vallat, 2023) are utilised for generic time and/or frequency feature extraction examples.
+PyBCI is a comprehensive, open-source Python framework developed to facilitate brain-computer interface (BCI) research. It encompasses data acquisition, data labelling, feature extraction, and machine learning. PyBCI provides a streamlined, user-friendly platform for conducting real-time BCI applications. The software uses the Lab Streaming Layer (LSL) [@lsl] protocol for data acquisition on various LSL enabled data streams, where a (LSL) marker stream is used for labelling training data. PyTorch [@NEURIPS2019_9015], SciKit-learn [@scikit-learn] and TensorFlow [@tensorflow2015-whitepaper] are leveraged for applying machine learning classifiers. NumPy [@oliphant2006guide], SciPy [@2020SciPy-NMeth], and Antropy [@vallat_antropy_2023] are utilised for generic time and/or frequency feature extraction examples.
 
 # Statement of Need:
 
@@ -38,7 +38,7 @@ BCIs have the potential to revolutionise the way we interact with computers. How
 
 # Software functionality and performance:
 
-PyBCI provides an end-to-end solution for BCI research. It uses the Lab Streaming Layer (LSL) to handle data acquisition and labelling, allowing for real-time, synchronous data collection from multiple devices (Kothe, 2014). Samples are collected in chunks from the LSL data streams and stored in pre-allocated NumPy arrays. When in training mode based on a configurable time window before and after each marker type. When in test mode data is continuously processed and analysed based on the global epoch timing settings.  For feature extraction, PyBCI leverages the power of NumPy (Oliphant, 2006), SciPy (Virtanen et al., 2020), and Antropy (Vallat, 2023) robust Python libraries known for their efficiency in handling numerical operations. Machine learning, a crucial component of BCI research, is facilitated with PyTorch (Paszke et al., 2019), SciKit-learn (Pedregosa et al., 2011) and TensorFlow (Abadi et al., 2016). Scikit-learn offers a wide range of traditional algorithms for classification, including things like regression, and clustering, while TensorFlow and PyTorch provide comprehensive ecosystems for developing and training bespoke deep learning machine learning models (Abadi et al., 2016).
+PyBCI provides an end-to-end solution for BCI research. It uses the Lab Streaming Layer (LSL) to handle data acquisition and labelling, allowing for real-time, synchronous data collection from multiple devices [@lsl]. Samples are collected in chunks from the LSL data streams and stored in pre-allocated NumPy arrays. When in training mode based on a configurable time window before and after each marker type. When in test mode data is continuously processed and analysed based on the global epoch timing settings.  For feature extraction, PyBCI leverages the power of NumPy [@oliphant2006guide], SciPy [@2020SciPy-NMeth], and Antropy [@vallat_antropy_2023] robust Python libraries known for their efficiency in handling numerical operations. Machine learning, a crucial component of BCI research, is facilitated with PyTorch [@NEURIPS2019_9015], SciKit-learn [@scikit-learn] and TensorFlow [@tensorflow2015-whitepaper]. Scikit-learn offers a wide range of traditional algorithms for classification, including things like regression, and clustering, while TensorFlow and PyTorch provide comprehensive ecosystems for developing and training bespoke deep learning machine learning models.
 
 # Impact:
 
@@ -46,8 +46,8 @@ By offering a comprehensive, open-source platform for BCI research, PyBCI has th
 
 # Acknowledgements
 
-Bateson & Ashgar (2021) created the io:bio mobile EEG device which was used to create an initial port for streaming time-series physiological data in to the Lab Streaming Layer, so we could receive, analyse, record, and classify EMG, ECG and EEG data - enabling prior required experimentation to creating PyBCI.
+The io:bio mobile EEG device [@2021bateson_asghar] which was used to create an initial port for streaming time-series physiological data in to the Lab Streaming Layer, so we could receive, analyse, record, and classify EMG, ECG and EEG data - enabling prior required experimentation to creating PyBCI.
 
-The work carried out by Christian Kothe (2014) creating the Lab Streaming Layer and continuous maintenance to the pylsl repository by Chadwick Boulay enables unification across many off shelf devices. Chadwick Boulay also gave helpful recommendations in the GitHub issue: https://github.com/labstreaminglayer/pylsl/issues/70.
+The work carried out by Christian Kothe creating the Lab Streaming Layer and continuous maintenance to the pylsl repository by Chadwick Boulay enables unification across many off shelf devices. Chadwick Boulay also gave helpful recommendations in the GitHub issue: https://github.com/labstreaminglayer/pylsl/issues/70.
 
 # References
