@@ -13,7 +13,7 @@ For unstable dev installations and up-to-date git pushes use: ```pip install --i
 
 ## Prerequisite for Non-Windows Users
 If you are not using windows then there is a prerequisite stipulated on the [pylsl repository](home/liam/.local/lib/python3.10/site-packages/pylsl/lib) to obtain a liblsl shared library. See the [liblsl repo documentation](https://github.com/sccn/liblsl) for more information. 
-Once the liblsl library has been downloaded and  ```pip install install-pybci``` should work.
+Once the liblsl library has been downloaded ```pip install install-pybci``` should work.
 
 (currently using install-pybci due to pybci having name too similar with another package on pypi, [issue here.](https://github.com/pypi/support/issues/2840))
 
