@@ -25,17 +25,11 @@ Once the liblsl library has been downloaded ```pip install install-pybci``` shou
 The following package versions define the minimum supported by PyBCI, also defined in setup.py:
 
     "pylsl>=1.16.1",
-    
     "scipy>=1.11.1",
-    
     "numpy>=1.24.3",
-    
     "antropy>=0.1.6",
-    
     "tensorflow>=2.13.0",
-    
     "scikit-learn>=1.3.0",
-    
     "torch>=2.0.1"
     
 Earlier packages may work but are not guaranteed to be supported.
