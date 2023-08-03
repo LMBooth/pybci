@@ -11,7 +11,6 @@ The goal of PyBCI is to enable quick iteration when creating pipelines for testi
 If you are not using windows then there is a prerequisite stipulated on the [pylsl repository](home/liam/.local/lib/python3.10/site-packages/pylsl/lib) to obtain a liblsl shared library. See the (liblsl repo documentation)[https://github.com/sccn/liblsl] for more information. 
 Once the liblsl library has been downloaded and  ```pip install install-pybci``` should work.
 
-# 
 For stable releases use: ```pip install install-pybci```
 
 For unstable dev installations and up-to-date git pushes use: ```pip install --index-url https://test.pypi.org/simple/ install-pybci```
