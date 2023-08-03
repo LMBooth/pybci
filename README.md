@@ -6,8 +6,8 @@ A Python package to create real-time Brain Computer Interfaces (BCI's). with dat
 
 The goal of PyBCI is to enable quick iteration when creating pipelines for testing human machine and brain computer interfaces, namely testing applied data processing and feature extraction techniques on custom machine learning models. Training the BCI requires LSL enabled devices and an LSL marker stream for training stimuli. (The [examples folder](https://github.com/LMBooth/pybci/tree/main/pybci/Examples) found on the github has a [pseudo LSL data generator and marker creator](https://github.com/LMBooth/pybci/tree/main/pybci/Examples/PsuedoLSLStreamGenerator) in the [mainSend.py](https://github.com/LMBooth/pybci/tree/main/pybci/Examples/PsuedoLSLStreamGenerator/mainSend.py) file so the examples can run without the need of LSL capable hardware.)
 
-## Installation
-# Prerequisite for Non-Windows Users
+# Installation
+## Prerequisite for Non-Windows Users
 If you are not using windows then there is a prerequisite stipulated on the [pylsl repository](home/liam/.local/lib/python3.10/site-packages/pylsl/lib) to obtain a liblsl shared library. See the (liblsl repo documentation)[https://github.com/sccn/liblsl] for more information. 
 Once the liblsl library has been downloaded and  ```pip install install-pybci``` should work.
 
