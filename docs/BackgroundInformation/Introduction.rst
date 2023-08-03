@@ -19,6 +19,10 @@ For unstable dev installations and up-to-date git pushes use:
 
    pip install --index-url https://test.pypi.org/simple/ install-pybci
 
+Prerequisite for Non-Windows Users
+
+If you are not using windows then there is a prerequisite stipulated on the `pylsl repository <https://github.com/labstreaminglayer/pylsl#prerequisites>`_ to obtain a liblsl shared library. See the `liblsl repo documentation <https://github.com/sccn/liblsl>`_ for more information. Once the liblsl library has been downloaded pip install install-pybci should work.
+
 
 .. _simpleimplementation:
 
