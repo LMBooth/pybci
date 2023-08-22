@@ -11,12 +11,12 @@ authors:
  - name: Liam Booth
    orcid: 0000-0002-8749-9726
    affiliation: "1"
- - name: Anthony Bateson
-   orcid: 0000-0002-4780-4458
-   affiliation: "1"
  - name: Aziz Asghar
    orcid: 0000-0002-3735-4449
    affiliation: "2"
+ - name: Anthony Bateson
+   orcid: 0000-0002-4780-4458
+   affiliation: "1"
 affiliations:
  - name: Faculty of Science and Engineering, University of Hull.
    index: 1
