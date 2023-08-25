@@ -8,4 +8,4 @@ It's advised to have a play with the custom decoding class PupilGazeDecode() in 
 
 An example video using the multimodal example (pupil labs with Fp1 and Fp2 from EEG) can be found here:
 
-[![PyBCI Multi-modal demo!](https://www.youtube.com/watch?v=SSmFU_Esayg&t=24s)](https://www.youtube.com/watch?v=SSmFU_Esayg)
+[![PyBCI Multi-modal demo!](http://i3.ytimg.com/vi/SSmFU_Esayg/hqdefault.jpg)](https://www.youtube.com/watch?v=SSmFU_Esayg)
