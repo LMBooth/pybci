@@ -13,7 +13,7 @@ extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.extlinks',
 ]
-html_theme = 'alabaster'
+html_theme = 'sphinx_rtd_theme'
 templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 master_doc = 'index'  # for Sphinx < 2.0
