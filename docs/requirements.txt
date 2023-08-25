@@ -1,6 +1,1 @@
-pylsl
-scipy
-numpy
-antropy
-tensorflow
-scikit-learn
+sphinx-rtd-theme
