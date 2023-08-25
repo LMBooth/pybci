@@ -14,4 +14,4 @@ This is an extremely simple example setup, using a single [Myoware Sensor](https
 
 An example video can be found here:
 
-[![PyBCI Arduino Hand Demo](https://i.ytimg.com/an_webp/InEbiykeinQ/mqdefault_6s.webp?du=3000&sqp=CJTOzKYG&rs=AOn4CLDBQccHuD4_iq2bH6-udZxtVS5bLQ)](https://www.youtube.com/watch?v=InEbiykeinQ)
+[![PyBCI Arduino Hand Demo](http://i3.ytimg.com/vi/InEbiykeinQ/hqdefault.jpg)](https://www.youtube.com/watch?v=InEbiykeinQ)
