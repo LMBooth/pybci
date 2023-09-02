@@ -1,5 +1,5 @@
 class GeneralFeatureChoices:
-    psdBand = False
+    psdBand = True
     appr_entropy = False
     perm_entropy = False
     spec_entropy = False
@@ -7,9 +7,9 @@ class GeneralFeatureChoices:
     samp_entropy = False
     rms = True
     meanPSD = True
-    medianPSD = False
-    variance = False
-    meanAbs = False
+    medianPSD = True
+    variance = True
+    meanAbs = True
     waveformLength = False
     zeroCross = False
     slopeSignChange = False
