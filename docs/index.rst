@@ -35,3 +35,5 @@ Contents
    api/PyBCI
    api/LSLScanner
    api/Configurations
+   api/PseudoDeviceController
+   api/ConfigurationsPseudoDevice
