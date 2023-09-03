@@ -53,9 +53,4 @@ Where PseudoDataConfig and PseudoDataConfig are:
       seconds_between_baseline_marker = 10
       baselineConfig = PseudoDataConfig()
 
-
-Data Thread
-**********************************************
-
-Marker Thread
-**********************************************
+Two LSL streams are then created, one marker stream for informing pybci an event has occurred and a datastream which has the corresponding altered data to train the applied model with. 
