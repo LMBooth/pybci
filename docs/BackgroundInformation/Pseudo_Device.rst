@@ -19,7 +19,9 @@ By default the PseudoDevice has 4 markers, "baseline", "Marker1", "Marker2", "Ma
 Each signal is modified for 1 second after the marker has occurred, and the seconds between the markers are spaced by 5 seconds.
   
 Upon creating PyBCI object a dict of the following kwargs can be passed to dictate the behaviour of the pseudo device:
-  
+
+.. code-block::
+
   stop_signal – multiprocessing.Event or bool: Signal used to stop the device’s operation.
   is_multiprocessing – bool: Flag indicating if the class instance is running in a multiprocessing environment. Default is True.
   markerConfigStrings – list(str): List of marker strings used for generating marker data. Default is [“Marker1”, “Marker2”, “Marker3”].
@@ -32,7 +34,9 @@ Upon creating PyBCI object a dict of the following kwargs can be passed to dicta
   logger – Logger: Logger object for logging activities. Default is Logger(Logger.INFO).
   log_queue – multiprocessing.Queue: Queue object for logging activities in a multiprocessing environment. Default is None.
 
+
 Where PseudoDataConfig and PseudoDataConfig are:
+
 .. code-block:: python
 
   class PseudoDataConfig:
