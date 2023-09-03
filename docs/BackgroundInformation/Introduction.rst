@@ -73,5 +73,5 @@ Finally a passable pytorch, sklearn or tensorflow classifier can be given to the
 
 
 
-All the `examples <https://github.com/LMBooth/pybci/tree/main/pybci/Examples>`__ found on the github no in a dedicated folder have a pseudo LSL data generator enabled by default, by setting `createPseudoDevice=True` so the examples can run without the need of LSL capable hardware.
+All the `examples <https://github.com/LMBooth/pybci/tree/main/pybci/Examples>`__ found on the github not in a dedicated folder have a pseudo LSL data generator enabled by default, by setting `createPseudoDevice=True` so the examples can run without the need of LSL capable hardware.
 
