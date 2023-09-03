@@ -17,8 +17,42 @@ Configuring the Pseudo Device
 
 By default the PseudoDevice has 4 markers, "baseline", "Marker1", "Marker2", "Marker3" and "Marker4", each with peak frequencies of 3, 8, 10 and 12 Hz respectively.
 Each signal is modified for 1 second after the marker has occurred, and the seconds between the markers are spaced by 5 seconds.
+  
+Upon creating PyBCI object a dict of the following kwargs can be passed to dictate the behaviour of the pseudo device:
+  
+  stop_signal – multiprocessing.Event or bool: Signal used to stop the device’s operation.
+  is_multiprocessing – bool: Flag indicating if the class instance is running in a multiprocessing environment. Default is True.
+  markerConfigStrings – list(str): List of marker strings used for generating marker data. Default is [“Marker1”, “Marker2”, “Marker3”].
+  pseudoMarkerDataConfigs – list: List of PseudoDataConfig objects for configuring the pseudo EMG signals. If None, default configurations will be used.
+  pseudoMarkerConfig – PseudoMarkerConfig: Configuration settings for pseudo markers. Default is PseudoMarkerConfig.
+  dataStreamName – string: Name to be assigned to the data stream. Default is “PyBCIPseudoDataStream”.
+  dataStreamType – string: Type of the data stream (e.g., “EMG”). Default is “EMG”.
+  sampleRate – int: The sample rate in Hz for the data stream. Default is 250.
+  channelCount – int: The number of channels for the data stream. Default is 8.
+  logger – Logger: Logger object for logging activities. Default is Logger(Logger.INFO).
+  log_queue – multiprocessing.Queue: Queue object for logging activities in a multiprocessing environment. Default is None.
 
-Upon creating the PseudoDevice
+Where PseudoDataConfig and PseudoDataConfig are:
+.. code-block:: python
+
+  class PseudoDataConfig:
+      duration = 1.0 
+      noise_level = 1
+      amplitude = 2
+      frequency = 3
+  
+  class PseudoMarkerConfig:
+      markerName = "PyBCIPseudoMarkers"
+      markerType = "Markers"
+      baselineMarkerString = "baseline"
+      repeat = True
+      autoplay = True
+      num_baseline_markers = 10
+      number_marker_iterations = 10
+      seconds_between_markers = 5
+      seconds_between_baseline_marker = 10
+      baselineConfig = PseudoDataConfig()
+
 
 Data Thread
 **********************************************
