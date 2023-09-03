@@ -1,7 +1,7 @@
 PyBCI
 =====
 
-.. class:: PyBCI(dataStreams=None, markerStream=None, streamTypes=None, markerTypes=None, loggingLevel=Logger.INFO, globalEpochSettings=GlobalEpochSettings(), customEpochSettings={}, streamChsDropDict={}, streamCustomFeatureExtract={}, minimumEpochsRequired=10, clf=None, model=None, torchModel=None)
+.. class:: PyBCI(dataStreams=None, markerStream=None, streamTypes=None, markerTypes=None, loggingLevel=Logger.INFO, globalEpochSettings=GlobalEpochSettings(), customEpochSettings={}, streamChsDropDict={}, streamCustomFeatureExtract={}, minimumEpochsRequired=10, createPseudoDevice=False, pseudoDevice=None, clf=None, model=None, torchModel=None)
 
    The `PyBCI` object is the main controller for interfacing with all relevant threads. When initialised sets up the main operation of the BCI and can be queried for relevant information.
 
