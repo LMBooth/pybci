@@ -1,7 +1,7 @@
 PyBCI
 =====
 
-.. class:: PyBCI(dataStreams=None, markerStream=None, streamTypes=None, markerTypes=None, loggingLevel=Logger.INFO, globalEpochSettings=GlobalEpochSettings(), customEpochSettings={}, streamChsDropDict={}, streamCustomFeatureExtract={}, minimumEpochsRequired=10, createPseudoDevice=False, pseudoDevice=None, clf=None, model=None, torchModel=None)
+.. class:: PyBCI(dataStreams=None, markerStream=None, streamTypes=None, markerTypes=None, loggingLevel=Logger.INFO, globalEpochSettings=GlobalEpochSettings(), customEpochSettings={}, streamChsDropDict={}, streamCustomFeatureExtract={}, minimumEpochsRequired=10, createPseudoDevice=False, pseudoDeviceArgs=None, clf=None, model=None, torchModel=None)
 
    The `PyBCI` object is the main controller for interfacing with all relevant threads. When initialised sets up the main operation of the BCI and can be queried for relevant information.
 
@@ -66,6 +66,20 @@ PyBCI
 .. py:attribute:: minimumEpochsRequired
     :type: int
     :value: Minimum number of required epochs before model fitting begins, must be of each type of received markers and more than 1 type of marker to classify.
+
+.. _pybci-createPseudoDevice:
+
+.. py:attribute:: createPseudoDevice=False, 
+   :type: bool
+   :value: If True auto generates LSL marker and LSL data.
+
+
+.. _pybci-pseudoDeviceArgs:
+
+.. py:attribute:: pseudoDeviceArgs=None,
+   :type: **kwargs
+   :value: send kwargs dict of information to intialise pseudo device, seen in Utils.PseudoDevice
+
 
 .. _pybci-clf:
 
