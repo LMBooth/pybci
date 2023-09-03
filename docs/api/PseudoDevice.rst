@@ -1,4 +1,4 @@
-PseudoDevice
+pybci.Utils.PseudoDevice import PseudoDevice
 ============
 
 .. class:: PseudoDevice(stop_signal, is_multiprocessing=True, markerConfigStrings=["Marker1", "Marker2", "Marker3"], pseudoMarkerDataConfigs=None, pseudoMarkerConfig=PseudoMarkerConfig, dataStreamName="PyBCIPseudoDataStream", dataStreamType="EMG", sampleRate=250, channelCount=8, logger=Logger(Logger.INFO), log_queue=None)
