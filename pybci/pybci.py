@@ -34,7 +34,7 @@ class PyBCI:
     def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
                  streamCustomFeatureExtract = {},minimumEpochsRequired = 10, 
-                 createPseudoDevice=False, pseudoDevice=None,
+                 createPseudoDevice=False, pseudoDeviceArgs=None,
                  clf= None, model = None, torchModel = None):
         """
         The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
@@ -83,7 +83,8 @@ class PyBCI:
         self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
         self.Connect()
         if createPseudoDevice:
-            if isinstance(pseudoDevice,PseudoDeviceController):
+            if isinstance(pseudoDeviceArgs,dict):
+                pseudoDevice = PseudoDeviceController(pseudoDeviceArgs)
                 pseudoDevice.BeginStreaming()
             else:
                 pseudoDevice = PseudoDeviceController()
