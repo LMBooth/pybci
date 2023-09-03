@@ -36,4 +36,4 @@ Contents
    api/LSLScanner
    api/Configurations
    api/PseudoDeviceController
-   api/ConfigurationsPseudoDevice
+   api/PseudoDevice
