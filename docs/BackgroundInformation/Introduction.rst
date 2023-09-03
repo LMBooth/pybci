@@ -32,7 +32,7 @@ For example:
 
 >>> import time
 >>> from pybci import PyBCI
->>> bci = PyBCI()
+>>> bci = PyBCI(createPseudoDevice=True)
 >>> while not bci.connected:
 >>>     bci.Connect()
 >>>     time.sleep(1)
@@ -73,6 +73,5 @@ Finally a passable pytorch, sklearn or tensorflow classifier can be given to the
 
 
 
-
-The `examples folder <https://github.com/LMBooth/pybci/tree/main/pybci/Examples>`__ found on the github has a pseudo `LSL data generator and marker creator <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/PsuedoLSLStreamGenerator>`__ so the examples can run without the need of LSL capable hardware.
+All the `examples <https://github.com/LMBooth/pybci/tree/main/pybci/Examples>`__ found on the github not in a dedicated folder have a pseudo LSL data generator enabled by default, by setting `createPseudoDevice=True` so the examples can run without the need of LSL capable hardware.
 

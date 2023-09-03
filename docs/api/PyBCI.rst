@@ -69,14 +69,14 @@ PyBCI
 
 .. _pybci-createPseudoDevice:
 
-.. py:attribute:: createPseudoDevice=False, 
+.. py:attribute:: createPseudoDevice
    :type: bool
    :value: If True auto generates LSL marker and LSL data.
 
 
 .. _pybci-pseudoDeviceArgs:
 
-.. py:attribute:: pseudoDeviceArgs=None,
+.. py:attribute:: pseudoDeviceArgs
    :type: dict
    :value: dictionary of arguements to send as **kwargs to intialise pseudo device, options can be seen in :class:`PseudoDevice`.
 

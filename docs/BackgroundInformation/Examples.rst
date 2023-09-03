@@ -4,7 +4,7 @@ Examples
 
 The following examples can all be found on the `PyBCI github <https://github.com/LMBooth/pybci/tree/main/pybci/Examples>`_.
 
-Note all the examples shown that are not in a dedicated folder work with the createPseudoDevice variable set to True when instantiating PBCI(). If using with own LSL capable hardware you may need to adjust the scripts accordingly, namely set `createPseudoDevice=False`.
+NOTE: all the examples shown that are not in a dedicated folder work with the createPseudoDevice variable set to True when instantiating PBCI(). If using with own LSL capable hardware you may need to adjust the scripts accordingly, namely set `createPseudoDevice=False`.
 
 .. list-table:: PyBCI Examples
    :widths: 25 75
