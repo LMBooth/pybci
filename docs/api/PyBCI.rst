@@ -77,8 +77,8 @@ PyBCI
 .. _pybci-pseudoDeviceArgs:
 
 .. py:attribute:: pseudoDeviceArgs=None,
-   :type: **kwargs
-   :value: send kwargs dict of information to intialise pseudo device, seen in Utils.PseudoDevice
+   :type: dict
+   :value: dictionary of arguements to send as **kwargs to intialise pseudo device, options can be seen in :class:`PseudoDevice`.
 
 
 .. _pybci-clf:
