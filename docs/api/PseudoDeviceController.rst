@@ -1,4 +1,4 @@
-PseudoDeviceController
+pybci.Configuration.PseudoDevice import PseudoDeviceController
 ======================
 
 .. class:: PseudoDeviceController(execution_mode='process', *args, **kwargs)
