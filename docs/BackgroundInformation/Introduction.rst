@@ -32,7 +32,7 @@ For example:
 
 >>> import time
 >>> from pybci import PyBCI
->>> bci = PyBCI()
+>>> bci = PyBCI(createPseudoDevice=True)
 >>> while not bci.connected:
 >>>     bci.Connect()
 >>>     time.sleep(1)
