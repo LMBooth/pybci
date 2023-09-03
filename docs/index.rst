@@ -26,6 +26,7 @@ Contents
    BackgroundInformation/Theory_Operation
    BackgroundInformation/Epoch_Timing
    BackgroundInformation/Feature_Selection
+   BackgroundInformation/Pseudo_Device
    BackgroundInformation/Examples
 
 .. toctree::
@@ -34,6 +35,6 @@ Contents
 
    api/PyBCI
    api/LSLScanner
-   api/Configurations
    api/PseudoDeviceController
    api/PseudoDevice
+   api/Configurations
