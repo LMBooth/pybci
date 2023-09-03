@@ -1,8 +1,9 @@
 from .Utils.LSLScanner import LSLScanner
 from .Utils.Logger import Logger
+from .Utils.PseudoDevice import PseudoDeviceController
 from .ThreadClasses.FeatureProcessorThread import FeatureProcessorThread
-from .ThreadClasses.DataReceiverThread import DataReceiverThread
-from .ThreadClasses.AsyncDataReceiverThread import AsyncDataReceiverThread
+#from .ThreadClasses.DataReceiverThread import DataReceiverThread
+#from .ThreadClasses.AsyncDataReceiverThread import AsyncDataReceiverThread
 from .ThreadClasses.OptimisedDataReceiverThread import OptimisedDataReceiverThread
 from .ThreadClasses.MarkerThread import MarkerThread
 from .ThreadClasses.ClassifierThread import ClassifierThread
@@ -32,8 +33,9 @@ class PyBCI:
     torchModel = None
     def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
-                 streamCustomFeatureExtract = {},
-                 minimumEpochsRequired = 10, clf= None, model = None, torchModel = None):
+                 streamCustomFeatureExtract = {},minimumEpochsRequired = 10, 
+                 createPseudoDevice=False, pseudoDevice=None,
+                 clf= None, model = None, torchModel = None):
         """
         The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
         and holds a configurable number of samples based on lsl marker strings.
@@ -60,6 +62,10 @@ class PyBCI:
             Allows dict to be passed of datastream with custom feature extractor class for analysing data.  {datastreamstring1: customClass1(), datastreamstring2: customClass1(),}
         minimumEpochsRequired: int 
             Minimm number of required epochs before model fitting begins, must be of each type of received markers and mroe then 1 type of marker to classify.
+        createPseudoDevice : bool
+            Sets whether a pseudodevice should be generated.
+        pseudoDevice : pybci.Utils.PseudoDevice.PseudoDeviceController 
+            Allows custom pseudoDevice to be passed with own marker and signal information.
         clf: sklearn.base.ClassifierMixin 
             Allows custom Sklearn model to be passed.
         model: tf.keras.model
@@ -76,6 +82,14 @@ class PyBCI:
         self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes, logger =self.logger)
         self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
         self.Connect()
+        if createPseudoDevice:
+            if isinstance(pseudoDevice,PseudoDeviceController):
+                pseudoDevice.BeginStreaming()
+            else:
+                pseudoDevice = PseudoDeviceController()
+                pseudoDevice.BeginStreaming()
+        self.pseudoDevice = pseudoDevice
+
        
     def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},

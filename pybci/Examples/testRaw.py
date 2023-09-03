@@ -4,9 +4,9 @@ from torch import nn
 from pybci import PyBCI
 import numpy as np
 from pybci.Utils.Logger import Logger
-num_chs = 3 # 8 channels are created in the PsuedoLSLGenerator, but we drop 5 to save compute (real-time CNN can be computationally heavy!)
-sum_samps = 125 # sample rate is 250 in the PsuedoLSLGwnerator
-num_classes = 3 # number of different triggers (can include baseline) sent, defines if we use softmax of binary
+num_chs = 3 # 8 channels are created in the PseudoLSLGenerator, but we drop 5 to save compute (real-time CNN can be computationally heavy!)
+sum_samps = 125 # sample rate is 250 in the PseudoLSLGwnerator
+num_classes = 4 # number of different triggers (can include baseline) sent, defines if we use softmax of binary
 class ConvNet(nn.Module):
     def __init__(self, num_channels, num_samples, num_classes):
         super(ConvNet, self).__init__()
@@ -51,7 +51,7 @@ def PyTorchModel(x_train, x_test, y_train, y_test ):
     return accuracy, model # must return accuracy and model for pytorch!
 
 class RawDecode():
-    desired_length = 0
+    desired_length = sum_samps
     def ProcessFeatures(self, epochData, sr, target): 
         d = epochData.T
         if self.desired_length == 0: # needed as windows may be differing sizes due to timestamp varience on LSL
@@ -61,34 +61,32 @@ class RawDecode():
         return d 
 
 dropchs = [x for x in range(3,8)] # drop last 5 channels to save on compute time
-streamChsDropDict={"sendTest":dropchs} #streamChsDropDict=streamChsDropDict,
-streamCustomFeatureExtract = {"sendTest" : RawDecode()} # we select psuedolslgenerator example
-bci = PyBCI(minimumEpochsRequired = 4, streamCustomFeatureExtract=streamCustomFeatureExtract, torchModel = PyTorchModel,streamChsDropDict=streamChsDropDict, loggingLevel = Logger.TIMING)
-while not bci.connected:
-    bci.Connect()
-    time.sleep(1)
+streamChsDropDict={"PyBCIPseudoDataStream":dropchs} #streamChsDropDict=streamChsDropDict,
+streamCustomFeatureExtract = {"PyBCIPseudoDataStream" : RawDecode()} # we select psuedolslgenerator example
 
-bci.TrainMode()
-accuracy = 0
-try:
-    while(True):
-        currentMarkers = bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
-        time.sleep(1) # wait for marker updates
-        print("Markers received: " + str(currentMarkers) +" Class accuracy: " + str(accuracy), end="\r")
-        if len(currentMarkers) > 1:  # check there is more then one marker type received
-            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired:
-                classInfo = bci.CurrentClassifierInfo() # hangs if called too early
-                accuracy = classInfo["accuracy"]
-            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+10:  
-                featuresTargets = bci.CurrentFeaturesTargets() # when in test mode only y_pred returned
-                print(featuresTargets["features"])
-                print(featuresTargets["targets"])
-                bci.TestMode()
-                break
-    while True:
-        markerGuess = bci.CurrentClassifierMarkerGuess() # when in test mode only y_pred returned
-        guess = [key for key, value in currentMarkers.items() if value[0] == markerGuess]
-        print("Current marker estimation: " + str(guess), end="\r")
-        time.sleep(0.1)
-except KeyboardInterrupt: # allow user to break while loop
-    pass
+if __name__ == '__main__': # Note: this line is needed when calling pseudoDevice as by default runs in a multiprocessed operation
+    bci = PyBCI(minimumEpochsRequired = 4, createPseudoDevice=True, streamCustomFeatureExtract=streamCustomFeatureExtract, torchModel = PyTorchModel,streamChsDropDict=streamChsDropDict)#, loggingLevel = Logger.TIMING)
+    while not bci.connected: # check to see if lsl marker and datastream are available
+        bci.Connect()
+        time.sleep(1)
+    bci.TrainMode() # now both marker and datastreams available start training on received epochs
+    accuracy = 0
+    try:
+        while(True):
+            currentMarkers = bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
+            time.sleep(0.5) # wait for marker updates
+            print("Markers received: " + str(currentMarkers) +" Accuracy: " + str(round(accuracy,2)), end="         \r")
+            if len(currentMarkers) > 1:  # check there is more then one marker type received
+                if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired:
+                    classInfo = bci.CurrentClassifierInfo() # hangs if called too early
+                    accuracy = classInfo["accuracy"]
+                if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+10:  
+                    bci.TestMode()
+                    break
+        while True:
+            markerGuess = bci.CurrentClassifierMarkerGuess() # when in test mode only y_pred returned
+            guess = [key for key, value in currentMarkers.items() if value[0] == markerGuess]
+            print("Current marker estimation: " + str(guess), end="           \r")
+            time.sleep(0.2)
+    except KeyboardInterrupt: # allow user to break while loop
+        print("\nLoop interrupted by user.")

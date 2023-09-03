@@ -1,4 +1,3 @@
-import antropy as ant
 import numpy as np
 from scipy.signal import welch
 from scipy.integrate import simps
@@ -32,6 +31,8 @@ class GenericFeatureExtractor():
             self.featureChoices.zeroCross,
             self.featureChoices.slopeSignChange]
         )
+        if self.featureChoices.appr_entropy or self.featureChoices.perm_entropy or self.featureChoices.spec_entropy or self.featureChoices.svd_entropy or self.featureChoices.samp_entropy:
+            import antropy as ant
         self.numFeatures = (len(self.freqbands)*self.featureChoices.psdBand)+selFeats
 
     def ProcessFeatures(self, epoch, sr, target):

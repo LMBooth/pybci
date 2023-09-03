@@ -1,9 +1,9 @@
 
 class PseudoDataConfig:
     duration = 1.0 
-    noise_level = 0.5
+    noise_level = 1
     amplitude = 2
-    frequency = 5
+    frequency = 3
 
 class PseudoMarkerConfig:
     markerName = "PyBCIPseudoMarkers"

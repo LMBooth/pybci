@@ -1,6 +1,8 @@
 import sklearn
 from sklearn.preprocessing import StandardScaler
 from sklearn import svm
+import logging
+logging.getLogger('tensorflow').setLevel(logging.ERROR)
 import tensorflow
 import torch
 
@@ -60,8 +62,8 @@ class Classifier():
                 y_predictions = self.clf.predict(x_test)
                 self.accuracy = sklearn.metrics.accuracy_score(y_test, y_predictions)
             elif self.classifierLibrary == "tensor":
-                self.model.fit(np.array(x_train), np.array(y_train)) # epochs and batch_size should be customisable
-                self.loss, self.accuracy = self.model.evaluate(np.array(x_test), np.array(y_test))
+                self.model.fit(np.array(x_train), np.array(y_train), verbose=0) # epochs and batch_size should be customisable
+                self.loss, self.accuracy = self.model.evaluate(np.array(x_test), np.array(y_test), verbose=0)
             else:
                 # no classifier library selected, print debug?
                 pass
@@ -78,7 +80,7 @@ class Classifier():
             return self.clf.predict(x)
         elif self.classifierLibrary == "tensor":
             x = np.expand_dims(x, axis=0)
-            predictions = self.model.predict(x)
+            predictions = self.model.predict(x, verbose=0)
             if len (predictions[0]) == 1: # assume binary classification
                 return 1 if predictions[0] > 0.5 else 0
             else:    # assume multi-classification

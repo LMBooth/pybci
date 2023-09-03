@@ -40,7 +40,9 @@ class PseudoDeviceController:
         if self.execution_mode == 'process':
             self.log_reader_process = multiprocessing.Process(target=self.logger.start_queue_reader)
             self.log_reader_process.start()
-
+    
+    def __del__(self):
+        self.StopStreaming()  # Your existing method to stop threads and processes
 
     def _run_device(self):
         if self.execution_mode == 'process':
@@ -113,8 +115,8 @@ class PseudoDevice:
             pseudoMarkerDataConfigs[0].amplitude =  5
             pseudoMarkerDataConfigs[1].amplitude =  6
             pseudoMarkerDataConfigs[2].amplitude =  7
-            pseudoMarkerDataConfigs[0].frequency =  6
-            pseudoMarkerDataConfigs[1].frequency =  9
+            pseudoMarkerDataConfigs[0].frequency =  8
+            pseudoMarkerDataConfigs[1].frequency =  10
             pseudoMarkerDataConfigs[2].frequency =  12
         self.pseudoMarkerDataConfigs = pseudoMarkerDataConfigs
         self.pseudoMarkerConfig = pseudoMarkerConfig
@@ -130,7 +132,15 @@ class PseudoDevice:
             ch.append_child_value("type", dataStreamType)
         self.outlet = pylsl.StreamOutlet(info)
         self.last_update_time = time.time()
-        self.phase_offset = 0
+        self.phase_offset = 0.0
+
+    # Pre-compute the full signal for a given marker index
+    def precompute_marker_signal(self, config):
+        total_samples_required = int(self.sampleRate * config.duration)
+        times = np.linspace(0, config.duration, total_samples_required)
+        full_signal = config.amplitude * np.sin(2 * np.pi * config.frequency * times)
+        full_signal += np.random.normal(0, config.noise_level, total_samples_required)
+        return np.tile(full_signal, (self.channelCount, 1)).T
 
     def log_message(self, level='INFO', message = ""):
         if self.log_queue is not None and isinstance(self.log_queue, type(multiprocessing.Queue)):
@@ -144,59 +154,39 @@ class PseudoDevice:
         else:  # boolean flag for threads
             return self.stop_signal
 
-
-    def GeneratePseudoEMG(self,samplingRate, duration, noise_level, amplitude, frequency):
-        """
-            Generate a pseudo EMG signal for a given gesture.
-            Arguments:
-            - sampling_rate: Number of samples per second
-            - duration: Duration of the signal in seconds
-            - noise_level: The amplitude of Gaussian noise to be added (default: 0.1)
-            - amplitude: The amplitude of the EMG signal (default: 1.0)
-            - frequency: The frequency of the EMG signal in Hz (default: 10.0)
-            Returns:
-            - emg_signal: The generated pseudo EMG signal as a 2D numpy array with shape (channels, samples)
-        """
-        num_samples = int(samplingRate * duration)
-        # Initialize the EMG signal array
-        emg_signal = np.zeros((num_samples, self.channelCount))
-        times = np.linspace(0, duration, num_samples)
-        # Generate the pseudo EMG signal based on the marker settings
-        emg_channel = amplitude * np.sin(2 * np.pi * frequency * times + self.phase_offset)# * times)  # Sinusoidal EMG signal
-        # Add Gaussian noise to the EMG signal
-        noise = np.random.normal(0, noise_level, num_samples)
-        emg_channel += noise
-        # Store the generated channel in the EMG signal array
-        self.phase_offset = (self.phase_offset + 2 * np.pi * frequency * (num_samples/samplingRate)) % (2*np.pi)
-        emg_channel = emg_channel[::-1]
-        for channel in range(self.channelCount):
-            emg_signal[:, channel] = emg_channel
-        return emg_signal
-
-
     def update(self):
-        with self.lock:  # Acquire the lock
-            if not (self.stop_signal.is_set() if self.is_multiprocessing else self.stop_signal):
+        with self.lock:
+            if not self._should_stop():
                 current_time = time.time()
                 delta_time = current_time - self.last_update_time
-                if not self.markerQueue.empty():
+
+                if self.current_marker is None and not self.markerQueue.empty():
                     self.current_marker = self.markerQueue.get()
-                if self.current_marker != None:
-                    if not self.markerQueue.empty():
-                        self.current_marker = self.markerQueue.get()
+                    self.samples_generated = 0
+
+                if self.current_marker is not None:
                     for i, command in enumerate(self.markerConfigStrings):
                         if self.current_marker == command:
-                            total_samples_required = int(self.sampleRate * self.pseudoMarkerDataConfigs[i].duration)
-                            num = self.GeneratePseudoEMG(self.sampleRate,delta_time, self.pseudoMarkerDataConfigs[i].noise_level, 
-                                                            self.pseudoMarkerDataConfigs[i].amplitude, self.pseudoMarkerDataConfigs[i].frequency)
-                            # If this is the start of marker data generation, set the end time for this marker
-                            self.samples_generated += len(num)
-                            if self.samples_generated >= total_samples_required:
+                            if self.samples_generated == 0:
+                                self.precomputed_signal = self.precompute_marker_signal(self.pseudoMarkerDataConfigs[i])
+                            
+                            remaining_samples = len(self.precomputed_signal) - self.samples_generated
+                            chunk_size = min(int(self.sampleRate * delta_time), remaining_samples)
+                            num = self.precomputed_signal[self.samples_generated:self.samples_generated+chunk_size]
+                            self.samples_generated += chunk_size
+                            if self.samples_generated >= len(self.precomputed_signal):
                                 self.current_marker = None
-                                self.samples_generated = 0  
-                else:# send baseline
-                    num = self.GeneratePseudoEMG(self.sampleRate,delta_time, self.baselineConfig.noise_level, 
-                                                    self.baselineConfig.amplitude, self.baselineConfig.frequency)
+                                self.samples_generated = 0
+                else:
+                    # For baseline
+                    if self.samples_generated == 0:
+                        self.precomputed_signal = self.precompute_marker_signal(self.baselineConfig)
+                    remaining_samples = len(self.precomputed_signal) - self.samples_generated
+                    chunk_size = min(int(self.sampleRate * delta_time), remaining_samples)
+                    num = self.precomputed_signal[self.samples_generated:self.samples_generated+chunk_size]
+                    self.samples_generated += chunk_size
+                    if self.samples_generated >= len(self.precomputed_signal):
+                        self.samples_generated = 0  # Reset so that the baseline signal can loop
                 self.outlet.push_chunk(num.tolist())
                 self.last_update_time = current_time
 
