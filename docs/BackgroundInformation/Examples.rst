@@ -4,7 +4,7 @@ Examples
 
 The following examples can all be found on the `PyBCI github <https://github.com/LMBooth/pybci/tree/main/pybci/Examples>`_.
 
-Note all the examples shown that are not in a dedicated folder work with the pseudoLSLStreamGenerator found in  `pseudoLSLSreamGenerator/mainSend.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/pseudoLSLStreamGenerator/mainSend.py>`_, if using with own LSL capable hardware you may need to adjust the scripts accordingly.
+Note all the examples shown that are not in a dedicated folder work with the createPseudoDevice variable set to True when instantiating PBCI(). If using with own LSL capable hardware you may need to adjust the scripts accordingly, namely set `createPseudoDevice=False`.
 
 .. list-table:: PyBCI Examples
    :widths: 25 75
@@ -14,14 +14,12 @@ Note all the examples shown that are not in a dedicated folder work with the pse
      - Description
    * - `ArduinoHandGrasp/ <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/ArduinoHandGrasp>`_
      - Folder contains an LSL marker creator in `MarkerMaker.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/ArduinoHandGrasp/MarkerMaker.py>`_ using PyQt5 as an on screen text stimulus, illustrates how LSL markers can be used to train. `ServoControl.ino <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/ArduinoHandGrasp/ServoControl/ServoControl.ino>`_ is designed for an arduino uno which controls 5 servo motors, each of which control the position of an indidividual finger for a 3D printed hand which can be controlled via serial commands. There is also a `Myoware Muscle Sensor <https://myoware.com/products/muscle-sensor/>`_ attached to analog pin A0 being read continuously over the serial connection. `ArduinoToLSL.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/ArduinoHandGrasp/ArduinoToLSL.py>`_ is used to send and receive serial data to and from the arduino, whilst pushing the A0 data to an LSL outlet which is classified in `testArduinoHand.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/ArduinoHandGrasp/testArduinoHand.py>`_, whilst simultaneously receiving a marker stream from testArduinoHand.py to inform which hand position to do.
-   * - `pseudoLSLSreamGenerator/mainSend.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/pseudoLSLStreamGenerator/mainSend.py>`_
-     - Generates multiple channels on a given stream type at a given sample rate. A baseline signal is generated on an LSL stream outlet and a PyQt button can be pressed to signify this signal on a separate LSL marker stream. The signal can be altered by 5 distinct markers for a configurable amount of time, allowing the user to play with various signal patterns for clasification. NOTE: Requires `PyQt5` and `pyqtgraph` installs for data viewer.
    * - `PupilLabsRightLeftEyeClose/ <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/>`_
      - Folder contains example basic pupil labs example as LSL input device, classifying left and right eye closed with a custom extractor class. `RightLeftMarkers.py` uses tkinter to generate visual on-screen stimuli for only right, left or both eyes open, sends same onscreen stimuli as LSL markers, ideal for testing pupil-labs eyes classifier test. `bciGazeExample.py` Illustrates how a 'simple' custom pupil-labs feature extractor class can be passed for the gaze data, where the mean pupil diameter is taken for each eye and both eyes and used as feature data, where nans for no confidence are set to a value of 0.
-   * - `testEpochTimingsConfig.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testEpochTimingsConfig.py>`_
-     - Simple example showing custom global epoch settings  changed on initialisation. Instead of epoching data from 0 to 1 second after the marker we take it from 0.5 seconds before to 0.5 seconds after the marker. 
    * - `testMultimodal.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testMultimodal.py>`_ 
      - Advanced example illustrating two devices, pupil labs gaze device stream wth custom feature extractor class and Hull University ioBio EEG device, specifically channels Fp1 and Fp2. The PupilLabsRightLeftEyeClose folder has a youtube video illustrating the multimodal example in action.
+   * - `testEpochTimingsConfig.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testEpochTimingsConfig.py>`_
+     - Simple example showing custom global epoch settings  changed on initialisation. Instead of epoching data from 0 to 1 second after the marker we take it from 0.5 seconds before to 0.5 seconds after the marker. 
    * - `testPytorch.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPytorch.py>`_
      - Provides an example of how to use a Pytorch Neural net Model as the classifier. (testRaw.py also has a Pytorch example with a C-NN).
    * - `testRaw.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testRaw.py>`_
