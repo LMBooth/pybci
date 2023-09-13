@@ -16,7 +16,8 @@ For development versions use: :code:`pip install git+https://github.com/LMBooth/
    pip install -e .
 
 
-## Optional: Virtual Environment
+Optional: Virtual Environment
+----------------------------
 Or optionally, install and run in a virtual environment:
 
 Windows:
