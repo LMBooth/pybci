@@ -11,12 +11,32 @@ All the  [examples](https://github.com/LMBooth/pybci/tree/main/pybci/Examples) f
 # Installation
 For stable releases use: ```pip install install-pybci```
 
-For unstable dev installations and up-to-date git pushes use: ```pip install git+https://github.com/LMBooth/pybci.git``` or 
+For development versions use: ```pip install git+https://github.com/LMBooth/pybci.git``` or 
 ```
 git clone https://github.com/LMBooth/pybci.git
 cd pybci
 pip install -e .
 ```
+## Optional: Virtual Environment
+Or optionally, install and run in a virtual environment:
+
+Windows:
+```
+python -m venv my_env
+.\my_env\Scripts\Activate
+pip install install-pybci  # For stable releases
+# OR
+pip install git+https://github.com/LMBooth/pybci.git  # For development version
+```
+Linux/MaxOS:
+```
+python3 -m venv my_env
+source my_env/bin/activate
+pip install install-pybci  # For stable releases
+# OR
+pip install git+https://github.com/LMBooth/pybci.git  # For development version
+```
+
 
 ## Prerequisite for Non-Windows Users
 If you are not using windows then there is a prerequisite stipulated on the [pylsl repository](https://github.com/labstreaminglayer/pylsl) to obtain a liblsl shared library. See the [liblsl repo documentation](https://github.com/sccn/liblsl) for more information. 
