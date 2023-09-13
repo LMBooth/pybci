@@ -5,6 +5,42 @@ Introduction
 Installation
 ===================
 
+For stable releases use: ```pip install install-pybci```
+
+For development versions use: ```pip install git+https://github.com/LMBooth/pybci.git``` or 
+
+.. code-block:: console
+
+   git clone https://github.com/LMBooth/pybci.git
+   cd pybci
+   pip install -e .
+
+
+## Optional: Virtual Environment
+Or optionally, install and run in a virtual environment:
+
+Windows:
+
+.. code-block:: console
+
+   python -m venv my_env
+   .\my_env\Scripts\Activate
+   pip install install-pybci  # For stable releases
+   # OR
+   pip install git+https://github.com/LMBooth/pybci.git  # For development version
+
+Linux/MaxOS:
+
+.. code-block:: console
+
+   python3 -m venv my_env
+   source my_env/bin/activate
+   pip install install-pybci  # For stable releases
+   # OR
+   pip install git+https://github.com/LMBooth/pybci.git  # For development version
+
+
+
 To use PyBCI, first install it using pip:
 
 .. code-block:: console
