@@ -5,9 +5,9 @@ Introduction
 Installation
 ===================
 
-For stable releases use: ```pip install install-pybci```
+For stable releases use: :code:`pip install install-pybci`
 
-For development versions use: ```pip install git+https://github.com/LMBooth/pybci.git``` or 
+For development versions use: :code:`pip install git+https://github.com/LMBooth/pybci.git` or 
 
 .. code-block:: console
 
