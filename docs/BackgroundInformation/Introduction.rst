@@ -40,21 +40,6 @@ Linux/MaxOS:
    pip install git+https://github.com/LMBooth/pybci.git  # For development version
 
 
-
-To use PyBCI, first install it using pip:
-
-.. code-block:: console
-
-   pip install install-pybci
-   
-(currently can only install-pybci due to pybci name similarities with another package on pypi)
-
-For unstable dev installations and up-to-date git pushes use:
-
-.. code-block:: console
-
-   pip install --index-url https://test.pypi.org/simple/ install-pybci
-
 Prerequisite for Non-Windows Users
 ----------------------------------
 If you are not using windows then there is a prerequisite stipulated on the `pylsl repository <https://github.com/labstreaminglayer/pylsl#prerequisites>`_ to obtain a liblsl shared library. See the `liblsl repo documentation <https://github.com/sccn/liblsl>`_ for more information. Once the liblsl library has been downloaded pip install install-pybci should work.
