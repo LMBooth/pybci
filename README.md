@@ -11,7 +11,7 @@ All the  [examples](https://github.com/LMBooth/pybci/tree/main/pybci/Examples) f
 # Installation
 For stable releases use: ```pip install install-pybci```
 
-For unstable dev installations and up-to-date git pushes use: ```pip install --index-url https://test.pypi.org/simple/ install-pybci```
+For unstable dev installations and up-to-date git pushes use: ```pip install --index-url https://test.pypi.org/simple/ install-pybci``` or ```pip install git+https://github.com/LMBooth/pybci.git```
 
 ## Prerequisite for Non-Windows Users
 If you are not using windows then there is a prerequisite stipulated on the [pylsl repository](https://github.com/labstreaminglayer/pylsl) to obtain a liblsl shared library. See the [liblsl repo documentation](https://github.com/sccn/liblsl) for more information. 
