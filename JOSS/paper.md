@@ -1,5 +1,5 @@
 ---
-title: 'PyBCI: A Python Package for Brain-Computer Interface (BCI) Design/An Open Source Brain-Computer Interface Framework in Python'
+title: 'PyBCI: A Python Package for Brain-Computer Interface (BCI) Design'
 tags:
   - brain-computer-interface
   - python
