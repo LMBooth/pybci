@@ -26,17 +26,18 @@ jobs:
         pip install twine
     - name: Build package
       run: python -m build
-    - name: Build and publish to TestPyPI
+    - name: Build and publish to PyPI on push to main
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       env:
         TWINE_USERNAME: __token__
-        TWINE_PASSWORD: ${{ secrets.TEST_PYPI_API_TOKEN }}
-      run: twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+        TWINE_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
+      run: twine upload dist/*
     - name: Clean dist directory
       run: rm -rf dist/*
-    - name: Build package for PyPI
+    - name: Build package for PyPI on release
+      if: github.event_name == 'release' && github.event.action == 'created'
       run: python -m build
-    - name: Build and publish to PyPI
+    - name: Build and publish to PyPI on release
       if: github.event_name == 'release' && github.event.action == 'created'
       env:
         TWINE_USERNAME: __token__
