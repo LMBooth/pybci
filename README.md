@@ -9,7 +9,7 @@ The goal of PyBCI is to enable quick iteration when creating pipelines for testi
 All the  [examples](https://github.com/LMBooth/pybci/tree/main/pybci/Examples) found on the github not in a dedicated folder have a pseudo LSL data generator enabled by default, `createPseudoDevice=True` so the examples can run without the need of LSL capable hardware. Any generic LSLViewer can be used to view the generated data, [example viewers found on this link.](https://labstreaminglayer.readthedocs.io/info/viewers.html)
 
 # Installation
-For stable releases use: ```pip install install-pybci```
+For stable releases use: ```pip install pybci-package```
 
 For development versions use: ```pip install git+https://github.com/LMBooth/pybci.git``` or 
 ```
