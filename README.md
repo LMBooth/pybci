@@ -24,7 +24,7 @@ Windows:
 ```
 python -m venv my_env
 .\my_env\Scripts\Activate
-pip install install-pybci  # For stable releases
+pip install pybci-package  # For stable releases
 # OR
 pip install git+https://github.com/LMBooth/pybci.git  # For development version
 ```
@@ -32,7 +32,7 @@ Linux/MaxOS:
 ```
 python3 -m venv my_env
 source my_env/bin/activate
-pip install install-pybci  # For stable releases
+pip install pybci-package  # For stable releases
 # OR
 pip install git+https://github.com/LMBooth/pybci.git  # For development version
 ```
