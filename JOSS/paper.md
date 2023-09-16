@@ -41,7 +41,7 @@ PyBCI accelerates the pace of BCI research by streamlining data collection, proc
 
 # Impact:
 
-By offering a comprehensive, open-source platform for BCI research, PyBCI has the potential to drive the field forward. It provides researchers with the tools necessary to conduct advanced BCI experiments without requiring extensive software development skills. The integration of LSL, PyTorch, Scikit-learn, TensorFlow, Antropy, NumPy, and SciPy into one platform simplifies the research process, encouraging innovation and collaboration in the field of brain computer/human machine interfaces.
+By providing a comprehensive, open-source platform for BCI research, PyBCI aims to advance the field. When integrated with off-the-shelf devices that are LSL-enabled, as well as with pre-built LSL data viewers and marker delivery systems, PyBCI facilitates the efficient design, testing, and implementation of advanced BCI experiments.The integration of LSL, PyTorch, Scikit-learn, TensorFlow, Antropy, NumPy, and SciPy into one platform simplifies the research process, encouraging innovation and collaboration in the field of brain computer/human machine interfaces.
 
 # Acknowledgements
 
