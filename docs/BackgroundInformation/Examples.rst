@@ -1,32 +1,54 @@
 .. _examples:
+
 Examples
-############
+========
 
-The following examples can all be found on the `PyBCI github <https://github.com/LMBooth/pybci/tree/main/pybci/Examples>`_.
+The following examples can all be found on the `PyBCI GitHub repository <https://github.com/LMBooth/pybci/tree/main/pybci/Examples>`_.
 
-NOTE: all the examples shown that are not in a dedicated folder work with the createPseudoDevice variable set to True when instantiating PBCI(). If using with own LSL capable hardware you may need to adjust the scripts accordingly, namely set `createPseudoDevice=False`.
+.. note:: 
+   All the examples shown that are not in a dedicated folder work with the `createPseudoDevice` variable set to `True` when instantiating `PBCI()`. If using your own LSL-capable hardware, you may need to adjust the scripts accordingly, namely set `createPseudoDevice=False`.
 
-.. list-table:: PyBCI Examples
-   :widths: 25 75
-   :header-rows: 1
+ArduinoHandGrasp
+----------------
+- **GitHub Link**: `ArduinoHandGrasp/ <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/ArduinoHandGrasp>`_
+- **Description**: This folder contains an LSL marker creator in `MarkerMaker.py`, which uses PyQt5 as an on-screen text stimulus. It also includes `ServoControl.ino`, designed for an Arduino Uno to control 5 servo motors. A `Myoware Muscle Sensor` is attached to analog pin A0. The `ArduinoToLSL.py` script sends and receives serial data, while `testArduinoHand.py` classifies the data.
 
-   * - Example File
-     - Description
-   * - `ArduinoHandGrasp/ <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/ArduinoHandGrasp>`_
-     - Folder contains an LSL marker creator in `MarkerMaker.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/ArduinoHandGrasp/MarkerMaker.py>`_ using PyQt5 as an on screen text stimulus, illustrates how LSL markers can be used to train. `ServoControl.ino <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/ArduinoHandGrasp/ServoControl/ServoControl.ino>`_ is designed for an arduino uno which controls 5 servo motors, each of which control the position of an indidividual finger for a 3D printed hand which can be controlled via serial commands. There is also a `Myoware Muscle Sensor <https://myoware.com/products/muscle-sensor/>`_ attached to analog pin A0 being read continuously over the serial connection. `ArduinoToLSL.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/ArduinoHandGrasp/ArduinoToLSL.py>`_ is used to send and receive serial data to and from the arduino, whilst pushing the A0 data to an LSL outlet which is classified in `testArduinoHand.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/ArduinoHandGrasp/testArduinoHand.py>`_, whilst simultaneously receiving a marker stream from testArduinoHand.py to inform which hand position to do.
-   * - `PupilLabsRightLeftEyeClose/ <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/>`_
-     - Folder contains example basic pupil labs example as LSL input device, classifying left and right eye closed with a custom extractor class. `RightLeftMarkers.py` uses tkinter to generate visual on-screen stimuli for only right, left or both eyes open, sends same onscreen stimuli as LSL markers, ideal for testing pupil-labs eyes classifier test. `bciGazeExample.py` Illustrates how a 'simple' custom pupil-labs feature extractor class can be passed for the gaze data, where the mean pupil diameter is taken for each eye and both eyes and used as feature data, where nans for no confidence are set to a value of 0.
-   * - `MultimodalPupilLabsEEG/ <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/MultimodalPupilLabsEEG>`_ 
-     - Advanced example illustrating two devices, pupil labs gaze device stream wth custom feature extractor class and Hull University ioBio EEG device, specifically channels Fp1 and Fp2. The PupilLabsRightLeftEyeClose folder has a youtube video illustrating the multimodal example in action.
-   * - `testEpochTimingsConfig.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testEpochTimingsConfig.py>`_
-     - Simple example showing custom global epoch settings  changed on initialisation. Instead of epoching data from 0 to 1 second after the marker we take it from 0.5 seconds before to 0.5 seconds after the marker. 
-   * - `testPytorch.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPytorch.py>`_
-     - Provides an example of how to use a Pytorch Neural net Model as the classifier. (testRaw.py also has a Pytorch example with a C-NN).
-   * - `testRaw.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testRaw.py>`_
-     - This example shows how raw time series across multiple channels can be used as an input by utilising a custom feature extractor class, combined with a custom C-NN Pytorch model when initialising PyBCI. The raw data from the data receiver thread comes in the form [samples, channels], the data receiver threads slice data based on relative timestamps meaning depending on the devices frequency for pushing LSL chunks can vary the number of samples received in the buffer for each window, to mitigate this a desired length is set and data should be trimmed based on the expected data for the created model. Multiple channels are also dropped (with the pseudoLSLSreamGenerator in mind) to save computational complexity as raw time series over large windows can give a lot of parameters for the neural net to train.
-   * - `testSimple.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSimple.py>`_
-     - Provides the simplest setup, where no specific streams or epoch settings are given, all default to sklearn SVM classifier and `GlobalEpochSettings() <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/EpochSettings.py>`_.
-   * - `testSklearn.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_
-     - Similar to testSimple.py, but shows MLP as custom sklearn classifier. Also illustrates examples of how to set individual marker time windows and configure datastream channels, global epoch-window settings, and machine learning settings before connecting to BCI and switching between training and test modes.
-   * - `testTensorflow.py <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testTensorflow.py>`_
-     - Similar to testSimple.py, but allows a custom TensorFlow model to be used. Establishes a connection to BCI, starts training on received epochs, checks the classifier's accuracy, and then switches to test mode to predict the current marker.
+PupilLabsRightLeftEyeClose
+--------------------------
+- **GitHub Link**: `PupilLabsRightLeftEyeClose/ <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/>`_
+- **Description**: This folder contains a basic Pupil Labs example with a custom extractor class. `RightLeftMarkers.py` uses Tkinter to generate visual stimuli. `bciGazeExample.py` shows how a custom feature extractor class can be used.
+
+MultimodalPupilLabsEEG
+-----------------------
+- **GitHub Link**: `MultimodalPupilLabsEEG/ <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/MultimodalPupilLabsEEG>`_
+- **Description**: An advanced example illustrating the use of two devices: Pupil Labs and Hull University ioBio EEG device. Includes a YouTube video demonstrating the multimodal example.
+
+testEpochTimingsConfig
+-----------------------
+- **GitHub Link**: `testEpochTimingsConfig <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testEpochTimingsConfig.py>`_
+- **Description**: A simple example showing custom global epoch settings.
+
+testPytorch
+-----------
+- **GitHub Link**: `testPytorch <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPytorch.py>`_
+- **Description**: Provides an example of using a PyTorch Neural Net Model as the classifier.
+
+testRaw
+-------
+- **GitHub Link**: `testRaw <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testRaw.py>`_
+- **Description**: Demonstrates how raw time series data can be used as an input by utilizing a custom feature extractor class.
+
+testSimple
+----------
+- **GitHub Link**: `testSimple <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSimple.py>`_
+- **Description**: Provides the simplest setup with default settings.
+
+testSklearn
+-----------
+- **GitHub Link**: `testSklearn <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_
+- **Description**: Similar to `testSimple`, but uses an MLP as a custom classifier.
+
+testTensorflow
+--------------
+- **GitHub Link**: `testTensorflow <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testTensorflow.py>`_
+- **Description**: Similar to `testSimple`, but allows for a custom TensorFlow model to be used.
