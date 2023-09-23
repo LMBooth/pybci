@@ -1,144 +1,61 @@
 PyBCI
 =====
 
-.. class:: PyBCI(dataStreams=None, markerStream=None, streamTypes=None, markerTypes=None, loggingLevel=Logger.INFO, globalEpochSettings=GlobalEpochSettings(), customEpochSettings={}, streamChsDropDict={}, streamCustomFeatureExtract={}, minimumEpochsRequired=10, createPseudoDevice=False, pseudoDeviceArgs=None, clf=None, model=None, torchModel=None)
+.. class:: PyBCI(dataStreams=None, markerStream=None, streamTypes=None, markerTypes=None, loggingLevel=Logger.INFO, globalEpochSettings=Global EpochSettings(), custom EpochSettings={}, streamChsDropDict={}, streamCustomFeatureExtract={}, minimum EpochsRequired=10, createPseudoDevice=False, pseudoDeviceArgs=None, clf=None, model=None, torchModel=None)
 
-   The `PyBCI` object is the main controller for interfacing with all relevant threads. When initialised sets up the main operation of the BCI and can be queried for relevant information.
+   The PyBCI object is the main controller for interfacing with all relevant threads. When initialised, it sets up the main operation of the BCI and can be queried for relevant information.
 
-   **Parameters:**
+   :param dataStreams: list(str) or None: Allows the user to set custom acceptable EEG stream definitions. Defaults to `streamTypes` scan if `None`.
+   :param markerStream: str or None: Allows the user to set custom acceptable Marker stream definition. Defaults to `markerTypes` scan if `None`.
+   :param streamTypes: list(str) or None: Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
+   :param markerTypes: list(str) or None: Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`.
+   :param loggingLevel: string: Sets PyBCI print level. Options are 'INFO', 'WARNING', 'TIMING', and 'NONE'.
+   :param global EpochSettings: Global EpochSettings: Sets global timing settings for epochs.
+   :param custom EpochSettings: dict: Sets individual timing settings for epochs.
+   :param streamChsDropDict: dict: Specifies which channels to drop for each data stream.
+   :param streamCustomFeatureExtract: dict: Allows a custom feature extractor class for each data stream.
+   :param minimum EpochsRequired: int: Minimum number of required epochs before model fitting begins.
+   :param createPseudoDevice: bool: If True, auto-generates LSL marker and LSL data.
+   :param pseudoDeviceArgs: dict: Dictionary of arguments to initialize pseudo device.
+   :param clf: sklearn.base.ClassifierMixin or None: Allows custom Sklearn model to be passed.
+   :param model: tf.keras.model or None: Allows custom TensorFlow model to be passed.
+   :param torchModel: custom def or None: Custom torch function should be passed with 4 inputs.
 
-.. _pybci-datastreams:
+   .. note::
+      For more information on epoch settings, see `Global EpochSettings()` and `Individual EpochSettings()`.
 
-.. py:attribute:: dataStreams
-    :type: list(str) or None
-    :value: Allows the user to set custom acceptable EEG stream definitions. If `None`, it defaults to `streamTypes` scan.
+   .. py:method:: __enter__()
 
-.. _pybci-markerstream:
+      Connects to the BCI. Same as __init__.
 
-.. py:attribute:: markerStream
-    :type: str or None
-    :value: Allows the user to set custom acceptable Marker stream definition. If `None`, it defaults to `markerTypes` scan.
+   .. py:method:: __exit__(exc_type, exc_val, exc_tb)
 
-.. _pybci-streamtypes:
+      Stops all threads of the BCI.
 
-.. py:attribute:: streamTypes
-    :type: list(str) or None
-    :value: Allows the user to set custom acceptable EEG type definitions, ignored if `dataStreams` is not `None`.
+   .. py:method:: Connect()
 
-.. _pybci-markertypes:
+      Checks for valid data and marker streams, sets `self.connected`. Returns boolean indicating connection status.
 
-.. py:attribute:: markerTypes
-    :type: list(str) or None
-    :value: Allows the user to set custom acceptable Marker type definitions, ignored if `markerStream` is not `None`, if both None then grabs first LSL markerstream available.
+   .. py:method:: TrainMode()
 
-.. _pybci-logginglevel:
+      Sets mode to Train. Tries to connect if not already connected.
 
-.. py:attribute:: loggingLevel
-    :type: string
-    :value: Sets PyBCI print level, ('INFO' prints all statements, 'WARNING' is only warning messages, 'TIMING' gives estimated time for feature extraction, and classifier training or testing, 'NONE' means no prints from PyBCI).
+   .. py:method:: TestMode()
 
-.. _pybci-globalepochsettings:
+      Sets mode to Test. Tries to connect if not already connected.
 
-.. py:attribute:: globalEpochSettings
-    :type: GlobalEpochSettings
-    :value: Sets global timing settings for epochs. See PyBCI.GlobalEpochSettings() and Epoch Timing for more information.                                                                                    
+   .. py:method:: CurrentClassifierInfo()
 
-.. _pybci-customepochsettings:
+      :returns: Dictionary containing "clf", "model," "torchModel," and "accuracy." If not connected, returns `{"Not Connected": None}`.
 
-.. py:attribute:: customEpochSettings
-    :type: dict
-    :value: Sets individual timing settings for epochs. {markerstring1:IndividualEpochSettings(),markerstring2:IndividualEpochSettings()}, See PyBCI.InidividualEpochSettings() and Epoch Timing for more information.
+   .. py:method:: CurrentClassifierMarkerGuess()
 
-.. _pybci-streamchsdropdict:
+      :returns: Integer or None. Returns integer corresponding to value of key from `ReceivedMarkerCount()` dictionary. Returns None if in Train mode.
 
-.. py:attribute:: streamChsDropDict
-    :type: dict
-    :value: Keys for dict should be respective datastreams with corresponding list of which channels to drop. {datastreamstring1: list(ints), datastreamstring2: list(ints)}
+   .. py:method:: CurrentFeaturesTargets()
 
-.. _pybci-streamcustomfeatureextract:
+      :returns: Dictionary containing "features" and "targets." If not connected, returns `{"Not Connected": None}`.
 
-.. py:attribute:: streamCustomFeatureExtract
-    :type: dict
-    :value: Allows dict to be passed of datastream with custom feature extractor class for analyzing data. {datastreamstring1: customClass1(), datastreamstring2: customClass1()}
+   .. py:method:: ReceivedMarkerCount()
 
-.. _pybci-minimumepochsrequired:
-
-.. py:attribute:: minimumEpochsRequired
-    :type: int
-    :value: Minimum number of required epochs before model fitting begins, must be of each type of received markers and more than 1 type of marker to classify.
-
-.. _pybci-createPseudoDevice:
-
-.. py:attribute:: createPseudoDevice
-   :type: bool
-   :value: If True auto generates LSL marker and LSL data.
-
-
-.. _pybci-pseudoDeviceArgs:
-
-.. py:attribute:: pseudoDeviceArgs
-   :type: dict
-   :value: dictionary of arguements to send as **kwargs to intialise pseudo device, options can be seen in :class:`PseudoDevice`.
-
-
-.. _pybci-clf:
-
-.. py:attribute:: clf
-    :type: sklearn.base.ClassifierMixin or None
-    :value: Allows custom Sklearn model to be passed.                                                                          
-                                                          
-
-.. _pybci-model:
-
-.. py:attribute:: model
-    :type: tf.keras.model or None
-    :value: Allows custom TensorFlow model to be passed.                                                                                                                                    
-
-
-.. _pybci-torchmodel:
-
-.. py:attribute:: torchModel
-    :type: custom def or None
-    :value: Custom torch function should be passed with 4 inputs (x_train, x_test, y_train, y_test). Needs to return [accuracy, model], look at testPyTorch.py in examples for reference.
-
-.. _pybci-enter:
-
-.. py:method:: __enter__()
-
-   Connects to the BCI. Same as __init__.
-
-.. _pybci-exit:
-
-.. py:method:: __exit__(exc_type, exc_val, exc_tb)
-
-   Stops all threads of the BCI.
-
-.. _pybci-connect:
-
-.. py:method:: Connect()
-
-   Checks if valid data and marker streams are present, controls dependent functions by setting self.connected. Returns a boolean indicating the connection status.
-
-.. py:method:: TrainMode()
-
-   Set the mode to Train. The BCI will try to connect if it is not already connected.
-
-.. py:method:: TestMode()
-
-   Set the mode to Test. The BCI will try to connect if it is not already connected.
-
-.. py:method:: CurrentClassifierInfo()
-
-   :returns: a dictionary containing "clf", "model," "torchModel," and "accuracy." The accuracy is 0 if no model training/fitting has occurred. If the mode is not used, the corresponding value is None. If not connected, returns `{"Not Connected": None}`.
-
-.. py:method:: CurrentClassifierMarkerGuess()
-
-   :returns: an integer or None. The returned integer corresponds to the value of the key from the dictionary obtained from `ReceivedMarkerCount()` when in test mode. If in train mode, returns None.
-
-.. py:method:: CurrentFeaturesTargets()
-
-   :returns: a dictionary containing "features" and "targets." "features" is a 2D list of feature data, and "targets" is a 1D list of epoch targets as integers. If not connected, returns `{"Not Connected": None}`.
-
-.. py:method:: ReceivedMarkerCount()
-
-   :returns: a dictionary. Each key is a string received on the selected LSL marker stream, and the value is a list. The first item is the marker id value, to be used with `CurrentClassifierMarkerGuess()`. The second value is a received count for that marker type. Will be empty if no markers are received.
+      :returns: Dictionary where each key is a received marker string and the value is a list. The list contains the marker ID and received count for that marker type.
