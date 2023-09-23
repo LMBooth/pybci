@@ -1,2 +1,0 @@
-[console_scripts]
-pybci = pybci.cli:main
