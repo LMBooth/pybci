@@ -1,8 +1,6 @@
 import sklearn
 from sklearn.preprocessing import StandardScaler
 from sklearn import svm
-import logging
-logging.getLogger('tensorflow').setLevel(logging.ERROR)
 import tensorflow
 import torch
 

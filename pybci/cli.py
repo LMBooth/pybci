@@ -1,8 +1,8 @@
 import argparse, time
-from .Tests.testSimple import main as testSimple
-from .Tests.testSklearn import main as testSklearn
-from .Tests.testTensorflow import main as testTensorflow
-from .Tests.testPyTorch import main as testPyTorch
+from .CliTests.testSimple import main as testSimple
+from .CliTests.testSklearn import main as testSklearn
+from .CliTests.testTensorflow import main as testTensorflow
+from .CliTests.testPyTorch import main as testPyTorch
 
 from .Utils.PseudoDevice import PseudoDeviceController
 

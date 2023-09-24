@@ -73,6 +73,7 @@ class PyBCI:
         torchmodel:  [torchModel(), torch.nn.Module]
             Currently a list where first item is torchmodel analysis function, second is torch model, check pytorch example - likely to change in future updates.
         """
+        self.minimumEpochsRequired=minimumEpochsRequired
         self.streamCustomFeatureExtract = streamCustomFeatureExtract
         self.globalEpochSettings = globalEpochSettings
         self.customEpochSettings = customEpochSettings
@@ -110,6 +111,7 @@ class PyBCI:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.StopThreads()
+        
 
     def Connect(self): # Checks valid data and markers streams are present, controls dependant functions by setting self.connected
         if self.lslScanner.CheckAvailableLSL():
@@ -306,6 +308,7 @@ class PyBCI:
         self.classifierThread.join()
         self.connected = False
         self.logger.log(Logger.INFO," Threads stopped.")
+        self.pseudoDevice.StopStreaming()
 
     def ConfigureMachineLearning(self, minimumEpochsRequired = 10, clf = None, model = None, torchModel = None):
         from sklearn.base import ClassifierMixin

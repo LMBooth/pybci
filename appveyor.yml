@@ -1,0 +1,19 @@
+version: 1.0.{build}
+image: Visual Studio 2019  # Choose an image that meets your project needs
+environment:
+  matrix:
+    - PYTHON: "C:\\Python311"
+    - PYTHON: "C:\\Python310"
+    - PYTHON: "C:\\Python39"
+    - PYTHON: "C:\\Python38"
+
+install:
+  - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  - "python -m pip install --upgrade pip"
+  - "pip install -r requirements.txt"
+  - "pip install pytest"
+
+build: off  # Disabling the build step as it's a Python project
+
+test_script:
+  - "pytest Tests/"

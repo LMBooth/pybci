@@ -55,7 +55,7 @@ class GenericFeatureExtractor():
         for ch in range(epoch.shape[1]):
             #ch = np.isnan(ch)
             if self.featureChoices.psdBand: # get custom average power within given frequency band from freqbands
-                freqs, psd = welch(epoch[:,ch], sr)
+                freqs, psd = welch(epoch[:,ch], sr, nperseg = len(epoch[:,ch]))
                 for l, band in enumerate(self.freqbands):
                     if len(freqs) > 0: # len(freqs) can be 0 if signal is all DC
                         idx_band = np.logical_and(freqs >= band[0], freqs <= band[1])
@@ -69,7 +69,7 @@ class GenericFeatureExtractor():
                     else:
                         features[(ch* self.numFeatures)+l] = 0
             else:
-                freqs, psd = welch(epoch[:,ch], sr)# calculate for mean and median
+                freqs, psd = welch(epoch[:,ch], sr, nperseg = len(epoch[:,ch]))# calculate for mean and median
                 l = -1 # accounts for no freqbands being selected
             if self.featureChoices.meanPSD: # mean power
                 l += 1
