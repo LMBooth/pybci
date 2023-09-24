@@ -12,7 +12,7 @@ install:
   - "python -m pip install --upgrade pip"  # Upgrade pip
   - "python --version"  # Print Python version for debugging
   - "pip --version"  # Print pip version for debugging
-  - "pip install torch==2.0.0"  # Try installing torch directly
+  - "pip install torch"  # Try installing torch directly
   - "python setup.py install"  # Install your package
   - "pip install pytest"
 
