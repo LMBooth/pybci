@@ -10,7 +10,7 @@ environment:
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "python -m pip install --upgrade pip"
-  - "pip install -r requirements.txt"
+  - "python setup.py install"
   - "pip install pytest"
 
 build: off  # Disabling the build step as it's a Python project
