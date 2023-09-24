@@ -1,16 +1,38 @@
 version: 1.0.{build}
 image: Visual Studio 2019  # Choose an image that meets your project needs
+
 environment:
   matrix:
     - PYTHON: "C:\\Python311"
     - PYTHON: "C:\\Python310"
     - PYTHON: "C:\\Python39"
     - PYTHON: "C:\\Python38"
+  CONDA: C:\\Miniconda3-x64
+
+cache:
+  - '%LOCALAPPDATA%\\pip\\Cache -> appveyor.yml'
 
 install:
+  # Set Python path
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+  
+  # Update pip
   - "python -m pip install --upgrade pip"
+  
+  # Install using setup.py
   - "python setup.py install"
+
+  # Setup Miniconda
+  - "SET PATH=%CONDA%;%CONDA%\\Scripts;%PATH%"
+  - "conda config --set always_yes yes --set changeps1 no"
+  - "conda update -q conda"
+
+  # Create Conda environment and install dependencies
+  - "conda create -q -n my-environment python=%PYTHON_VERSION%"
+  - "activate my-environment"
+  - "conda install pytorch -c pytorch"
+
+  # Install pytest
   - "pip install pytest"
 
 build: off  # Disabling the build step as it's a Python project
