@@ -17,8 +17,8 @@ install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   
   # Update pip
-  - "python -m pip install --upgrade pip"
-  
+  #- "python -m pip install --upgrade pip"
+  - "pip install torch>=2.0.1"  # specify the version you need
   # Install using setup.py
   - "python setup.py install"
 
