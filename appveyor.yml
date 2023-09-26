@@ -10,6 +10,7 @@ environment:
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "python -m pip install --upgrade pip"
+  - "pip install --upgrade urllib3>=2.0.5"  # Add this line
   - "python --version"
   - "pip --version"
   # Download and unzip liblsl
