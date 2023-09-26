@@ -14,8 +14,10 @@ install:
   - "pip --version"
   # Using Invoke-WebRequest as an alternative to curl
   - "powershell Invoke-WebRequest -Uri 'https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-Win_amd64.zip' -OutFile 'liblsl.zip'"
-  # Extract and move (replace paths as necessary)
+  - "dir"  # Check if liblsl.zip is present
   - "unzip liblsl.zip -d %PYTHON%\\Lib\\site-packages\\"
+  - "dir %PYTHON%\\Lib\\site-packages\\"  # Check if the library is extracted correctly
+  - "set PYLSL_LIB=%PYTHON%\\Lib\\site-packages\\liblsl64.dll"  
   # Install other dependencies
   - "pip install https://files.pythonhosted.org/packages/d0/c8/f0dc8642e3ce0a3ae5f05e5149ab9df5375d569294f7be9a1ab1d95a1d76/torch-2.0.1-cp311-cp311-win_amd64.whl#sha256=dbd68cbd1cd9da32fe5d294dd3411509b3d841baecb780b38b3b7b06c7754434"
   - "python setup.py install"
