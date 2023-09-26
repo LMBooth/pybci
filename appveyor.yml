@@ -12,8 +12,8 @@ install:
   - "python -m pip install --upgrade pip"
   - "python --version"
   - "pip --version"
-  # Download liblsl library (replace the URL with the correct one for your needs)
-  - "curl -o liblsl.zip https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-Win_amd64.zip"
+  # Using Invoke-WebRequest as an alternative to curl
+  - "powershell Invoke-WebRequest -Uri 'https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-Win_amd64.zip' -OutFile 'liblsl.zip'"
   # Extract and move (replace paths as necessary)
   - "unzip liblsl.zip -d %PYTHON%\\Lib\\site-packages\\"
   # Install other dependencies
