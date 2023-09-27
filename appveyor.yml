@@ -19,9 +19,12 @@ install:
   - "move liblsl\\bin\\lsl.dll %PYTHON%\\Lib\\site-packages\\"
   # Set the PYLSL_LIB environment variable
   - "set PYLSL_LIB=%PYTHON%\\Lib\\site-packages\\lsl.dll"
+
+  - "pip uninstall -y urllib3"
+  # Install required urllib3 version
+  - "pip install --upgrade urllib3>=2.0.5"
   # Install other dependencies
   - "python setup.py install"
-  - "pip install --upgrade urllib3>=2.0.5"  # Moved to this position
   - "pip install pytest"
 
 build: off
