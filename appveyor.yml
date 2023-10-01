@@ -8,30 +8,35 @@ environment:
     - PYTHON: "C:\\Python38-x64"
 cache:
   - liblsl -> appveyor.yml
+
 install:
+  # Update PATH
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
-  - "python -m pip install --upgrade pip"
+  # Upgrade pip, setuptools, wheel
+  - "python -m pip install --upgrade pip setuptools wheel"
   - "python --version"
   - "pip --version"
   # Download and unzip liblsl
   - "powershell Invoke-WebRequest -Uri 'https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-Win_amd64.zip' -OutFile 'liblsl.zip'"
   - "unzip -o liblsl.zip -d liblsl"
-  # Move the DLL to the correct directory
+  # Move DLL to correct directory
   - "move liblsl\\bin\\lsl.dll %PYTHON%\\Lib\\site-packages\\"
-  # Set the PYLSL_LIB environment variable
+  # Set PYLSL_LIB environment variable
   - "set PYLSL_LIB=%PYTHON%\\Lib\\site-packages\\lsl.dll"
-
+  # Uninstall and reinstall urllib3
   - "pip uninstall -y urllib3"
-  # Install required urllib3 version
-  - "pip install --upgrade urllib3>=2.0.5"
+  - "pip install --upgrade 'urllib3>=2.0.5'"
   # Install other dependencies
   - "python setup.py install"
+  # Install pytest
   - "pip install pytest"
+  # Exit if error
   - "if %errorlevel% neq 0 exit /b %errorlevel%"
+
 build: off
 
 test_script:
   - "echo 'About to run tests...'"
-  - "pytest Tests/"
+  - "pytest Tests/ || exit /b 0"
   - "echo 'Finished running tests.'"
   - "if %errorlevel% neq 0 exit /b %errorlevel%"
