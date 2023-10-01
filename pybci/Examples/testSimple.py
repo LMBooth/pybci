@@ -25,5 +25,6 @@ if __name__ == '__main__': # Note: this line is needed when calling pseudoDevice
             guess = [key for key, value in currentMarkers.items() if value[0] == markerGuess]
             print("Current marker estimation: " + str(guess), end="           \r")
             time.sleep(0.2)
-    except KeyboardInterrupt: # allow user to break while loop
-        print("\nLoop interrupted by user.")
+    except KeyboardInterrupt as e: # allow user to break while loop
+        print("\nLoop interrupted by user. " + str(e))
+        bci.StopThreads()

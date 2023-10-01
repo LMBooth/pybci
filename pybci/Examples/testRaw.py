@@ -90,3 +90,4 @@ if __name__ == '__main__': # Note: this line is needed when calling pseudoDevice
             time.sleep(0.2)
     except KeyboardInterrupt: # allow user to break while loop
         print("\nLoop interrupted by user.")
+        bci.StopThreads()
