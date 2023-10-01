@@ -26,7 +26,7 @@ class PseudoDeviceController:
             # Note: Don't initialize self.device here for 'process' mode!
         elif self.execution_mode == 'thread':
             self.command_queue = None  # Not needed for threads, but kept for consistency
-            self.stop_signal = False
+            self.stop_signal = multiprocessing.Event()
             self.device = PseudoDevice(*self.args, **self.kwargs, stop_signal=self.stop_signal, is_multiprocessing=False)  # Initialize for 'thread' mode
             self.worker = threading.Thread(target=self._run_device)
         else:
@@ -42,7 +42,10 @@ class PseudoDeviceController:
             self.log_reader_process.start()
     
     def __del__(self):
-        self.StopStreaming()  # Your existing method to stop threads and processes
+        if not self._should_stop():
+            self.stop_signal.set()
+        self.worker.join()
+
 
     def _run_device(self):
         if self.execution_mode == 'process':
@@ -78,10 +81,13 @@ class PseudoDeviceController:
             self.stop_signal.set()
         else:  # thread
             self.stop_signal = True
-        self.worker.join(1)  # Wait for the thread to finish
-        if self.worker.is_alive():
-            self.worker.terminate()
-        
+
+        self.worker.join()  # Wait for the worker to finish
+
+        if self.log_reader_process:
+            self.log_reader_process.terminate()
+            self.log_reader_process.join()
+
     def close():
         # add close logic
         print("close it")
@@ -197,16 +203,14 @@ class PseudoDevice:
             self.stop_signal.set()
         else:  # For threading
             self.stop_signal = True
-        self.thread.join(1)  # Wait for the thread to finish
-        if self.thread.is_alive():
-            self.thread.terminate()
-        if self.pseudoMarkerConfig.autoplay:
-            self.marker_thread.join(1)  # Wait for the marker thread to finish
-            if self.marker_thread.is_alive():
-                self.marker_thread.terminate()
-        self.log_message(Logger.INFO, " PseudoDevice - Stopped streaming.")
-    
 
+        if hasattr(self, 'thread'):
+            self.thread.join()  # Wait for the thread to finish
+
+        if self.pseudoMarkerConfig.autoplay and hasattr(self, 'marker_thread'):
+            self.marker_thread.join()  # Wait for the marker thread to finish
+
+        self.log_message(Logger.INFO, " PseudoDevice - Stopped streaming.")
     def BeginStreaming(self):
         if self.is_multiprocessing:
             # For multiprocessing, we assume the worker process is already running

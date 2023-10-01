@@ -307,8 +307,9 @@ class PyBCI:
             ft.join()
         self.classifierThread.join()
         self.connected = False
-        self.logger.log(Logger.INFO," Threads stopped.")
         self.pseudoDevice.StopStreaming()
+        self.logger.log(Logger.INFO," Threads stopped.")
+        
 
     def ConfigureMachineLearning(self, minimumEpochsRequired = 10, clf = None, model = None, torchModel = None):
         from sklearn.base import ClassifierMixin
