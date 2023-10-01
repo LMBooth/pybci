@@ -37,6 +37,7 @@ build: off
 
 test_script:
   - "echo 'About to run tests...'"
-  - "pytest Tests/ || exit /b 0"
+  # Set timeout for pytest (e.g., 300 seconds)
+  - "pytest Tests/ --timeout=300"
   - "echo 'Finished running tests.'"
   - "if %errorlevel% neq 0 exit /b %errorlevel%"
