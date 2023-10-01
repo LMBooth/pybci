@@ -30,6 +30,7 @@ install:
   - "pip install ."
   # Install pytest
   - "pip install pytest"
+  - "pip install pytest-timeout"
   # Exit if error
   - "if %errorlevel% neq 0 exit /b %errorlevel%"
 
