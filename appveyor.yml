@@ -6,7 +6,8 @@ environment:
     - PYTHON: "C:\\Python310-x64"
     - PYTHON: "C:\\Python39-x64"
     - PYTHON: "C:\\Python38-x64"
-
+cache:
+  - liblsl -> appveyor.yml
 install:
   - "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
   - "python -m pip install --upgrade pip"
@@ -26,8 +27,11 @@ install:
   # Install other dependencies
   - "python setup.py install"
   - "pip install pytest"
-
+  - "if %errorlevel% neq 0 exit /b %errorlevel%"
 build: off
 
 test_script:
+  - "echo 'About to run tests...'"
   - "pytest Tests/"
+  - "echo 'Finished running tests.'"
+  - "if %errorlevel% neq 0 exit /b %errorlevel%"
