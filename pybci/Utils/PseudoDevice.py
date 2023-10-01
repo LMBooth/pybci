@@ -78,8 +78,10 @@ class PseudoDeviceController:
             self.stop_signal.set()
         else:  # thread
             self.stop_signal = True
-        self.worker.join()  # Wait for the worker to finish
-
+        self.worker.join(1)  # Wait for the thread to finish
+        if self.worker.is_alive():
+            self.worker.terminate()
+        
     def close():
         # add close logic
         print("close it")
@@ -195,10 +197,13 @@ class PseudoDevice:
             self.stop_signal.set()
         else:  # For threading
             self.stop_signal = True
-        self.thread.join()  # Wait for the thread to finish
-
+        self.thread.join(1)  # Wait for the thread to finish
+        if self.thread.is_alive():
+            self.thread.terminate()
         if self.pseudoMarkerConfig.autoplay:
-            self.marker_thread.join()  # Wait for the marker thread to finish
+            self.marker_thread.join(1)  # Wait for the marker thread to finish
+            if self.marker_thread.is_alive():
+                self.marker_thread.terminate()
         self.log_message(Logger.INFO, " PseudoDevice - Stopped streaming.")
     
 

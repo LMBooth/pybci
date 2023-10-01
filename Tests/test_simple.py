@@ -1,5 +1,5 @@
 from pybci import PyBCI
-import time
+import time, os
 import pytest
 
 # Test case using the fixture

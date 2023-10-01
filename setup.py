@@ -106,7 +106,6 @@ setup(
         "tensorflow>=2.13.0",
         "scikit-learn>=1.3.0",
         "torch>=2.0.1",
-        "urllib3>=2.0.5"
     ],
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
