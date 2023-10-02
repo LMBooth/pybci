@@ -38,16 +38,7 @@ build: off
 
 test_script:
   - "echo 'About to run tests...'"
-  # Run pytest and capture its exit code
   - "pytest Tests/ || SET PYTEST_ERRORLEVEL=%errorlevel%"
-  
-  # Check if pytest failed (assuming non-zero exit code indicates failure)
-  - "if %PYTEST_ERRORLEVEL% neq 0 ("
-  - "    echo 'Pytest failed. Terminating python process.'"
-  - "    taskkill /IM python.exe /F"
-  - ") else ("
-  - "    echo 'Pytest succeeded.'"
-  - ")"
-  
+  - "if %PYTEST_ERRORLEVEL% neq 0 (echo 'Pytest failed. Terminating python process.' & taskkill /IM python.exe /F) else (echo 'Pytest succeeded.')"
   - "echo 'Finished running tests.'"
   - "if %errorlevel% neq 0 exit /b %errorlevel%"
