@@ -26,7 +26,7 @@ class PseudoDeviceController:
             # Note: Don't initialize self.device here for 'process' mode!
         elif self.execution_mode == 'thread':
             self.command_queue = None  # Not needed for threads, but kept for consistency
-            self.stop_signal = multiprocessing.Event()
+            self.stop_signal = False
             self.device = PseudoDevice(*self.args, **self.kwargs, stop_signal=self.stop_signal, is_multiprocessing=False)  # Initialize for 'thread' mode
             self.worker = threading.Thread(target=self._run_device)
         else:
@@ -42,10 +42,7 @@ class PseudoDeviceController:
             self.log_reader_process.start()
     
     def __del__(self):
-        if not self._should_stop():
-            self.stop_signal.set()
-        self.worker.join()
-
+        self.StopStreaming()  # Your existing method to stop threads and processes
 
     def _run_device(self):
         if self.execution_mode == 'process':
@@ -84,7 +81,8 @@ class PseudoDeviceController:
 
         self.worker.join()  # Wait for the worker to finish
 
-        if self.log_reader_process:
+        # Terminate the log reader process if it exists
+        if self.log_reader_process is not None:
             self.log_reader_process.terminate()
             self.log_reader_process.join()
 
@@ -198,6 +196,7 @@ class PseudoDevice:
                 self.outlet.push_chunk(num.tolist())
                 self.last_update_time = current_time
 
+    # Make sure this method is available in the PseudoDevice class
     def StopStreaming(self):
         if self.is_multiprocessing:
             self.stop_signal.set()
@@ -207,10 +206,6 @@ class PseudoDevice:
         if hasattr(self, 'thread'):
             self.thread.join()  # Wait for the thread to finish
 
-        if self.pseudoMarkerConfig.autoplay and hasattr(self, 'marker_thread'):
-            self.marker_thread.join()  # Wait for the marker thread to finish
-
-        self.log_message(Logger.INFO, " PseudoDevice - Stopped streaming.")
     def BeginStreaming(self):
         if self.is_multiprocessing:
             # For multiprocessing, we assume the worker process is already running
