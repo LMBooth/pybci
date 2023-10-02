@@ -1,4 +1,4 @@
-[![PyPI - Downloads](https://img.shields.io/pypi/dm/pybci-package)](https://pypi.org/project/pybci-package) [![PyPI - version](https://img.shields.io/pypi/v/pybci-package)](https://pypi.org/project/pybci-package)  [![Documentation Status](https://readthedocs.org/projects/pybci/badge/?version=latest)](https://pybci.readthedocs.io/en/latest/?badge=latest) ![AppVeyor Build](https://img.shields.io/appveyor/build/LMBooth/pybci)
+[![PyPI - Downloads](https://img.shields.io/pypi/dm/pybci-package)](https://pypi.org/project/pybci-package) [![PyPI - version](https://img.shields.io/pypi/v/pybci-package)](https://pypi.org/project/pybci-package)  [![Documentation Status](https://readthedocs.org/projects/pybci/badge/?version=latest)](https://pybci.readthedocs.io/en/latest/?badge=latest) [![AppVeyor Build](https://img.shields.io/appveyor/build/LMBooth/pybci)](https://ci.appveyor.com/project/LMBooth/pybci)
 
 [![pybci](https://raw.githubusercontent.com/LMBooth/pybci/main/docs/Images/pyBCITitle.svg)](https://github.com/LMBooth/pybci)
 
