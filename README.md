@@ -49,6 +49,8 @@ Once the liblsl library has been downloaded ```pip install pybci-package``` shou
 [Examples of supported LSL hardware here!](https://labstreaminglayer.readthedocs.io/info/supported_devices.html)
 
 ## Python Package Dependencies Version Minimums
+Tested on Python 3.8+ ([appveyor.yml](https://github.com/LMBooth/pybci/blob/main/appveyor.yml))
+
 The following package versions define the minimum supported by PyBCI, also defined in setup.py:
 
     "pylsl>=1.16.1",
