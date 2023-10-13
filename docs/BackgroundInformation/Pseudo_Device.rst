@@ -2,6 +2,7 @@ Pseudo Device
 ############
 
 .. what-pseudo-device:
+
 What is the Pseudo Device?
 =========================================================
 For ease of use the variable bool :code:`createPseudoDevice` can be set to True when instantiating :code:`PyBCI()` so the default PseudoDevice is run in another process enabling examples to be run without the need of LSL enabled hardware.
