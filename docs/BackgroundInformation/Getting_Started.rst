@@ -69,7 +69,13 @@ Linux/MaxOS:
 
 Simple Implementation:
 ===================
-PyBCI requires an LSL marker stream and LSL data stream in order to operate. If the user has no available LSL hardware to hand they can set ``createPseudoDevice=True`` when instantiating the PyBCI object to enable pseudo lsl data and marker streams. 
+PyBCI requires an LSL marker stream for defining when time series data should be attributed to an action/marker/epoch and an LSL data stream to create time-series data. 
+
+If the user has no available LSL hardware to hand they can set `createPseudoDevice=True` when instantiating the PyBCI object to enable a pseudo LSL data stream to generate time-series data and LSL marker stream for epoching the data. More information on PyBCI's Pseudo Device class can be found here: :ref:`what-pseudo-device`. 
+
+The `example scripts <https://pybci.readthedocs.io/en/latest/BackgroundInformation/Examples.html>`_ illustrate various applied ML libraries (SKLearn, Tensorflow, PyTorch) or provide examples of how to integrate LSL hardware.
+
+The code snippet can be used below to run a simple classification task using the Pseudo Device, alternatively call pybci in the command line to get a list of CLI commands and tests:
 
 .. code-block:: python
 

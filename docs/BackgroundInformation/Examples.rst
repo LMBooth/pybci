@@ -6,12 +6,28 @@ Examples
 The following examples can all be found on the `PyBCI GitHub repository <https://github.com/LMBooth/pybci/tree/main/pybci/Examples>`_.
 
 .. note:: 
-   All the examples shown that are not in a dedicated folder work with the `createPseudoDevice` variable set to `True` when instantiating `PyBCI()`. If using your own LSL-capable hardware, you may need to adjust the scripts accordingly, namely set `createPseudoDevice=False`.
+   The examples have shields describing whether they work with PyBCI's pseudoDevice class and what additional external hardware is required. Pseudo Device description found here: :ref:`what-pseudo-device`
+   
+   If using your own LSL-capable hardware  and marker stream set `createPseudoDevice=False` or optionally pass `True` or `False` as an arguement to each script.
+
+PyBCI requires an LSL marker stream for defining when time series data should be attributed to an action/marker/epoch and an LSL data stream to create time-series data. 
+
+If the user has no available LSL hardware to hand they can set `createPseudoDevice=True` when instantiating the PyBCI object to enable a pseudo LSL data stream to generate time-series data and LSL marker stream for epoching the data. More information on PyBCI's Pseudo Device class can be found here: :ref:`what-pseudo-device`. 
+
+The `example scripts <https://pybci.readthedocs.io/en/latest/BackgroundInformation/Examples.html>`_ illustrate various applied ML libraries (SKLearn, Tensorflow, PyTorch) or provide examples of how to integrate LSL hardware.
+
+The code snippet can be used below to run a simple classification task using the Pseudo Device, alternatively call pybci in the command line to get a list of CLI commands and tests:
+
 
 ArduinoHandGrasp
 ----------------
 .. image:: https://img.shields.io/badge/Pseudo_Device-Not_Available-blue
    :alt: pseudo device not available shield
+.. image:: https://img.shields.io/badge/Arduino-Required-blue
+   :alt: arduino required shield
+.. image:: https://img.shields.io/badge/Myoware_Muscle_Sensor-Required-blue
+   :alt: Myoware required shield
+   
 - **GitHub Link**: `ArduinoHandGrasp/ <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/ArduinoHandGrasp>`_
 - **Description**: This folder contains an LSL marker creator in `MarkerMaker.py`, which uses PyQt5 as an on-screen text stimulus. It also includes `ServoControl.ino`, designed for an Arduino Uno to control 5 servo motors. A `Myoware Muscle Sensor` is attached to analog pin A0. The `ArduinoToLSL.py` script sends and receives serial data, while `testArduinoHand.py` classifies the data.
 
@@ -19,6 +35,9 @@ PupilLabsRightLeftEyeClose
 --------------------------
 .. image:: https://img.shields.io/badge/Pseudo_Device-Not_Available-blue
    :alt: pseudo device not available shield
+.. image:: https://img.shields.io/badge/Pupil_Labs_Hardware-Required-blue
+   :alt: pupil required shield
+
 - **GitHub Link**: `PupilLabsRightLeftEyeClose/ <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/>`_
 - **Description**: This folder contains a basic Pupil Labs example with a custom extractor class. `RightLeftMarkers.py` uses Tkinter to generate visual stimuli. `bciGazeExample.py` shows how a custom feature extractor class can be used.
 
@@ -26,6 +45,11 @@ MultimodalPupilLabsEEG
 -----------------------
 .. image:: https://img.shields.io/badge/Pseudo_Device-Not_Available-blue
    :alt: pseudo device not available shield
+.. image:: https://img.shields.io/badge/Pupil_Labs_Hardware-Required-blue
+   :alt: pupil required shield
+.. image:: https://img.shields.io/badge/ioBio_EEG_Device-Required-blue
+   :alt: iobio EEG device required shield
+
 - **GitHub Link**: `MultimodalPupilLabsEEG/ <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/MultimodalPupilLabsEEG>`_
 - **Description**: An advanced example illustrating the use of two devices: Pupil Labs and Hull University ioBio EEG device. Includes a YouTube video demonstrating the multimodal example.
 
