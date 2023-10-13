@@ -69,7 +69,7 @@ Linux/MaxOS:
 
 Simple Implementation:
 ===================
-For example:
+PyBCI requires an LSL marker stream and LSL data stream in order to operate. If the user has no available LSL hardware to hand they can set ``createPseudoDevice=True`` when instantiating the PyBCI object to enable pseudo lsl data and marker streams. 
 
 .. code-block:: python
 
