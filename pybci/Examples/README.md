@@ -2,7 +2,7 @@
 
 This folder holds multiple scripts illustrating the functions and configurations available within the PyBCI package.
 
-NOTE: all the examples shown that are not in a dedicated folder work with the createPseudoDevice variable set to True when instantiating PBCI(). If using with own LSL capable hardware you may need to adjust the scripts accordingly, namely set `createPseudoDevice=False`.
+NOTE: all the examples shown that are not in a dedicated folder work with the createPseudoDevice variable set to True when instantiating PyBCI(). If using with own LSL capable hardware you may need to adjust the scripts accordingly, namely set `createPseudoDevice=False`.
 
 | Example File | Description |
 |--------------|-------------|
