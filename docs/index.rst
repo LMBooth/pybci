@@ -9,7 +9,7 @@ The goal of PyBCI is to enable quick iteration when creating pipelines for testi
 
 
 
-Check out the :doc:`BackgroundInformation/Introduction` section for further information, specifically for :ref:`installation` of the project.
+Check out the :doc:`BackgroundInformation/Getting_Started` section for :ref:`installation` of the project.
 
 .. note::
 
