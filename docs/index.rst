@@ -22,7 +22,8 @@ Contents
    :maxdepth: 1
    :caption: User's Guide
 
-   BackgroundInformation/Introduction
+   BackgroundInformation/Getting_Started
+   BackgroundInformation/What_is_PyBCI
    BackgroundInformation/Theory_Operation
    BackgroundInformation/Epoch_Timing
    BackgroundInformation/Feature_Selection
