@@ -9,13 +9,15 @@ PyBCI is tested on Python versions 3.9, 3.10 and 3.11 (`defined via appveyor.yml
 
 The following package versions define the minimum supported by PyBCI, also defined in setup.py:
 
-    "pylsl>=1.16.1",
-    "scipy>=1.11.1",
-    "numpy>=1.24.3",
-    "antropy>=0.1.6",
-    "tensorflow>=2.13.0",
-    "scikit-learn>=1.3.0",
-    "torch>=2.0.1"
+.. code-block:: console
+
+    pylsl>=1.16.1,
+    scipy>=1.11.1,
+    numpy>=1.24.3,
+    antropy>=0.1.6,
+    tensorflow>=2.13.0,
+    scikit-learn>=1.3.0,
+    torch>=2.0.1
     
 Earlier packages may work but are not guaranteed to be supported.
 
