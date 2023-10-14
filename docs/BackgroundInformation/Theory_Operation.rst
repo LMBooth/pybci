@@ -39,7 +39,7 @@ Once in test mode the data threads continuously slice time windows of data based
 
 If the model is not performing well the user can always swap back to training model to gather more data with :py:meth:`TestMode`. It could also be worth to record your setup and view it in post to adjust yout epoch classifier timing windows accordingly. If the classifier output seem laggy look at :ref:`feature-debugging`, setting :py:data:`loggingLevel` to "TIMING" when initialising :class:`PyBCI()` prints classification testing and training times.
 
-Custom Sci-Kit-Learn clf and Pytorch models can be used, see the examples found `here for sklearn <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_, and  `here for PyTorch <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPyTorch.py>`_.
+Custom Sci-Kit-Learn classifier and Pytorch models can be used, see the examples found `here for sklearn <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testSklearn.py>`_, and  `here for PyTorch <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPyTorch.py>`_.
 
 Tensorflow can also be used `found here <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testTensorflow.py>`_, (Should be noted in PyBCI there is currently no suppression for tensorflow text prompts and the model training and tsting time can be substantially longer then pytorch and sklearn. Any recommendations are welcome in the issues on the git!)
 
