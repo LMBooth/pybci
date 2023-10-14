@@ -41,7 +41,7 @@ Highlighting these epochs on some psuedo emg data looks like the following:
 Overlapping Epoch Windows
 ------------------------
 
-By setting splitCheck to True for ``baselineSettings.splitCheck`` and ``gs.windowOverlap`` to 0 we can turn one marker into 10 epochs, shown below:
+By setting splitCheck to True for :py:data:`baselineSettings.splitCheck` and :py:data:`gs.windowOverlap` to 0 we can turn one marker into 10 epochs, shown below:
 
 .. _nooverlapExample:
 
@@ -49,7 +49,7 @@ By setting splitCheck to True for ``baselineSettings.splitCheck`` and ``gs.windo
    :target: https://github.com/LMBooth/pybci/blob/main/docs/Images/splitEpochs/example1split0.png
    
    
-By setting ``gs.windowOverlap`` to 0.5 we can turn overlap our 1 second epochs by 50% giving us 19 (2n-1) epochs, shown below:
+By setting :py:data:`gs.windowOverlap` to 0.5 we can overlap 1 second epochs by 50% yielding 19 (2n-1) epochs, shown below:
 
 .. _overlapExample:
 
@@ -59,4 +59,4 @@ By setting ``gs.windowOverlap`` to 0.5 we can turn overlap our 1 second epochs b
    
 Debugging Timing Errors
 ------------------------
-When initialising the :class:`PyBCI()` class set :py:data:`loggingLevel` to “TIMING” to time the feature extraction time for each data inlet as well as classification testing and training times. These are the most computationally intensive tasks and will induce the most lag in the the system. Each printed time must be shorter then :py:data:`globalEpochSettings`.windowLength*(1- :py:data:`globalEpochSettings`.windowOverlap) to minimise delays from input data action to classification output.
+When initialising the :class:`PyBCI()` class set :py:data:`loggingLevel` to “TIMING” to time the feature extraction time for each data inlet as well as classification testing and training times. These are the most computationally intensive tasks and will induce the most lag in the the system. Each printed time must be shorter then :py:data:`globalEpochSettings.windowLength`*(1- :py:data:`globalEpochSettings.windowOverlap`) to minimise delays from input data action to classification output.
