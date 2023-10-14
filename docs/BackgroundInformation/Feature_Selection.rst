@@ -3,7 +3,7 @@ Feature Selection
 .. _feature-debugging:
 Recommended Debugging
 --------------------------------
-When initialisaing the :class:`PyBCI()` class we can set :py:data:`loggingLevel` to "TIMING" to time our feature extraction time, note a warning will be produced if the feature extraction time is longer then the :py:data:`globalEpochSettings`.windowLength*(1-:py:data:`globalEpochSettings`.windowOverlap), if this is the case a delay will continuously grow as data builds in the queues. To fix this reduce channel count, feature count, feature complexity, or sample rate until the feature extraction time is acceptable, this will help create near-real-time classification.
+When initialisaing the :class:`PyBCI()` class we can set :py:data:`loggingLevel` to "TIMING" to time our feature extraction time, note a warning will be produced if the feature extraction time is longer then the :py:data:`globalEpochSettings.windowLength`*(1-:py:data:`globalEpochSettings.windowOverlap`), if this is the case a delay will continuously grow as data builds in the queues. To fix this reduce channel count, feature count, feature complexity, or sample rate until the feature extraction time is acceptable, this will help create near-real-time classification.
 
 
 .. _generic-extractor:
@@ -87,6 +87,6 @@ If the raw time-series data is wanted to be the input for the classifier we can 
               d = np.resize(d, (d.shape[0],self.desired_length))
           return d 
 
-NOTE: In the above example the expected buffer length is set with ``desired_length``, this is done to give a consistent input shape for the ML model - desired_Length should be sample rate (Hz) * window length (s) rounded down to an integer
+NOTE: In the above example the expected buffer length is set with :py:data:`desired_length`, this is done to give a consistent input shape for the ML model - desired_Length should be sample rate (Hz) * window length (s) rounded down to an integer
 
 The default ML model used is the sklearn svm which only accepts a 2D array of [epochs, features] not [epochs, samples, channels], however a pytorch CNN or RNN may be more approriate for multi-channel time-series data. A full example of raw time-series data being used as an input to a PyTorch CNN can be found in the `testRaw.py file here <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testRaw.py>`_.
