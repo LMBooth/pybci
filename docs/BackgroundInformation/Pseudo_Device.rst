@@ -13,7 +13,7 @@ The PseudoDevice class holds marker information and generates signal data based 
 
 The PseudoDeviceController can have the string "process" or "thread" set to decide whether the pseudo device should be a multiprocessed or threaded operation respectively, by default it is set to "process", then passes all the same configuration arguments to PseudoDevice.
 
-Any generic LSLViewer can be used to view the generated data, `example viewers found on this link. <https://labstreaminglayer.readthedocs.io/info/viewers.html>`_.
+Any generic LSLViewer can be used to view the generated data, `example viewers found on this link. <https://labstreaminglayer.readthedocs.io/info/viewers.html>`_
 
 .. _configuring-pseudo-device:
 Configuring the Pseudo Device
