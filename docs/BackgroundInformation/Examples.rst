@@ -8,11 +8,11 @@ The following examples can all be found on the `PyBCI GitHub repository <https:/
 .. note:: 
    The examples have shields describing whether they work with PyBCI's pseudoDevice class and what additional external hardware is required. Pseudo Device description found here: :ref:`what-pseudo-device`
    
-   If using your own LSL-capable hardware  and marker stream set `createPseudoDevice=False` or optionally pass `True` or `False` as an arguement to each script.
+   If using your own LSL-capable hardware  and marker stream set :py:data:`createPseudoDevice=False` or optionally pass True or False as an arguement to each script.
 
 PyBCI requires an LSL marker stream for defining when time series data should be attributed to an action/marker/epoch and an LSL data stream to create time-series data. 
 
-If the user has no available LSL hardware to hand they can set `createPseudoDevice=True` when instantiating the PyBCI object to enable a pseudo LSL data stream to generate time-series data and LSL marker stream for epoching the data. More information on PyBCI's Pseudo Device class can be found here: :ref:`what-pseudo-device`. 
+If the user has no available LSL hardware to hand they can set :py:data:`createPseudoDevice=True` when instantiating the PyBCI object to enable a pseudo LSL data stream to generate time-series data and LSL marker stream for epoching the data. More information on PyBCI's Pseudo Device class can be found here: :ref:`what-pseudo-device`. 
 
 The `example scripts <https://pybci.readthedocs.io/en/latest/BackgroundInformation/Examples.html>`_ illustrate various applied ML libraries (SKLearn, Tensorflow, PyTorch) or provide examples of how to integrate LSL hardware.
 
