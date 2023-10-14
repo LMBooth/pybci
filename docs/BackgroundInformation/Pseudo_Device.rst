@@ -5,7 +5,7 @@ Pseudo Device
 
 What is the Pseudo Device?
 =========================================================
-For ease of use the variable bool :code:`createPseudoDevice` can be set to True when instantiating :code:`PyBCI()` so the default PseudoDevice is run in another process enabling examples to be run without the need of LSL enabled hardware.
+For ease of use the variable bool :py:data:`createPseudoDevice` can be set to True when instantiating :class:`PyBCI()` so the default PseudoDevice is run in another process enabling examples to be run without the need of LSL enabled hardware.
 
 The PseudoDevice class and PseudoDeviceController can be used when the user has no available LSL marker or data streams, allowing for quick and simple execution of the examples. The Pseudo Device enables testing pipelines without the need of configuring and running LSL enabled hardware.
 
