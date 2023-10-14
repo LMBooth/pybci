@@ -19,7 +19,7 @@ Each data stream has two threads created, one data and one feature extractor. Th
 
 Add desired dataStreams by passing a list of strings containing accepted data stream names with:py:data:`dataStreams`. By setting :py:data:`dataStreams` all other data inlets will be ignored except those in the list.
 
-Note: Data so many seconds before and after the LSL marker timestamp is decided by the corresponding LSL data timestamps. If the LSL data stream pushes chunks infrequently (>[:py:data:`globalEpochSettings`.windowLength*(1-:py:data:`globalEpochSettings`.windowOverlap)]) and doesn't overwrite each sample with linear equidistant timestamps, errors in classification output will occur - Kept legacy data threads AsyncDataReceiver and DataReceiver in threads folder in case modifications needed based on so many samples before and after decided by expected sample rate if people find this becomes an issue for certain devices.
+Note: Data so many seconds before and after the LSL marker timestamp is decided by the corresponding LSL data timestamps. If the LSL data stream pushes chunks infrequently (>[:py:data:`globalEpochSettings.windowLength`*(1-:py:data:`globalEpochSettings.windowOverlap`)]) and doesn't overwrite each sample with linear equidistant timestamps, errors in classification output will occur - Kept legacy data threads AsyncDataReceiver and DataReceiver in threads folder in case modifications needed based on so many samples before and after decided by expected sample rate if people find this becomes an issue for certain devices.
 
 Feature Extractor Threads
 **********************************************
