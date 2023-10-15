@@ -13,7 +13,7 @@ from collections import deque
 
 class PseudoDeviceController:
     log_queue = None
-
+    device = None
     def __init__(self, execution_mode='process', *args, **kwargs):
         self.execution_mode = execution_mode
         self.args = args
@@ -31,17 +31,17 @@ class PseudoDeviceController:
         self.worker.start()
 
     def _run_device(self):
-        device = PseudoDevice(*self.args, **self.kwargs, stop_signal=self.stop_signal)
+        self.device = PseudoDevice(*self.args, **self.kwargs, stop_signal=self.stop_signal)
         while not self.stop_signal.is_set():
             if self.execution_mode == 'process':
                 try:
                     command = self.command_queue.get_nowait()
                     if command == "BeginStreaming":
-                        device.BeginStreaming()
+                        self.device.BeginStreaming()
                 except queue.Empty:
                     pass
             elif self.execution_mode == 'thread':
-                device.update()
+                self.device.update()
 
             time.sleep(0.01)
 
