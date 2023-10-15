@@ -14,7 +14,7 @@ Thank you for your interest in contributing to PyBCI! We value your contribution
 3. **Set Up the Development Environment:** Ensure you have all the necessary tools and dependencies installed to work on PyBCI.
 4. **Create a New Branch:** Create a new branch for the specific issue or feature you are working on.
 5. **Make Your Changes:** Make the necessary changes, adhering to the PyBCI code style and conventions.
-6. **Run Tests:** Run the tests using `pytest` to ensure that your changes do not break existing functionality.
+6. **Run Tests:** Run the tests using `pytest` in the root directory to ensure that your changes do not break existing functionality.
 7. **Update Documentation:** If your changes involve modifications to the API or the introduction of new features, update the documentation accordingly.
 8. **Push Your Changes:** Push your changes to your fork on GitHub.
 9. **Submit a Pull Request:** Submit a pull request from your fork to the PyBCI repository.
