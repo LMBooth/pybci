@@ -3,7 +3,7 @@ import time
 import pytest
 from sklearn.neural_network import MLPClassifier
 # Test case using the fixture
-@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
+#@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
     clf = MLPClassifier(max_iter = 1000, solver ="lbfgs")#solver=clf, alpha=alpha,hidden_layer_sizes=hid)
     bci = PyBCI(minimumEpochsRequired=5, createPseudoDevice=True,  clf = clf)

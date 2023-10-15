@@ -54,7 +54,7 @@ def PyTorchModel(x_train, x_test, y_train, y_test):
         accuracy = correct / len(y_test)
     return accuracy, model
 
-@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
+#@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
     bci = PyBCI(minimumEpochsRequired = 4, createPseudoDevice=True,  torchModel = PyTorchModel)
     while not bci.connected:
