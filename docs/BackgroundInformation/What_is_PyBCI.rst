@@ -5,7 +5,7 @@ Statement of need
 ==========================
 PyBCI addresses the growing need for a real-time Brain-Computer Interface (BCI) software capable of handling diverse physiological sensor data streams. By leveraging robust machine learning libraries such as PyTorch, SKLearn, and TensorFlow, alongside the Lab Streaming Layer protocol, PyBCI facilitates the integration of real-time data analysis and model training. This opens up avenues for researchers and practitioners to not only receive and analyze physiological sensor data but also develop, test, and deploy machine learning models seamlessly, fostering innovation in the rapidly evolving field of BCIs.
 
-General Overview:
+General Overview
 ==========================
 PyBCI is a python based brain computer interface software designed to receive a varying number, be it singular or multiple, Lab Streaming Layer enabled physiological sensor data streams. An understanding of time-series data analysis, the lab streaming layer protocol, and machine learning techniques are a must to integrate innovative ideas with this interface. An LSL marker stream is required to train the model, where a received marker epochs the data received on the accepted datastreams based on a configurable time window around certain markers - custom marker strings can optionally be split and overlapped to count for more then one marker, example: 
 
