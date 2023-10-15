@@ -8,7 +8,7 @@ Getting Started
 ----------------
 
 - **Communication:** For general questions or discussions, please open an issue on the `GitHub repository <https://github.com/LMBooth/pybci>`_.
-- **Code of Conduct:** Please follow the `Code of Conduct <CODE_OF_CONDUCT.md>`_ to maintain a respectful and inclusive environment.
+- **Code of Conduct:** Please follow the `Code of Conduct <https://github.com/LMBooth/pybci/blob/main/CODE_OF_CONDUCT.md>`_ to maintain a respectful and inclusive environment.
 
 Contribution Process
 ------------------------
