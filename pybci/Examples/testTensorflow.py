@@ -18,7 +18,7 @@ model.summary()
 model.compile(loss='sparse_categorical_crossentropy',# using sparse_categorical as we expect multi-class (>2) output, sparse because we encode targetvalues with integers
               optimizer='adam',
               metrics=['accuracy'])
-# NOTE!!! 
+
 if __name__ == '__main__': # Note: this line is needed when calling pseudoDevice as by default runs in a multiprocessed operation
     bci = PyBCI(minimumEpochsRequired = 4, createPseudoDevice=True, model = model)
     while not bci.connected: # check to see if lsl marker and datastream are available
