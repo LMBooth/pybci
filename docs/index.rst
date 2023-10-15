@@ -28,6 +28,7 @@ Contents
    BackgroundInformation/Epoch_Timing
    BackgroundInformation/Feature_Selection
    BackgroundInformation/Pseudo_Device
+   BackgroundInformation/Contributing
    BackgroundInformation/Examples
 
 .. toctree::
