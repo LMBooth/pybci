@@ -1,7 +1,7 @@
 Pseudo Device
 ############
 
-.. what-pseudo-device:
+.. _what-pseudo-device:
 
 What is the Pseudo Device?
 =========================================================
