@@ -30,6 +30,8 @@ install:
   # Install pytest
   - "pip install pytest"
   - "pip install pytest-timeout"
+  # Install ruff
+  - "pip install ruff"
   # Exit if error
   - "if %errorlevel% neq 0 exit /b %errorlevel%"
 
@@ -40,5 +42,6 @@ test_script:
   - "set PYTEST_ERRORLEVEL=0"
   - "pytest Tests/ || SET PYTEST_ERRORLEVEL=%errorlevel%"
   - "if %PYTEST_ERRORLEVEL% neq 0 (echo 'Pytest failed. Terminating python process.' & taskkill /IM python.exe /F) else (echo 'Pytest succeeded.')"
+  - "ruff ."
   - "echo 'Finished running tests.'"
   - "if %errorlevel% neq 0 exit /b %errorlevel%"
