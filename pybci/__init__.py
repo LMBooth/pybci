@@ -1,1 +1,1 @@
-from .pybci import PyBCI
+from .pybci import PyBCI    # noqa: F401
