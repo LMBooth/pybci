@@ -48,7 +48,7 @@ jobs:
     - name: Run Tests
       run: |
         pytest Tests/ --cov=pybci --cov-report=xml
-  - name: Upload coverage to GitHub Artifacts
+    - name: Upload coverage to GitHub Artifacts
       uses: actions/upload-artifact@v2
       with:
         name: coverage-report
