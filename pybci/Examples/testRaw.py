@@ -1,9 +1,10 @@
-import torch, time
+import torch
+import time
 from torch.utils.data import DataLoader, TensorDataset
 from torch import nn
 from pybci import PyBCI
 import numpy as np
-from pybci.Utils.Logger import Logger
+
 num_chs = 3 # 8 channels are created in the PseudoLSLGenerator, but we drop 5 to save compute (real-time CNN can be computationally heavy!)
 sum_samps = 125 # sample rate is 250 in the PseudoLSLGwnerator
 num_classes = 4 # number of different triggers (can include baseline) sent, defines if we use softmax of binary

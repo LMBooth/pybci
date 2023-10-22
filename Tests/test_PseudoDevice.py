@@ -1,7 +1,5 @@
 import time
-import pytest
 from pybci import PyBCI
-from pybci.Utils.PseudoDevice import PseudoDeviceController
 # Test case using the fixture
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_pseudo():

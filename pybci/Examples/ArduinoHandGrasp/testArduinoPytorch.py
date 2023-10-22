@@ -1,12 +1,11 @@
-import time, torch
+import time
+import torch
 from torch.utils.data import DataLoader, TensorDataset
 from torch import nn
 from pybci import PyBCI
 from pybci.Configuration.EpochSettings import GlobalEpochSettings
-from pybci.Utils.FeatureExtractor import GenericFeatureExtractor, GeneralFeatureChoices
 from pybci.Utils.Logger import Logger
 import numpy as np
-from scipy.fft import fft
 # We control the arduino via lsl python script which is responsible for COM connection
 from pylsl import StreamInfo, StreamOutlet
 # Set up the LSL stream info

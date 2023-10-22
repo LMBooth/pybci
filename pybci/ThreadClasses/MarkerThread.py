@@ -16,7 +16,7 @@ class MarkerThread(threading.Thread):
         while not self.closeEvent.is_set():
             marker, timestamp = self.markerStreamInlet.pull_sample(timeout = 10)
             if self.trainTestEvent.is_set(): # We're training!
-                if marker != None:
+                if marker is not None:
                     marker = marker[0]
                     for thread in self.dataThreads:
                         thread.ReceiveMarker(marker, timestamp)

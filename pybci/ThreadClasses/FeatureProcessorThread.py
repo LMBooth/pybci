@@ -1,8 +1,9 @@
-import threading, queue, time
+import threading
+import queue
+import time
 from ..Utils.FeatureExtractor import GenericFeatureExtractor
 from ..Utils.Logger import Logger
 from ..Configuration.EpochSettings import GlobalEpochSettings
-import copy
 
 class FeatureProcessorThread(threading.Thread):
     tempDeviceEpochLogger = []
@@ -43,9 +44,9 @@ class FeatureProcessorThread(threading.Thread):
                     features = self.featureExtractor.ProcessFeatures(dataFIFOs, sr, target) # allows custom epoch class to be passed
                     if (self.logger.level == Logger.TIMING):
                         end = time.time()
-                        self.logger.log(Logger.TIMING, f" Feature Extraction time {end - start}")
+                        self.logger.log(Logger.TIMING, " Feature Extraction time "+str(end - start))
                         if (end-start) >self.globalWindowSettings.windowLength:
-                            self.logger.log(Logger.WARNING, f" Feature Extraction time > globalEpochSetting.windowLength, will create lag in classification output. Recommended to reduce channels, smapling rate, and features or reduce feature computational complexity.")
+                            self.logger.log(Logger.WARNING, " Feature Extraction time > globalEpochSetting.windowLength, will create lag in classification output. Recommended to reduce channels, smapling rate, and features or reduce feature computational complexity.")
                     self.featureQueueTrain.put( [features, devCount, target, dict(self.epochCounts)] )
                 except queue.Empty:
                     pass
@@ -56,9 +57,9 @@ class FeatureProcessorThread(threading.Thread):
                     features = self.featureExtractor.ProcessFeatures(dataFIFOs, sr, None)
                     if (self.logger.level == Logger.TIMING):
                         end = time.time()
-                        self.logger.log(Logger.TIMING, f" Feature Extraction time {end - start}")
+                        self.logger.log(Logger.TIMING, " Feature Extraction time "+str(end - start))
                         if (end-start) >self.globalWindowSettings.windowLength:
-                            self.logger.log(Logger.WARNING, f" Feature Extraction time > globalEpochSetting.windowLength, will create lag in classification output. Recommended to reduce channels, smapling rate, and features or reduce feature computational complexity.")
+                            self.logger.log(Logger.WARNING, " Feature Extraction time > globalEpochSetting.windowLength, will create lag in classification output. Recommended to reduce channels, smapling rate, and features or reduce feature computational complexity.")
                     self.featureQueueTest.put([features, devCount])
                 except queue.Empty:
                     pass

@@ -1,7 +1,5 @@
 from pybci import PyBCI
 import time
-import pytest
-
 import tensorflow as tf# bring in tf for custom model creation
 
 num_chs = 8 # 8 channels are created in the PseudoLSLGenerator

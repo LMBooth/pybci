@@ -1,4 +1,5 @@
-import argparse, time
+import argparse
+import time
 from .CliTests.testSimple import main as testSimple
 from .CliTests.testSklearn import main as testSklearn
 from .CliTests.testTensorflow import main as testTensorflow

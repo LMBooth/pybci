@@ -1,7 +1,5 @@
 from pybci import PyBCI
-import time, os
-import pytest
-
+import time
 # Test case using the fixture
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():

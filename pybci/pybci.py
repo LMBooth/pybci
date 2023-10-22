@@ -8,13 +8,9 @@ from .ThreadClasses.OptimisedDataReceiverThread import OptimisedDataReceiverThre
 from .ThreadClasses.MarkerThread import MarkerThread
 from .ThreadClasses.ClassifierThread import ClassifierThread
 from .Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
-from .Configuration.FeatureSettings import GeneralFeatureChoices
-import queue, threading, copy
+import queue
+import threading
 import tensorflow as tf
-#import torch
-import torch.nn as nn
-
-#tf.get_logger().setLevel('ERROR')
 
 class PyBCI:
     globalEpochSettings = GlobalEpochSettings()

@@ -1,6 +1,5 @@
-import threading, time
+import threading
 from collections import deque
-import itertools
 from bisect import bisect_left
 def slice_fifo_by_time(fifo, start_time, end_time):
         """Find the slice of fifo between start_time and end_time using binary search."""
@@ -48,7 +47,7 @@ class AsyncDataReceiverThread(threading.Thread):
         dataFIFOs = [deque(maxlen=fifoLength) for ch in range(chCount - len(self.streamChsDropDict))]
         while not self.closeEvent.is_set():
             sample, timestamp = self.dataStreamInlet.pull_sample(timeout = 1)
-            if sample != None:
+            if sample is not None:
                 for index in sorted(self.streamChsDropDict, reverse=True):
                     del sample[index] # remove the desired channels from the sample
                 for i,fifo in enumerate(dataFIFOs):
@@ -114,7 +113,7 @@ class AsyncDataReceiverThread(threading.Thread):
                 # add levels of debug?
 
     def ReceiveMarker(self, marker, timestamp): # timestamp will be used for non sample rate specific devices (pupil-labs gazedata)
-        if self.startCounting == False: # only one marker at a time allow, other in windowed timeframe ignored
+        if self.startCounting is False: # only one marker at a time allow, other in windowed timeframe ignored
             self.currentMarker = marker
             self.markerTimestamp = timestamp
             if len(self.customEpochSettings.keys())>0: #  custom marker received

@@ -1,10 +1,9 @@
 """Python setup script for the pybci distribution package."""
 
 from setuptools import setup, find_packages
-from setuptools.command.install import install
 from codecs import open
 from os import path
-import sys, os
+import sys
 
 
 try:

@@ -20,17 +20,17 @@ class LSLScanner:
         logger (pybci.Logger): Custom Logger class or PyBCI, defaults to logger.info if not set, which prints all pybci messages.
         """
         self.parent = parent
-        if streamTypes != None:
+        if streamTypes is not None:
             self.streamTypes = streamTypes
-        if markerTypes != None:
+        if markerTypes is not None:
             self.markerTypes = markerTypes
         self.logger = logger
-        if dataStreamsNames != None:
+        if dataStreamsNames is not None:
             self.dataStreamPredefined = True
             self.dataStreamsNames = dataStreamsNames
         else:
             self.ScanDataStreams()
-        if markerStreamName != None:
+        if markerStreamName is not None:
             self.markerStreamPredefined = True
             self.markerStreamName = markerStreamName
         else:
@@ -91,14 +91,14 @@ class LSLScanner:
             False if no datastreams are present and/or more or less then one marker stream is present, requires hard selection or markser stream if too many.
         """
         self.ScanStreams()
-        if self.markerStream == None:
+        if self.markerStream is None:
             self.logger.log(Logger.WARNING," No Marker streams available, make sure your accepted marker data Type have been set in bci.lslScanner.markerTypes correctly.")
         if len(self.dataStreams) == 0:
             self.logger.log(Logger.WARNING," No data streams available, make sure your streamTypes have been set in bci.lslScanner.dataStream correctly.")
-        if len(self.dataStreams) > 0 and self.markerStream !=None:
+        if len(self.dataStreams) > 0 and self.markerStream is not None:
             self.logger.log(Logger.INFO," Success - "+str(len(self.dataStreams))+" data stream(s) found, 1 marker stream found")
         
-        if len(self.dataStreams) > 0 and self.markerStream != None:
+        if len(self.dataStreams) > 0 and self.markerStream is not None:
             self.parent.dataStreams = self.dataStreams
             self.parent.markerStream = self.markerStream
             return True

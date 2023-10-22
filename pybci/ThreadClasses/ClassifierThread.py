@@ -1,6 +1,8 @@
 from ..Utils.Classifier import Classifier 
 from ..Utils.Logger import Logger
-import queue,threading, time
+import queue
+import threading
+import time
 import numpy as np
 
 class ClassifierThread(threading.Thread):

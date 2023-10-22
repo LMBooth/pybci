@@ -1,6 +1,5 @@
 import time
 from pybci import PyBCI
-from pybci.Configuration.EpochSettings import GlobalEpochSettings
 import tensorflow as tf# bring in tf for custom model creation
 
 num_chs = 8 # 8 channels are created in the PseudoLSLGenerator

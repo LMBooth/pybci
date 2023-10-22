@@ -1,6 +1,5 @@
 from pybci import PyBCI
 import time
-import pytest
 from sklearn.neural_network import MLPClassifier
 # Test case using the fixture
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes

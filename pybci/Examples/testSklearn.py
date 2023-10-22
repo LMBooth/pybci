@@ -1,5 +1,4 @@
 from pybci import PyBCI
-from pybci.Configuration.EpochSettings import GlobalEpochSettings
 import time
 from sklearn.neural_network import MLPClassifier
 clf = MLPClassifier(max_iter = 1000, solver ="lbfgs")#solver=clf, alpha=alpha,hidden_layer_sizes=hid)

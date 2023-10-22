@@ -1,7 +1,5 @@
 from pybci import PyBCI
 import time
-import pytest
-
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 from torch import nn

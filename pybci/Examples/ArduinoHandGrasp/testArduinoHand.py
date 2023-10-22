@@ -1,7 +1,6 @@
 import time
 from pybci import PyBCI
 from pybci.Configuration.EpochSettings import GlobalEpochSettings
-from pybci.Utils.FeatureExtractor import GenericFeatureExtractor, GeneralFeatureChoices
 from pybci.Utils.Logger import Logger
 import numpy as np
 from scipy.fft import fft

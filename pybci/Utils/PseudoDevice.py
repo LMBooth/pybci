@@ -6,10 +6,13 @@
 #########################################################
 from ..Utils.Logger import Logger
 from ..Configuration.PseudoDeviceSettings import PseudoDataConfig, PseudoMarkerConfig
-import  time, threading, pylsl, queue
+import  time
+import threading
+import pylsl
+import queue
 from multiprocessing import Process, Queue, Event
+import multiprocessing
 import numpy as np
-from collections import deque
 
 class PseudoDeviceController:
     log_queue = None
@@ -83,7 +86,7 @@ class PseudoDevice:
         self.baselineConfig = pseudoMarkerConfig.baselineConfig
         self.baselineMarkerString = pseudoMarkerConfig.baselineMarkerString
         self.currentMarker = markerConfigStrings[0]
-        if pseudoMarkerDataConfigs == None:
+        if pseudoMarkerDataConfigs is None:
             pseudoMarkerDataConfigs = [PseudoDataConfig(), PseudoDataConfig(), PseudoDataConfig()]
             pseudoMarkerDataConfigs[0].amplitude =  5
             pseudoMarkerDataConfigs[1].amplitude =  6

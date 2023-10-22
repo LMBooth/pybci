@@ -1,7 +1,5 @@
 import time
 from pybci import PyBCI
-from pybci.Configuration.EpochSettings import GlobalEpochSettings
-
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 from torch import nn

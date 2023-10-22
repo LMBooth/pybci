@@ -1,8 +1,5 @@
-import threading, time
-from collections import deque
-import itertools
+import threading
 import numpy as np
-from bisect import bisect_left
 
 class OptimisedDataReceiverThread(threading.Thread):
     """Responsible for receiving data from accepted LSL outlet, slices samples based on tmin+tmax basis, 
@@ -125,7 +122,7 @@ class OptimisedDataReceiverThread(threading.Thread):
                 # add levels of debug?
 
     def ReceiveMarker(self, marker, timestamp): # timestamp will be used for non sample rate specific devices (pupil-labs gazedata)
-        if self.markerReceived == False: # only one marker at a time allow, other in windowed timeframe ignored
+        if self.markerReceived is False: # only one marker at a time allow, other in windowed timeframe ignored
             self.currentMarker = marker
             self.markerTimestamp = timestamp
             if len(self.customEpochSettings.keys())>0: #  custom marker received

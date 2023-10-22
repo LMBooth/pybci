@@ -1,7 +1,7 @@
 import time
 from pybci import PyBCI
 import numpy as np
-from pybci.Utils.FeatureExtractor import GenericFeatureExtractor
+from scipy.fft import fft
 
 class PupilGazeDecode():
     # pupil-labs channels:
@@ -24,7 +24,7 @@ class PupilGazeDecode():
             bothmean = np.mean([(epochData[1][i] + epochData[2][i]) / 2 for i in range(len(epochData[1]))]) # mean of both eyes in 3d
             return np.nan_to_num([confidence, rightmean,leftmean,bothmean]) #  expects 2d
         
-from scipy.fft import fft
+
 class EOGClassifier():
     # used Fp1 and Fp2 from io:bio EEG device
     def ProcessFeatures(self, epochData, sr, epochNum): # Every custom class requires a function with this name and structure to extract the featur data and epochData is always [Samples, Channels]

@@ -1,14 +1,13 @@
-import time, argparse
+import time
+import argparse
 from pybci import PyBCI
-from pybci.Configuration.EpochSettings import GlobalEpochSettings
-
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 from torch import nn
 
 
 def main(create_pseudo_device=True, min_epochs_train=4, min_epochs_test=10, num_chs = 8, num_feats = 2, num_classes = 4):
-    if create_pseudo_device == True:
+    if create_pseudo_device:
         num_chs = 8 # 8 channels are created in the PseudoLSLGenerator
         num_feats = 2 # default is mean freq and rms to keep it simple
         num_classes = 4 # number of different triggers (can include baseline) sent, defines if we use softmax of binary

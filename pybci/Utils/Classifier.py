@@ -1,7 +1,6 @@
 import sklearn
 from sklearn.preprocessing import StandardScaler
 from sklearn import svm
-import tensorflow
 import torch
 
 from sklearn.model_selection import train_test_split
@@ -16,20 +15,20 @@ class Classifier():
 
     def __init__(self, clf = None, model = None, torchModel = None):
         super().__init__()
-        if clf != None:
+        if clf is not None:
             self.clf = clf
-        elif model != None:
+        elif model is not None:
             self.model = model
-        elif torchModel != None:
+        elif torchModel is not None:
             self.torchModel = torchModel
         self.CheckClassifierLibrary()
 
     def CheckClassifierLibrary(self):
-        if self.model != None: # maybe requires actual check for tensorflow model
+        if self.model is not None: # maybe requires actual check for tensorflow model
             self.classifierLibrary = "tensor"
-        elif self.torchModel != None: # maybe requires actual check for sklearn clf
+        elif self.torchModel is not None: # maybe requires actual check for sklearn clf
             self.classifierLibrary = "pyTorch"
-        elif self.clf != None: # maybe requires actual check for sklearn clf
+        elif self.clf is not None: # maybe requires actual check for sklearn clf
             self.classifierLibrary = "sklearn"
 
     def TrainModel(self, features, targets):

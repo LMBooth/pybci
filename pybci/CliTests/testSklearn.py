@@ -1,6 +1,6 @@
 from pybci import PyBCI
-from pybci.Configuration.EpochSettings import GlobalEpochSettings
-import time, argparse
+import time
+import argparse
 from sklearn.neural_network import MLPClassifier
 
 def main(create_pseudo_device=True, min_epochs_train=4, min_epochs_test=10):

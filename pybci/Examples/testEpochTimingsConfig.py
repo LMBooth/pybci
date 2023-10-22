@@ -1,6 +1,6 @@
 import time
 from pybci import PyBCI
-from pybci.Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
+from pybci.Configuration.EpochSettings import GlobalEpochSettings
 
 gs = GlobalEpochSettings()
 gs.tmax = 1 # grab 1 second after marker
