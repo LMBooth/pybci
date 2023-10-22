@@ -10,24 +10,47 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [3.11, 3.10, 3.9]
+        
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      
+
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.x'
-        
-    - name: Install dependencies
-      run: pip install -r requirements.txt
+        python-version: ${{ matrix.python-version }}
 
-    - name: Run tests with pytest
-      run: pytest
+    - name: Update PATH and Install Dependencies
+      run: |
+        echo "Adding Python to PATH"
+        echo "$env:PYTHONPATH;${{ env.pythonLocation }}\Scripts;${{ env.pythonLocation }}" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+        pip install --upgrade pip
+        pip install pytest pytest-timeout pytest-cov
 
-    - name: Upload coverage to Codecov
+    - name: Download and Setup liblsl
+      run: |
+        Invoke-WebRequest -Uri 'https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-Win_amd64.zip' -OutFile 'liblsl.zip'
+        Expand-Archive -Path liblsl.zip -DestinationPath liblsl
+        Move-Item -Path .\liblsl\bin\lsl.dll -Destination ${{ env.pythonLocation }}\Lib\site-packages\
+        echo "PYLSL_LIB=${{ env.pythonLocation }}\Lib\site-packages\lsl.dll" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+    - name: Additional Dependency Installation
+      run: |
+        pip uninstall -y urllib3
+        pip install --upgrade urllib3>=2.0.5
+        pip install ruff
+        pip install .
+
+    - name: Run Tests
+      run: |
+        pytest Tests/ --cov=pybci --cov-report=xml
+
+    - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v2
       with:
-        token: ${{ secrets.CODECOV_TOKEN }}  # not required for public repos
-        file: ./coverage.xml  # adjust this path if needed
+        token: ${{ secrets.CODECOV_TOKEN }}  # Not required for public repos
+        file: ./coverage.xml  # Adjust this path if needed
