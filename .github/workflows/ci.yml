@@ -59,20 +59,20 @@ jobs:
         echo "PYTHONPATH: $PYTHONPATH"
         echo "PYLSL_LIB: $PYLSL_LIB"
 
-    - name: Run Tests
-      run: |
-        pytest Tests/ --cov=pybci --cov-report=xml -vv
+    #- name: Run Tests
+    #  run: |
+    #    pytest Tests/ --cov=pybci --cov-report=xml -vv
 
     - name: Generate Report
       run: |
         pip install coverage
         coverage run -m pytest
         
-    - name: Upload coverage to GitHub Artifacts
-      uses: actions/upload-artifact@v2
-      with:
-        name: coverage-report
-        path: coverage.xml
+    #- name: Upload coverage to GitHub Artifacts
+    #  uses: actions/upload-artifact@v2
+    #  with:
+    #    name: coverage-report
+    #    path: coverage.xml
     - name: List working directory
       run: ls -al
       
@@ -80,4 +80,4 @@ jobs:
       uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}  # Not required for public repos
-        file: coverage.xml  # Adjust this path if needed
+    #    file: coverage.xml  # Adjust this path if needed
