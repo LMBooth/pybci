@@ -44,7 +44,15 @@ jobs:
         pip install --upgrade urllib3>=2.0.5
         pip install ruff
         pip install .
+        
+    - name: Debug Information
+      run: |
+        python --version
+        pip list
+        echo "PYTHONPATH: $PYTHONPATH"
+        echo "PYLSL_LIB: $PYLSL_LIB"
 
+    
     - name: Run Tests
       run: |
         pytest Tests/ --cov=pybci --cov-report=xml
