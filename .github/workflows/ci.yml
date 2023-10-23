@@ -59,7 +59,6 @@ jobs:
         echo "PYTHONPATH: $PYTHONPATH"
         echo "PYLSL_LIB: $PYLSL_LIB"
 
-    
     - name: Run Tests
       run: |
         pytest Tests/ --cov=pybci --cov-report=xml
