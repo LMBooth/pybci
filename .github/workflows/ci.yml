@@ -72,4 +72,4 @@ jobs:
       uses: codecov/codecov-action@v2
       with:
         token: ${{ secrets.CODECOV_TOKEN }}  # Not required for public repos
-        file: ./coverage.xml  # Adjust this path if needed
+        file: coverage.xml  # Adjust this path if needed
