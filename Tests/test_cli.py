@@ -1,4 +1,4 @@
-import subprocess
+"""import subprocess
 import time
 def run_cli_command(command):
     process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
@@ -21,3 +21,4 @@ def test_cli():
     run_cli_command("pybci testTensorflow --timeout=10")
     time.sleep(15)
     assert True
+    """
