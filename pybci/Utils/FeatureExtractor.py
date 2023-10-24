@@ -21,7 +21,6 @@ class GenericFeatureExtractor():
             self.featureChoices.perm_entropy,
             self.featureChoices.spec_entropy,
             self.featureChoices.svd_entropy,
-            self.featureChoices.samp_entropy,
             self.featureChoices.rms,
             self.featureChoices.meanPSD,
             self.featureChoices.medianPSD,
@@ -93,9 +92,6 @@ class GenericFeatureExtractor():
             if self.featureChoices.svd_entropy:# svd Entropy
                 ct += 1
                 features[(ch* self.numFeatures)+ct] = antropy.svd_entropy(epoch[:,ch], normalize=True)
-            if self.featureChoices.samp_entropy: # sample Entropy
-                ct += 1
-                features[(ch* self.numFeatures)+ct] = antropy.sample_entropy(epoch[:,ch])
             if self.featureChoices.rms: # rms
                 ct += 1
                 features[(ch* self.numFeatures)+ct] = np.sqrt(np.mean(np.array(epoch[:,ch])**2))

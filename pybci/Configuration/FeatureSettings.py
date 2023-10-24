@@ -4,7 +4,6 @@ class GeneralFeatureChoices:
     perm_entropy = False
     spec_entropy = False
     svd_entropy = False
-    samp_entropy = False
     rms = True
     meanPSD = True
     medianPSD = False
