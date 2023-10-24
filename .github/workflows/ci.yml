@@ -73,8 +73,8 @@ jobs:
     #  with:
     #    name: coverage-report
     #    path: coverage.xml
-    - name: List working directory
-      run: ls -al
+    #- name: List working directory
+    #  run: ls -al
       
     - name: Upload Coverage to Codecov
       uses: codecov/codecov-action@v2
