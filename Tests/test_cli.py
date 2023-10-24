@@ -1,24 +1,19 @@
-"""import subprocess
 import time
-def run_cli_command(command):
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-    stdout, stderr = process.communicate()
-    return_code = process.returncode
-    
-    if return_code == 0:
-        print(f"Command succeeded with output:\n{stdout.decode('utf-8')}")
-    else:
-        print(f"Command failed with error:\n{stderr.decode('utf-8')}")
+from pybci.CliTests.testSimple import main as mainSimple
+from pybci.CliTests.testSklearn import main as mainSklearn
+from pybci.CliTests.testPyTorch import main as mainPyTorch
+from pybci.CliTests.testTensorflow import main as mainTensorflow
+
 
 # Example usage
 def test_cli():
-    run_cli_command("pybci testSimple --timeout=10")
+    mainSimple(min_epochs_train=1, min_epochs_test=2, timeout=10)
     time.sleep(15)
-    run_cli_command("pybci testSklearn --timeout=10")
+    mainSklearn(min_epochs_train=1, min_epochs_test=2, timeout=10)
     time.sleep(15)
-    run_cli_command("pybci testPyTorch --timeout=10")
+    mainPyTorch(min_epochs_train=1, min_epochs_test=2, timeout=10)
     time.sleep(15)
-    run_cli_command("pybci testTensorflow --timeout=10")
+    mainTensorflow(min_epochs_train=1, min_epochs_test=2, timeout=10)
     time.sleep(15)
     assert True
-    """
+    
