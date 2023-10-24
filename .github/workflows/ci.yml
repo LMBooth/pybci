@@ -65,9 +65,8 @@ jobs:
 
     - name: Generate Report
       run: |
-        pip install coverage
         coverage run -m pytest
-        
+        coverage xml
     #- name: Upload coverage to GitHub Artifacts
     #  uses: actions/upload-artifact@v2
     #  with:
