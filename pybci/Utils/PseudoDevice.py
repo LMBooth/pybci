@@ -56,7 +56,7 @@ class PseudoDeviceController:
 
     def StopStreaming(self):
         self.stop_signal.set()
-        self.worker.join(timeout=5)
+        self.worker.join(timeout=1)
         if self.worker.is_alive():
             self.worker.terminate()
 

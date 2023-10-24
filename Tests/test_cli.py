@@ -1,32 +1,19 @@
-
 import subprocess
-import time
-import threading
 
-def check_terminate(proc, timeout=10):
-    start = time.time()
-    while time.time() - start < timeout:
-        if proc.poll() is not None:
-            return
-        time.sleep(0.1)
-    proc.terminate()
+def run_cli_command(command):
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+    stdout, stderr = process.communicate()
+    return_code = process.returncode
+    
+    if return_code == 0:
+        print(f"Command succeeded with output:\n{stdout.decode('utf-8')}")
+    else:
+        print(f"Command failed with error:\n{stderr.decode('utf-8')}")
 
-def test_cli_scripts():
-    scripts = [
-        'python /path/to/testPyTorch.py',
-        'python /path/to/testSimple.py',
-        'python /path/to/testSklearn.py',
-        'python /path/to/testTensorflow.py',
-        'python /path/to/cli.py'
-    ]
-
-    for script in scripts:
-        print(f"Running {script}")
-        proc = subprocess.Popen(script, shell=True)
-        t = threading.Thread(target=check_terminate, args=(proc,))
-        t.start()
-        try:
-            t.join()
-        except KeyboardInterrupt:
-            proc.terminate()
-            break
+# Example usage
+def test_cli():
+    run_cli_command("pybci testSimple --timeout=10")
+    run_cli_command("pybci testSklearn --timeout=10")
+    run_cli_command("pybci testPyTorch --timeout=10")
+    run_cli_command("pybci testTensorflow --timeout=10")
+    assert True

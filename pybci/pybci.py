@@ -294,6 +294,7 @@ class PyBCI:
         """
         Stops all PyBCI threads.
         """
+        self.pseudoDevice.StopStreaming()
         self.closeEvent.set()
         self.markerThread.join()
         # wait for all threads to finish processing, probably worth pulling out finalised classifier information stored for later use.
@@ -303,7 +304,6 @@ class PyBCI:
             ft.join()
         self.classifierThread.join()
         self.connected = False
-        self.pseudoDevice.StopStreaming()
         self.logger.log(Logger.INFO," Threads stopped.")
         
 
