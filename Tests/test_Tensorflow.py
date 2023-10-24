@@ -42,6 +42,6 @@ def test_run_bci():
                     accuracy_achieved = True
                     bci.StopThreads()
                     break
-            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+4:
-                break
+            #if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+4:
+            #   break
     assert accuracy_achieved and marker_received

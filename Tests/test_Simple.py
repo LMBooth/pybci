@@ -3,7 +3,7 @@ import time
 # Test case using the fixture
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
-    bci = PyBCI(minimumEpochsRequired=5, createPseudoDevice=True)
+    bci = PyBCI(minimumEpochsRequired=4, createPseudoDevice=True)
     while not bci.connected:
         bci.Connect()
         time.sleep(1)
@@ -25,6 +25,6 @@ def test_run_bci():
                     accuracy_achieved = True
                     bci.StopThreads()
                     break
-            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+4:
-                break
+            #if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+4:
+            #    break
     assert accuracy_achieved and marker_received

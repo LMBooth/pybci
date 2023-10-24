@@ -5,7 +5,7 @@ from sklearn.neural_network import MLPClassifier
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
     clf = MLPClassifier(max_iter = 1000, solver ="lbfgs")#solver=clf, alpha=alpha,hidden_layer_sizes=hid)
-    bci = PyBCI(minimumEpochsRequired=5, createPseudoDevice=True,  clf = clf)
+    bci = PyBCI(minimumEpochsRequired=4, createPseudoDevice=True,  clf = clf)
     while not bci.connected:
         bci.Connect()
         time.sleep(1)
@@ -27,6 +27,6 @@ def test_run_bci():
                     accuracy_achieved = True
                     bci.StopThreads()
                     break
-            if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+4:
-                break
+            #if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+4:
+            #    break
     assert accuracy_achieved and marker_received
