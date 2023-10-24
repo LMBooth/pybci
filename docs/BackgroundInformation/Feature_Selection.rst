@@ -24,7 +24,6 @@ The features can be selected by setting the respective attributes in the :class:
     perm_entropy = False
     spec_entropy = False
     svd_entropy = False
-    samp_entropy = False
     rms = True
     meanPSD = True
     medianPSD = True
