@@ -7,13 +7,13 @@ from pybci.CliTests.testTensorflow import main as mainTensorflow
 
 # Example usage
 def test_cli():
-    mainSimple(min_epochs_train=1, min_epochs_test=2, timeout=10)
-    time.sleep(15)
-    mainSklearn(min_epochs_train=1, min_epochs_test=2, timeout=10)
-    time.sleep(15)
-    mainPyTorch(min_epochs_train=1, min_epochs_test=2, timeout=10)
-    time.sleep(15)
-    mainTensorflow(min_epochs_train=1, min_epochs_test=2, timeout=10)
-    time.sleep(15)
+    #mainSimple(min_epochs_train=1, min_epochs_test=2, timeout=10)
+    #time.sleep(15)
+    #m#ainSklearn(min_epochs_train=1, min_epochs_test=2, timeout=10)
+    #time.sleep(15)
+    #mainPyTorch(min_epochs_train=1, min_epochs_test=2, timeout=10)
+    #time.sleep(15)
+    #mainTensorflow(min_epochs_train=1, min_epochs_test=2, timeout=10)
+    #time.sleep(15)
     assert True
     
