@@ -1,8 +1,8 @@
-import time
-from pybci.CliTests.testSimple import main as mainSimple
-from pybci.CliTests.testSklearn import main as mainSklearn
-from pybci.CliTests.testPyTorch import main as mainPyTorch
-from pybci.CliTests.testTensorflow import main as mainTensorflow
+#import time
+#from pybci.CliTests.testSimple import main as mainSimple
+#from pybci.CliTests.testSklearn import main as mainSklearn
+#from pybci.CliTests.testPyTorch import main as mainPyTorch
+#from pybci.CliTests.testTensorflow import main as mainTensorflow
 
 
 # Example usage
