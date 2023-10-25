@@ -27,6 +27,7 @@ class PseudoDeviceController:
             self.command_queue = Queue()
             self.worker = Process(target=self._run_device)
         elif self.execution_mode == 'thread':
+            self.command_queue = queue.Queue()
             self.worker = threading.Thread(target=self._run_device)
         else:
             raise ValueError(f"Unsupported execution mode: {execution_mode}")
@@ -49,10 +50,10 @@ class PseudoDeviceController:
             time.sleep(0.01)
 
     def BeginStreaming(self):
-        if self.execution_mode == 'process':
-            self.command_queue.put("BeginStreaming")
-        else:
-            self.worker.BeginStreaming()
+        #if self.execution_mode == 'process':
+        self.command_queue.put("BeginStreaming")
+        #else:
+        #    self.worker.BeginStreaming()
 
     def StopStreaming(self):
         self.stop_signal.set()

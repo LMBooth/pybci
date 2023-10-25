@@ -3,7 +3,7 @@ import time
 # Test case using the fixture
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
-    bci = PyBCI(minimumEpochsRequired=4, createPseudoDevice=True)
+    bci = PyBCI(minimumEpochsRequired=4, createPseudoDevice=True, loggingLevel="TIMING")
     while not bci.connected:
         bci.Connect()
         time.sleep(1)
