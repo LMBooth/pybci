@@ -29,14 +29,23 @@ install:
   #- sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
   #- sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
   # Update PATH
-  - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") { $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH" }
-  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
-  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
+    - sh: |
+      if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          export PATH=$PYTHON:$PYTHON/Scripts:$PATH
+      elif [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then
+          export PATH=$PYTHON:$PYTHON/Scripts:$PATH
+      fi
+  - ps: |
+      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") {
+          $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH"
+      }
   
   # Upgrade pip, setuptools, wheel
-  - "python -m pip3 install --upgrade pip3"
+  - "python -m pip install --upgrade pip"
   - "python --version"
-  - "pip3 --version"
+  - "pip --version"
   
   # Download and unzip liblsl
   - ps: |
