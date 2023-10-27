@@ -27,9 +27,12 @@ install:
 
   - sh: |
       if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
+          PYTHON="/usr/bin"
+          export PATH=$PYTHON:$PYTHON/Scripts:$PATH
           sudo apt-get update
           sudo apt-get install -y python3-pip
-          export PATH=$PYTHON:$PYTHON/Scripts:$PATH
+          python3 -m pip install --upgrade pip
+          which pytest || echo "pytest not found"
       elif [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then
           export PATH=$PYTHON:$PYTHON/Scripts:$PATH
       fi
@@ -110,6 +113,7 @@ test_script:
       }
   - sh: |
       PYTEST_ERRORLEVEL=0
+      which pytest || echo "pytest not found before tests"
       pytest Tests/ || PYTEST_ERRORLEVEL=$?
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $env:PYTEST_ERRORLEVEL -ne 0) {
