@@ -33,31 +33,28 @@ install:
         echo "Updating system..."
         sudo apt-get update
 
-        echo "Installing dependencies..."
-        sudo apt-get install -y python3-pip cmake git
-
-        echo "Cloning liblsl repository..."
-        git clone --depth=1 https://github.com/sccn/liblsl.git
-
-        echo "Listing contents of liblsl directory..."
-        ls -alh liblsl
-
-        echo "Configuring liblsl project..."
-        cd liblsl
-        cmake -S . -B build
-
-        echo "Building liblsl..."
-        cmake --build build
-
-        echo "Listing contents of build directory..."
-        ls -alh build
-
-        echo "Creating target directory..."
-        mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
-
-        echo "Copying liblsl.so to target directory..."
+        echo "Installing LSL dependency..."
+        wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-bionic_amd64.deb -O liblsl.deb
+        dpkg -x liblsl.deb liblsl
+        export PYLSL_LIB=$PWD/liblsl/usr/lib/liblsl64.so.1.16.0  # Update this line
+        
+        #sudo apt-get install -y python3-pip cmake git
+        #echo "Cloning liblsl repository..."
+        #git clone --depth=1 https://github.com/sccn/liblsl.git
+        #echo "Listing contents of liblsl directory..."
+        #ls -alh liblsl
+        #echo "Configuring liblsl project..."
+        #cd liblsl
+        #cmake -S . -B build
+        #echo "Building liblsl..."
+        #cmake --build build
+        #echo "Listing contents of build directory..."
+        #ls -alh build
+        #echo "Creating target directory..."
+        #mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
+        #echo "Copying liblsl.so to target directory..."
         # Update the source path based on where the build outputs the library.
-        cp build/liblsl.so /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/ || exit 1
+        #cp build/liblsl.so /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/ || exit 1
         ;;
       "macOS")
         # Install Brew (if not already installed)
