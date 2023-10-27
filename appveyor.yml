@@ -27,18 +27,37 @@ matrix:
 
 install:
   - sh: |
+      set -e  # Exit immediately if a command exits with a non-zero status.
       case $APPVEYOR_BUILD_WORKER_IMAGE in
       "ubuntu")
+        echo "Updating system..."
         sudo apt-get update
-        sudo apt-get install -y python3-pip cmake
-        python3 -m pip install --upgrade pip
-        # Download and build liblsl
-        wget https://github.com/sccn/liblsl/releases/download/1.13.0/liblsl-1.13.0-bionic_amd64.deb -O liblsl.deb
-        sudo dpkg -i liblsl.deb
-        # Create necessary directory
+
+        echo "Installing dependencies..."
+        sudo apt-get install -y python3-pip cmake git
+
+        echo "Cloning liblsl repository..."
+        git clone --depth=1 https://github.com/sccn/liblsl.git
+
+        echo "Listing contents of liblsl directory..."
+        ls -alh liblsl
+
+        echo "Configuring liblsl project..."
+        cd liblsl
+        cmake -S . -B build
+
+        echo "Building liblsl..."
+        cmake --build build
+
+        echo "Listing contents of build directory..."
+        ls -alh build
+
+        echo "Creating target directory..."
         mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
-        # Copy the liblsl.so library to the specified directory
-        cp /usr/local/lib/liblsl* /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/
+
+        echo "Copying liblsl.so to target directory..."
+        # Update the source path based on where the build outputs the library.
+        cp build/liblsl.so /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/ || exit 1
         ;;
       "macOS")
         # Install Brew (if not already installed)
