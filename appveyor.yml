@@ -30,8 +30,15 @@ install:
       if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
           sudo apt-get update
           sudo apt-get install -y python3.9 python3-pip
-          sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.9 1
-          sudo update-alternatives --install /usr/bin/pip3 pip3 /usr/bin/pip3.9 1
+          PYTHON3_PATH=$(which python3.9)
+          PIP3_PATH=$(which pip3)
+          if [[ -n $PYTHON3_PATH && -n $PIP3_PATH ]]; then
+              sudo update-alternatives --install /usr/bin/python3 python3 $PYTHON3_PATH 1
+              sudo update-alternatives --install /usr/bin/pip3 pip3 $PIP3_PATH 1
+          else
+              echo "Either python3.9 or pip3 was not found. Exiting."
+              exit 1
+          fi
       elif [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then
           brew install python@3.9
           ln -s /usr/local/opt/python@3.9/bin/python3.9 /usr/local/bin/python3
