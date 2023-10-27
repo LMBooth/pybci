@@ -7,10 +7,10 @@ environment:
   matrix:
     - ID: Ubuntu
       APPVEYOR_BUILD_WORKER_IMAGE: ubuntu
-      PYTHON:  3.9
+      PYTHON:  "/usr/bin/python3.9"
     - ID: macOS
       APPVEYOR_BUILD_WORKER_IMAGE: macOS
-      PYTHON: 3.9
+      PYTHON: "/usr/local/opt/python@3.9/bin/python3.9"
     - ID: VS2019_Py311
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python311-x64"
