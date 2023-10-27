@@ -90,8 +90,6 @@ install:
 test_script:
   # Run tests
   - "echo 'About to run tests...'"
-test_script:
-  # Run tests
   - sh: |
       if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu2204" ]]; then
         echo 'About to run tests on Ubuntu...'
