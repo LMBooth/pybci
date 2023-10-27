@@ -21,11 +21,11 @@ The code snippet can be used below to run a simple classification task using the
 
 ArduinoHandGrasp
 ----------------
-.. image:: https://img.shields.io/badge/Pseudo_Device-Not_Available-blue
+.. image:: https://img.shields.io/badge/Pseudo_Device-Not_Available-red
    :alt: pseudo device not available shield
-.. image:: https://img.shields.io/badge/Arduino-Required-blue
+.. image:: https://img.shields.io/badge/Arduino-Required-yellow
    :alt: arduino required shield
-.. image:: https://img.shields.io/badge/Myoware_Muscle_Sensor-Required-blue
+.. image:: https://img.shields.io/badge/Myoware_Muscle_Sensor-Required-yellow
    :alt: Myoware required shield
    
 - **GitHub Link**: `ArduinoHandGrasp/ <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/ArduinoHandGrasp>`_
@@ -33,9 +33,9 @@ ArduinoHandGrasp
 
 PupilLabsRightLeftEyeClose
 --------------------------
-.. image:: https://img.shields.io/badge/Pseudo_Device-Not_Available-blue
+.. image:: https://img.shields.io/badge/Pseudo_Device-Not_Available-red
    :alt: pseudo device not available shield
-.. image:: https://img.shields.io/badge/Pupil_Labs_Hardware-Required-blue
+.. image:: https://img.shields.io/badge/Pupil_Labs_Hardware-Required-yellow
    :alt: pupil required shield
 
 - **GitHub Link**: `PupilLabsRightLeftEyeClose/ <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/PupilLabsRightLeftEyeClose/>`_
@@ -43,11 +43,11 @@ PupilLabsRightLeftEyeClose
 
 MultimodalPupilLabsEEG
 -----------------------
-.. image:: https://img.shields.io/badge/Pseudo_Device-Not_Available-blue
+.. image:: https://img.shields.io/badge/Pseudo_Device-Not_Available-red
    :alt: pseudo device not available shield
-.. image:: https://img.shields.io/badge/Pupil_Labs_Hardware-Required-blue
+.. image:: https://img.shields.io/badge/Pupil_Labs_Hardware-Required-yellow
    :alt: pupil required shield
-.. image:: https://img.shields.io/badge/ioBio_EEG_Device-Required-blue
+.. image:: https://img.shields.io/badge/ioBio_EEG_Device-Required-yellow
    :alt: iobio EEG device required shield
 
 - **GitHub Link**: `MultimodalPupilLabsEEG/ <https://github.com/LMBooth/pybci/tree/main/pybci/Examples/MultimodalPupilLabsEEG>`_
