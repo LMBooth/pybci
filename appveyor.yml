@@ -31,17 +31,12 @@ install:
         sudo apt-get update
         sudo apt-get install -y python3-pip
         python3 -m pip install --upgrade pip
-        # Install Miniconda
-        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-        bash miniconda.sh -b -p $HOME/miniconda
-        export PATH="$HOME/miniconda/bin:$PATH"
-        conda config --set always_yes yes --set changeps1 no
-        conda update -q conda
-        # Create a new conda environment with the desired Python version
-        conda create -q -n test-environment python=$PYTHON
-        source activate test-environment || conda activate test-environment  # Updated this line
-        # Install LSL
-        conda install -c conda-forge liblsl
+        wget https://github.com/sccn/liblsl/releases/download/${lsltag}/liblsl-${lslversion}-Linux_amd64.deb -O liblsl.deb
+        
+        sudo dpkg -x liblsl.deb LSL
+
+        sudo apt-get install cmake
+        cmake -S . -B build -DQt5_DIR=/usr/lib/x86_64-linux-gnu/cmake/Qt5 -Dlsl_DIR=LSL/usr/local/share/LSL/ %CMakeArgs%
         ;;
       "macOS")
         # Install Brew (if not already installed)
