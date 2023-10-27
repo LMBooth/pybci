@@ -26,7 +26,7 @@ matrix:
   fast_finish: true
 
 install:
-  - ps: $ErrorActionPreference = 'Stop'; if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio") { $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH" }
+  - ps: $ErrorActionPreference = 'Stop'; if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") { $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH" }
   - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
   - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
   # Update PATH
@@ -41,7 +41,7 @@ install:
   
   # Download and unzip liblsl
   - ps: |
-      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio") {
+      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") {
           Invoke-WebRequest -Uri 'https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-Win_amd64.zip' -OutFile 'liblsl.zip'
           Expand-Archive -Path liblsl.zip -DestinationPath liblsl
       }
@@ -56,7 +56,7 @@ install:
   
   # Move DLL to correct directory (Windows) or Set PYLSL_LIB environment variable (Linux, macOS)
   - ps: |
-      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio") {
+      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") {
           Move-Item liblsl/bin/lsl.dll $env:PYTHON/Lib/site-packages/
           $env:PYLSL_LIB="$env:PYTHON\Lib\site-packages\lsl.dll"
       }
