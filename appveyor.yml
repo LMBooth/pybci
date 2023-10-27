@@ -5,7 +5,7 @@ environment:
   global:
     PYLSL_LIB: lsl.dll
   matrix:
-    - ID: ubuntu
+    - ID: Ubuntu
       APPVEYOR_BUILD_WORKER_IMAGE: ubuntu
       PYTHON: "/usr/bin/python3"
     - ID: macOS
@@ -20,7 +20,6 @@ environment:
     - ID: VS2019_Py39
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python39-x64"
-
 
 matrix:
   fast_finish: true
