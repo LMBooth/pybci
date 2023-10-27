@@ -3,7 +3,8 @@ build: off
 
 environment:
   global:
-    PYLSL_LIB: lsl.dll
+    PYLSL_LIB: /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/liblsl.so
+    #PYLSL_LIB: lsl.dll
   matrix:
     - ID: Ubuntu
       APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2204
@@ -31,17 +32,13 @@ install:
         sudo apt-get update
         sudo apt-get install -y python3-pip cmake
         python3 -m pip install --upgrade pip
-        
         # Download and build liblsl
         wget https://github.com/sccn/liblsl/releases/download/1.13.0/liblsl-1.13.0-bionic_amd64.deb -O liblsl.deb
         sudo dpkg -i liblsl.deb
-        
         # Create necessary directory
         mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
-        
         # Copy the liblsl.so library to the specified directory
         cp /usr/local/lib/liblsl* /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/
-
         ;;
       "macOS")
         # Install Brew (if not already installed)
@@ -82,6 +79,10 @@ test_script:
   - sh: |
       if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu2204" ]]; then
         echo 'About to run tests on Ubuntu...'
+        # Diagnostic commands
+        echo "PYLSL_LIB: $PYLSL_LIB"
+        ls -alh /usr/local/lib/
+        ls -alh /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
         ls -alh $PWD/liblsl/usr/lib/
         echo $PYLSL_LIB
         which python3
