@@ -6,8 +6,7 @@ environment:
     PYLSL_LIB: lsl.dll
   matrix:
     - ID: Ubuntu
-      APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2104
-      PY:  3.9
+      APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2204
     - ID: macOS
       APPVEYOR_BUILD_WORKER_IMAGE: macOS
       PY: 3.9
