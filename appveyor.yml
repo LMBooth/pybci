@@ -29,7 +29,7 @@ install:
   - sh: |
       set -e  # Exit immediately if a command exits with a non-zero status.
       case $APPVEYOR_BUILD_WORKER_IMAGE in
-      "ubuntu")
+      "ubuntu2204")
         echo "Updating system..."
         sudo apt-get update
 
