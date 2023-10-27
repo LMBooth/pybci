@@ -2,6 +2,7 @@ import numpy as np
 from scipy.signal import welch
 
 import warnings
+import antropy
 from ..Configuration.FeatureSettings import GeneralFeatureChoices
 # Filter out UserWarning messages from the scipy package, could be worth moving to init and applying printdebug print levels? (typically nans, 0 and infs causing errors)
 warnings.filterwarnings("ignore", category=UserWarning, module="scipy") # used to reduce print statements from constant signals being applied
@@ -9,6 +10,7 @@ warnings.filterwarnings("ignore", category=UserWarning, module="antropy") # used
 warnings.filterwarnings("ignore", category=RuntimeWarning, module="antropy") # used to reduce print statements from constant signals being applied
 warnings.filterwarnings("ignore", category=RuntimeWarning, module="numpy") # used to reduce print statements from constant signals being applied
 #warnings.filterwarnings("ignore", category=RuntimeWarning, module="pybci") # used to reduce print statements from constant signals being applied
+
 
 class GenericFeatureExtractor():
     def __init__(self, freqbands = [[1.0, 4.0], [4.0, 8.0], [8.0, 12.0], [12.0, 20.0]], featureChoices = GeneralFeatureChoices()):
@@ -31,9 +33,6 @@ class GenericFeatureExtractor():
             self.featureChoices.slopeSignChange]
         )
         self.numFeatures = (len(self.freqbands)*self.featureChoices.psdBand)+selFeats
-
-        if self.featureChoices.appr_entropy or self.featureChoices.perm_entropy or self.featureChoices.spec_entropy or self.featureChoices.svd_entropy:
-            import antropy
 
     def ProcessFeatures(self, epoch, sr, target):
         """Allows 2D time series data to be passed with given sample rate to get various time+frequency based features.
