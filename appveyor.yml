@@ -62,7 +62,6 @@ install:
 
 
 test_script:
-test_script:
   - "echo 'About to run tests...'"
   - ps: |
       $env:PYTEST_ERRORLEVEL=0
