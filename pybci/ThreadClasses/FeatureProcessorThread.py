@@ -1,7 +1,7 @@
 import threading
 import queue
 import time
-from ..Utils.FeatureExtractor import GenericFeatureExtractor
+
 from ..Utils.Logger import Logger
 from ..Configuration.EpochSettings import GlobalEpochSettings
 
@@ -10,8 +10,11 @@ class FeatureProcessorThread(threading.Thread):
     def __init__(self, closeEvent, trainTestEvent, dataQueueTrain,dataQueueTest,
                 featureQueueTest,featureQueueTrain,  totalDevices,markerCountRetrieveEvent,markerCountQueue, customEpochSettings = {}, 
                 globalEpochSettings = GlobalEpochSettings(),logger = Logger(Logger.INFO), 
-                featureExtractor = GenericFeatureExtractor()):
+                featureExtractor = None):
         super().__init__()
+        if featureExtractor == None:
+            from ..Utils.FeatureExtractor import GenericFeatureExtractor
+            featureExtractor = GenericFeatureExtractor()
         self.markerCountQueue = markerCountQueue
         self.trainTestEvent = trainTestEvent
         self.closeEvent = closeEvent
