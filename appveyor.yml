@@ -64,6 +64,12 @@ install:
         conda activate test-environment  # Updated this line
         # Install LSL
         conda install -c conda-forge liblsl
+        # Diagnostic: List the contents of the Conda environment
+        conda list
+        # Diagnostic: Locate the LSL library
+        find $HOME/miniconda -name 'liblsl*'
+        # Diagnostic: Check the library path
+        echo $LD_LIBRARY_PATH
         ;;
       "macOS")
         # Install Brew (if not already installed)
