@@ -90,24 +90,36 @@ install:
 test_script:
   # Run tests
   - "echo 'About to run tests...'"
-  - ps: |
-      $env:PYTEST_ERRORLEVEL=0
-      try {
-        pytest Tests/
-      } catch {
-        $env:PYTEST_ERRORLEVEL=$_.Exception.HResult
-      }
-      if ($env:PYTEST_ERRORLEVEL -ne 0) {
-        echo 'Pytest failed. Terminating python process.'
-        Stop-Process -Name python -Force
-      }
+test_script:
+  # Run tests
   - sh: |
-      export PYTEST_ERRORLEVEL=0
-      python3 -m pytest -vv Tests/ || PYTEST_ERRORLEVEL=$?
-      if [[ $PYTEST_ERRORLEVEL != 0 ]]; then
-        echo 'Pytest failed. Terminating python process.'
-        pkill -f python3 || echo 'No Python3 process found to terminate.'
+      if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu2204" ]]; then
+        echo 'About to run tests on Ubuntu...'
+        which python3
+        python3 --version
+        ls -alh Tests/
+        export PYTEST_ERRORLEVEL=0
+        python3 -m pytest -vv Tests/ || PYTEST_ERRORLEVEL=$?
+        if [[ $PYTEST_ERRORLEVEL != 0 ]]; then
+          echo 'Pytest failed. Terminating python process.'
+          pkill -f python3 || echo 'No Python3 process found to terminate.'
+        fi
       fi
+  - ps: |
+      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -ne "ubuntu2204") {
+        echo 'About to run tests on non-Ubuntu...'
+        $env:PYTEST_ERRORLEVEL=0
+        try {
+          pytest Tests/
+        } catch {
+          $env:PYTEST_ERRORLEVEL=$_.Exception.HResult
+        }
+        if ($env:PYTEST_ERRORLEVEL -ne 0) {
+          echo 'Pytest failed. Terminating python process.'
+          Stop-Process -Name python -Force
+        }
+      }
+
   - "ruff ."
   - "echo 'Finished running tests.'"
   - ps: if ($LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode"; exit $LastExitCode }
