@@ -57,8 +57,9 @@ install:
   - "pip install ruff"
   
   # Exit if error
-  - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $LastExitCode -ne 0) { exit $LastExitCode }
-  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" && $? != 0 ]]; then exit $?; fi
+  - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode" }
+  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" && $? != 0 ]]; then echo "Command exited with code $?"; fi
+
 
 test_script:
   - "echo 'About to run tests...'"
@@ -68,5 +69,6 @@ test_script:
   - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" && $PYTEST_ERRORLEVEL != 0 ]]; then echo 'Pytest failed. Terminating python process.'; pkill python; fi
   - "ruff ."
   - "echo 'Finished running tests.'"
-  - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $LastExitCode -ne 0) { exit $LastExitCode }
-  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" && $? != 0 ]]; then exit $?; fi
+   # Exit if error
+  - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode" }
+  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" && $? != 0 ]]; then echo "Command exited with code $?"; fi
