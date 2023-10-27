@@ -44,7 +44,7 @@ install:
   
   # Upgrade pip, setuptools, wheel
   - sh: |
-      if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
+      if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" || $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then
           python3 -m pip install --upgrade pip
           python3 --version
           pip3 --version
@@ -64,10 +64,10 @@ install:
       }
   - sh: |
       if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
-          wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-bionic_amd64.tar.bz2 -O liblsl.tar.bz2
-          tar xjf liblsl.tar.bz2 -C liblsl
+          wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-bionic_amd64.deb -O liblsl.deb
+          dpkg -x liblsl.deb liblsl
       elif [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then
-          wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-macOS.tar.bz2 -O liblsl.tar.bz2
+          wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-OSX_amd64.tar.bz2 -O liblsl.tar.bz2
           tar xjf liblsl.tar.bz2 -C liblsl
       fi
   
