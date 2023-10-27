@@ -5,20 +5,20 @@ environment:
   global:
     PYLSL_LIB: lsl.dll
   matrix:
-    - ID: Ubuntu
-      image: ubuntu
+    - ID: ubuntu
+      APPVEYOR_BUILD_WORKER_IMAGE: ubuntu
       PYTHON: "/usr/bin/python3"
     - ID: macOS
-      image: macOS
+      APPVEYOR_BUILD_WORKER_IMAGE: macOS
       PYTHON: "/usr/local/bin/python3"
     - ID: VS2019_Py311
-      image: Visual Studio 2019
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python311-x64"
     - ID: VS2019_Py310
-      image: Visual Studio 2019
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python310-x64"
     - ID: VS2019_Py39
-      image: Visual Studio 2019
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python39-x64"
 
 
