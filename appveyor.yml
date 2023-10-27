@@ -57,8 +57,6 @@ install:
   - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $LastExitCode -ne 0) { exit $LastExitCode }
   - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" && $? != 0 ]]; then exit $?; fi
 
-build: off
-
 test_script:
   - "echo 'About to run tests...'"
   - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio") { $env:PYTEST_ERRORLEVEL=0; pytest Tests/ || $env:PYTEST_ERRORLEVEL=$LastExitCode }
