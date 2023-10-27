@@ -20,9 +20,9 @@ matrix:
   fast_finish: true
 
 install:
-  - ps: $ErrorActionPreference = 'Stop'; if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio") { $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH" }
-  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
-  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
+  #- ps: $ErrorActionPreference = 'Stop'; if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio") { $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH" }
+  #- sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
+  #- sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
   # Update PATH
   - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio") { $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH" }
   - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
@@ -57,8 +57,8 @@ install:
   - "pip install ruff"
   
   # Exit if error
-  - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode" }
-  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" && $? != 0 ]]; then echo "Command exited with code $?"; fi
+  #- ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode" }
+  #- sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" && $? != 0 ]]; then echo "Command exited with code $?"; fi
 
 
 test_script:
