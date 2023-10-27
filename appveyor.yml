@@ -25,9 +25,9 @@ matrix:
   fast_finish: true
 
 install:
-  #- ps: $ErrorActionPreference = 'Stop'; if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") { $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH" }
-  #- sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
-  #- sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
+  - ps: $ErrorActionPreference = 'Stop'; if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") { $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH" }
+  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
+  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
   # Update PATH
   - sh: |
       if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
@@ -82,22 +82,22 @@ install:
           export PYLSL_LIB=$PWD/liblsl/lib/liblsl64.so
       fi
     
-  # install dependencies
+# install dependencies
   - ps: |
-    - "pip uninstall -y urllib3"
-    - "pip install --upgrade urllib3>=2.0.5"
-    - "pip install ."
-    - "pip install pytest"
-    - "pip install pytest-timeout"
-    - "pip install ruff"
+      pip uninstall -y urllib3
+      pip install --upgrade urllib3>=2.0.5
+      pip install .
+      pip install pytest
+      pip install pytest-timeout
+      pip install ruff
   - sh: |
-    - "pip3 install --upgrade urllib3>=2.0.5"
-    - "pip3 install ."
-    - "pip3 install pytest"
-    - "pip3 install pytest-timeout"
-    - "pip3 install ruff"
-  
-  # Exit if error
+      pip3 install --upgrade urllib3>=2.0.5
+      pip3 install .
+      pip3 install pytest
+      pip3 install pytest-timeout
+      pip3 install ruff
+
+# Exit if error
   - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode" }
   - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" && $? != 0 ]]; then echo "Command exited with code $?"; fi
 
