@@ -32,8 +32,6 @@ install:
           sudo apt-get update
           sudo apt-get install -y python3-pip
           python3 -m pip install --upgrade pip
-          export PATH=$PATH:/home/appveyor/.local/bin
-
       elif [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then
           export PATH=$PYTHON:$PYTHON/Scripts:$PATH
       fi
@@ -94,8 +92,7 @@ install:
   - sh: |
       python3 -m pip install --upgrade urllib3>=2.0.5
       python3 -m pip install .
-      python3 -m pip install pytest
-      python3 -m pip install pytest-timeout
+      python3 -m pip install pytest pytest-timeout
       python3 -m pip install ruff
 
 # Exit if error
@@ -113,7 +110,7 @@ test_script:
         $env:PYTEST_ERRORLEVEL=$_.Exception.HResult
       }
   - sh: |
-      export PATH=$PATH:/home/appveyor/.local/bin  # Option 1
+      export PATH=$PATH:/home/appveyor/.local/bin  # Make sure it's here again
       PYTEST_ERRORLEVEL=0
       which pytest || echo "pytest not found before tests"
       pytest Tests/ || PYTEST_ERRORLEVEL=$?  # Now it should find pytest
