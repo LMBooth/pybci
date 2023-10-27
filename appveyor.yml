@@ -43,9 +43,18 @@ install:
       }
   
   # Upgrade pip, setuptools, wheel
-  - "python -m pip install --upgrade pip"
-  - "python --version"
-  - "pip --version"
+  - sh: |
+      if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
+          python3 -m pip install --upgrade pip
+          python3 --version
+          pip3 --version
+      fi
+  - ps: |
+      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") {
+          python -m pip install --upgrade pip
+          python --version
+          pip --version
+      }
   
   # Download and unzip liblsl
   - ps: |
