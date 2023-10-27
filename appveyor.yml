@@ -52,7 +52,11 @@ install:
           "
         )
       )
-  
+  - sh: |
+    if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
+        sudo apt-get update
+        sudo apt-get install -y python3-pip
+    fi
   # Upgrade pip, setuptools, wheel
   - "python -m pip install --upgrade pip"
   - "python --version"
