@@ -19,11 +19,6 @@ environment:
 matrix:
   fast_finish: true
 
-
-Sure, here's the install section of your appveyor.yml file with adaptations for Windows, Linux, and macOS:
-
-yml
-Copy code
 install:
   # Update PATH
   - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio") { $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH" }
