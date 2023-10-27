@@ -1,11 +1,9 @@
-import sklearn
 from sklearn.preprocessing import StandardScaler
-from sklearn import svm
-import torch
-
 from sklearn.model_selection import train_test_split
 import numpy as np
-
+from sklearn import svm
+from sklearn.metrics import accuracy_score
+from torch import Tensor, no_grad, argmax
 class Classifier():
     classifierLibrary = "sklearn" # current default, should be none or somthing different?
     clf = svm.SVC(kernel = "rbf")#C=c, kernel=k, degree=d, gamma=g, coef0=c0, tol=t, max_iter=i)
@@ -16,6 +14,7 @@ class Classifier():
     def __init__(self, clf = None, model = None, torchModel = None):
         super().__init__()
         if clf is not None:
+            
             self.clf = clf
         elif model is not None:
             self.model = model
@@ -57,7 +56,7 @@ class Classifier():
             elif self.classifierLibrary == "sklearn":
                 self.clf.fit(x_train, y_train)
                 y_predictions = self.clf.predict(x_test)
-                self.accuracy = sklearn.metrics.accuracy_score(y_test, y_predictions)
+                self.accuracy = accuracy_score(y_test, y_predictions)
             elif self.classifierLibrary == "tensor":
                 self.model.fit(np.array(x_train), np.array(y_train), verbose=0) # epochs and batch_size should be customisable
                 self.loss, self.accuracy = self.model.evaluate(np.array(x_test), np.array(y_test), verbose=0)
@@ -83,14 +82,14 @@ class Classifier():
             else:    # assume multi-classification
                 return np.argmax(predictions[0])
         elif self.classifierLibrary == "pyTorch":
-            x = torch.Tensor(np.expand_dims(x, axis=0))
+            x = Tensor(np.expand_dims(x, axis=0))
             self.pymodel.eval()
-            with torch.no_grad():
+            with no_grad():
                 predictions = self.pymodel(x)
                 if len (predictions[0]) == 1: # assume binary classification
                     return 1 if predictions[0] > 0.5 else 0
                 else:    # assume multi-classification
-                    return torch.argmax(predictions).item()
+                    return argmax(predictions).item()
 
         else:
             print("no classifier library selected")

@@ -10,7 +10,6 @@ from .ThreadClasses.ClassifierThread import ClassifierThread
 from .Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
 import queue
 import threading
-import tensorflow as tf
 
 class PyBCI:
     globalEpochSettings = GlobalEpochSettings()
@@ -316,6 +315,7 @@ class PyBCI:
         else:
             self.clf = None
             self.logger.log(Logger.INFO," Invalid or no sklearn classifier passed to clf. Checking tensorflow model... ")
+            import tensorflow as tf
             if isinstance(model, tf.keras.Model):
                 self.model = model
             else:

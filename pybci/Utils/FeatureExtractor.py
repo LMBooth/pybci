@@ -1,6 +1,6 @@
 import numpy as np
 from scipy.signal import welch
-import antropy
+
 import warnings
 from ..Configuration.FeatureSettings import GeneralFeatureChoices
 # Filter out UserWarning messages from the scipy package, could be worth moving to init and applying printdebug print levels? (typically nans, 0 and infs causing errors)
@@ -31,6 +31,9 @@ class GenericFeatureExtractor():
             self.featureChoices.slopeSignChange]
         )
         self.numFeatures = (len(self.freqbands)*self.featureChoices.psdBand)+selFeats
+
+        if self.featureChoices.appr_entropy or self.featureChoices.perm_entropy or self.featureChoices.spec_entropy or self.featureChoices.svd_entropy:
+            import antropy
 
     def ProcessFeatures(self, epoch, sr, target):
         """Allows 2D time series data to be passed with given sample rate to get various time+frequency based features.

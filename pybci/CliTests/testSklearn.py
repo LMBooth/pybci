@@ -1,4 +1,4 @@
-from pybci import PyBCI
+from ..pybci import PyBCI
 import time
 import argparse
 from sklearn.neural_network import MLPClassifier
@@ -47,7 +47,7 @@ class CLI_testSklearnWrapper:
                 if test is False:
                     self.currentMarkers = self.bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
                     time.sleep(0.5) # wait for marker updates
-                    print("Markers received: " + str(self.currentMarkers) +" Accuracy: " + str(round(self.accuracy,2)), end="         \r")
+                    print("Markers received: " + str(self.currentMarkers) +" Accuracy: " + str(round(self.accuracy,2)), end="         \n\r")
                     if len(self.currentMarkers) > 1:  # check there is more then one marker type received
                         if min([self.currentMarkers[key][1] for key in self.currentMarkers]) > self.bci.minimumEpochsRequired:
                             classInfo = self.bci.CurrentClassifierInfo() # hangs if called too early
@@ -58,7 +58,7 @@ class CLI_testSklearnWrapper:
                 else:
                     markerGuess = self.bci.CurrentClassifierMarkerGuess() # when in test mode only y_pred returned
                     guess = [key for key, value in self.currentMarkers.items() if value[0] == markerGuess]
-                    print("Current marker estimation: " + str(guess), end="           \r")
+                    print("Current marker estimation: " + str(guess), end="           \n\r")
                     time.sleep(0.2)
             self.bci.StopThreads()
         except KeyboardInterrupt: # allow user to break while loop
