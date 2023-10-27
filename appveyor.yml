@@ -7,9 +7,10 @@ environment:
   matrix:
     - ID: Ubuntu
       APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2204
+      PYTHON: 3.10  # Added Python version
     - ID: macOS
       APPVEYOR_BUILD_WORKER_IMAGE: macOS
-      PY: 3.9
+      PYTHON: 3.9
     - ID: VS2019_Py311
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python311-x64"
@@ -102,10 +103,10 @@ test_script:
       }
   - sh: |
       export PYTEST_ERRORLEVEL=0
-      pytest Tests/ || PYTEST_ERRORLEVEL=$?
+      python3 -m pytest -vv Tests/ || PYTEST_ERRORLEVEL=$?
       if [[ $PYTEST_ERRORLEVEL != 0 ]]; then
         echo 'Pytest failed. Terminating python process.'
-        pkill python
+        pkill -f python3 || echo 'No Python3 process found to terminate.'
       fi
   - "ruff ."
   - "echo 'Finished running tests.'"
