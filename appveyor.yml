@@ -22,41 +22,27 @@ environment:
 
 matrix:
   fast_finish: true
-  
-install:
 
+install:
   - sh: |
-      if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
-          PYTHON="/usr/bin"
-          export PATH=$PYTHON:$PYTHON/Scripts:$PATH
-          sudo apt-get update
-          sudo apt-get install -y python3-pip
-          python3 -m pip install --upgrade pip
-      elif [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then
-          export PATH=$PYTHON:$PYTHON/Scripts:$PATH
-      fi
+      case $APPVEYOR_BUILD_WORKER_IMAGE in
+      "ubuntu")
+        sudo apt-get update
+        sudo apt-get install -y python3-pip
+        python3 -m pip install --upgrade pip
+        ;;
+      "macOS")
+        export PATH=$PY:$PY/Scripts:$PATH
+        ;;
+      esac
+
   - ps: |
-      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") {
+      switch ($env:APPVEYOR_BUILD_WORKER_IMAGE) {
+        "Visual Studio 2019" {
           $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH"
+        }
       }
-      
-  - ps: $ErrorActionPreference = 'Stop'; if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") { $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH" }
-  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
-  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
-  # Upgrade pip, setuptools, wheel
-  - sh: |
-      if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" || $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then
-          python3 -m pip install --upgrade pip
-          python3 --version
-          pip3 --version
-      fi
-  - ps: |
-      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") {
-          python -m pip install --upgrade pip
-          python --version
-          pip --version
-      }
-  
+
   # Download and unzip liblsl
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") {
@@ -64,43 +50,44 @@ install:
           Expand-Archive -Path liblsl.zip -DestinationPath liblsl
       }
   - sh: |
-      if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
-          wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-bionic_amd64.deb -O liblsl.deb
-          dpkg -x liblsl.deb liblsl
-      elif [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then
-          wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-OSX_amd64.tar.bz2 -O liblsl.tar.bz2
-          tar xjf liblsl.tar.bz2 -C liblsl
-      fi
+      case $APPVEYOR_BUILD_WORKER_IMAGE in
+      "ubuntu")
+        wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-bionic_amd64.deb -O liblsl.deb
+        dpkg -x liblsl.deb liblsl
+        ;;
+      "macOS")
+        wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-OSX_amd64.tar.bz2 -O liblsl.tar.bz2
+        tar xjf liblsl.tar.bz2 -C liblsl
+        ;;
+      esac
   
-  # Move DLL to correct directory (Windows) or Set PYLSL_LIB environment variable (Linux, macOS)
+ # Move DLL to correct directory (Windows) or Set PYLSL_LIB environment variable (Linux, macOS)
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") {
           Move-Item liblsl/bin/lsl.dll $env:PYTHON/Lib/site-packages/
           $env:PYLSL_LIB="$env:PYTHON\Lib\site-packages\lsl.dll"
       }
   - sh: |
-      if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" ]]; then
+      if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio 2019" ]]; then
           export PYLSL_LIB=$PWD/liblsl/lib/liblsl64.so
       fi
-# install dependencies
+
+# Install dependencies
   - ps: |
-      pip install --upgrade urllib3>=2.0.5
+      pip install --upgrade --no-warn-script-location urllib3>=2.0.5
       pip install .
-      pip install pytest
-      pip install pytest-timeout
-      pip install ruff
+      pip install pytest pytest-timeout ruff
   - sh: |
-      python3 -m pip install --upgrade urllib3>=2.0.5
+      python3 -m pip install --upgrade --no-warn-script-location urllib3>=2.0.5
       python3 -m pip install .
-      python3 -m pip install pytest pytest-timeout
-      python3 -m pip install ruff
+      python3 -m pip install pytest pytest-timeout ruff
 
 # Exit if error
-  - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode" }
-  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" && $? != 0 ]]; then echo "Command exited with code $?"; fi
-
+  - ps: if ($LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode"; exit $LastExitCode }
+  - sh: if [[ $? != 0 ]]; then echo "Command exited with code $?"; exit $?; fi
 
 test_script:
+  # Run tests
   - "echo 'About to run tests...'"
   - ps: |
       $env:PYTEST_ERRORLEVEL=0
@@ -109,22 +96,18 @@ test_script:
       } catch {
         $env:PYTEST_ERRORLEVEL=$_.Exception.HResult
       }
-  - sh: |
-      export PATH=$PATH:/home/appveyor/.local/bin  # Make sure it's here again
-      PYTEST_ERRORLEVEL=0
-      which pytest || echo "pytest not found before tests"
-      pytest Tests/ || PYTEST_ERRORLEVEL=$?  # Now it should find pytest
-  - ps: |
-      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $env:PYTEST_ERRORLEVEL -ne 0) {
+      if ($env:PYTEST_ERRORLEVEL -ne 0) {
         echo 'Pytest failed. Terminating python process.'
         Stop-Process -Name python -Force
       }
   - sh: |
-      if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" && $PYTEST_ERRORLEVEL != 0 ]]; then
+      export PYTEST_ERRORLEVEL=0
+      pytest Tests/ || PYTEST_ERRORLEVEL=$?
+      if [[ $PYTEST_ERRORLEVEL != 0 ]]; then
         echo 'Pytest failed. Terminating python process.'
         pkill python
       fi
   - "ruff ."
   - "echo 'Finished running tests.'"
-  - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode" }
-  - sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" && $? != 0 ]]; then echo "Com
+  - ps: if ($LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode"; exit $LastExitCode }
+  - sh: if [[ $? != 0 ]]; then echo "Command exited with code $?"; exit $?; fi
