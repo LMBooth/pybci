@@ -96,7 +96,10 @@ install:
       if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio" ]]; then
           export PYLSL_LIB=$PWD/liblsl/lib/liblsl64.so
       fi
-    
+- sh: |
+    python3 --version  # Check Python version    
+- sh: |
+    python3.9 --version  # Check Python 3.9 version
 # install dependencies
   - ps: |
       pip uninstall -y urllib3
