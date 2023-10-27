@@ -32,7 +32,8 @@ install:
           sudo apt-get update
           sudo apt-get install -y python3-pip
           python3 -m pip install --upgrade pip
-          which pytest || echo "pytest not found"
+          export PATH=$PATH:/home/appveyor/.local/bin
+
       elif [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then
           export PATH=$PYTHON:$PYTHON/Scripts:$PATH
       fi
