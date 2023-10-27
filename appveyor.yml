@@ -112,9 +112,10 @@ test_script:
         $env:PYTEST_ERRORLEVEL=$_.Exception.HResult
       }
   - sh: |
+      export PATH=$PATH:/home/appveyor/.local/bin  # Option 1
       PYTEST_ERRORLEVEL=0
       which pytest || echo "pytest not found before tests"
-      pytest Tests/ || PYTEST_ERRORLEVEL=$?
+      pytest Tests/ || PYTEST_ERRORLEVEL=$?  # Now it should find pytest
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $env:PYTEST_ERRORLEVEL -ne 0) {
         echo 'Pytest failed. Terminating python process.'
