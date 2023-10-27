@@ -83,18 +83,18 @@ install:
       fi
     
   # Uninstall and reinstall urllib3
-  - "pip uninstall -y urllib3"
-  - "pip install --upgrade urllib3>=2.0.5"
+  - "pip3 uninstall -y urllib3"
+  - "pip3 install --upgrade urllib3>=2.0.5"
   
   # Install other dependencies
-  - "pip install ."
+  - "pip3 install ."
   
   # Install pytest
-  - "pip install pytest"
-  - "pip install pytest-timeout"
+  - "pip3 install pytest"
+  - "pip3 install pytest-timeout"
   
   # Install ruff
-  - "pip install ruff"
+  - "pip3 install ruff"
   
   # Exit if error
   - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode" }
