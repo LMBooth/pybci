@@ -100,11 +100,11 @@ install:
       pip install pytest-timeout
       pip install ruff
   - sh: |
-      pip3 install --upgrade urllib3>=2.0.5
-      pip3 install .
-      pip3 install pytest
-      pip3 install pytest-timeout
-      pip3 install ruff
+      $PYTHON -m pip install --upgrade urllib3>=2.0.5
+      $PYTHON -m pip install .
+      $PYTHON -m pip install pytest
+      $PYTHON -m pip install pytest-timeout
+      $PYTHON -m pip install ruff
 
 # Exit if error
   - ps: if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio" -and $LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode" }
