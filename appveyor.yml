@@ -22,28 +22,34 @@ matrix:
 
 
 install:
-  - ps: |
-      $ErrorActionPreference = 'Stop'
-      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio") {
-        $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH"
-        Invoke-WebRequest -Uri 'https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-Win_amd64.zip' -OutFile 'liblsl.zip'
-        Expand-Archive -Path liblsl.zip -DestinationPath liblsl
-        Move-Item liblsl/bin/lsl.dll $env:PYTHON/Lib/site-packages/
-        $env:PYLSL_LIB="$env:PYTHON\Lib\site-packages\lsl.dll"
-      }
-  - sh: |
-      set -e
-      if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]] || [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then
-        export PATH=$PYTHON:$PYTHON/Scripts:$PATH
-        if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
-          wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-bionic_amd64.tar.bz2 -O liblsl.tar.bz2
-        else
-          wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-macOS.tar.bz2 -O liblsl.tar.bz2
-        fi
-        tar xjf liblsl.tar.bz2 -C liblsl
-        export PYLSL_LIB=$PWD/liblsl/lib/liblsl64.so
-      fi
-
+  - cmd: |
+      @echo off
+      if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2019" (
+        powershell.exe -Command "& {
+          $ErrorActionPreference = 'Stop';
+          $env:PATH = "$env:PYTHON;$env:PYTHON\Scripts;$env:PATH";
+          Invoke-WebRequest -Uri 'https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-Win_amd64.zip' -OutFile 'liblsl.zip';
+          Expand-Archive -Path liblsl.zip -DestinationPath liblsl;
+          Move-Item liblsl/bin/lsl.dll $env:PYTHON/Lib/site-packages/;
+          $env:PYLSL_LIB="$env:PYTHON\Lib\site-packages\lsl.dll";
+        }"
+      ) else (
+        if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "ubuntu" (
+          bash -c "
+            export PATH=$PYTHON:$PYTHON/Scripts:$PATH;
+            wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-bionic_amd64.tar.bz2 -O liblsl.tar.bz2;
+            tar xjf liblsl.tar.bz2 -C liblsl;
+            export PYLSL_LIB=$PWD/liblsl/lib/liblsl64.so;
+          "
+        ) else (
+          bash -c "
+            export PATH=$PYTHON:$PYTHON/Scripts:$PATH;
+            wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-macOS.tar.bz2 -O liblsl.tar.bz2;
+            tar xjf liblsl.tar.bz2 -C liblsl;
+            export PYLSL_LIB=$PWD/liblsl/lib/liblsl64.so;
+          "
+        )
+      )
   
   # Upgrade pip, setuptools, wheel
   - "python -m pip install --upgrade pip"
