@@ -7,10 +7,10 @@ environment:
   matrix:
     - ID: Ubuntu
       APPVEYOR_BUILD_WORKER_IMAGE: ubuntu
-      PYTHON:  "/usr/bin/python3.9"
+      PY:  3.9
     - ID: macOS
       APPVEYOR_BUILD_WORKER_IMAGE: macOS
-      PYTHON: "/usr/local/opt/python@3.9/bin/python3.9"
+      PY: 3.9
     - ID: VS2019_Py311
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python311-x64"
@@ -23,9 +23,8 @@ environment:
 
 matrix:
   fast_finish: true
-
-install:
-  # Install Python 3.9 for max and linux
+  
+init:
   - sh: |
       if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
           sudo add-apt-repository ppa:deadsnakes/ppa -y
@@ -39,7 +38,9 @@ install:
           ln -s /usr/local/opt/python@3.9/bin/python3.9 /usr/local/bin/python3
           ln -s /usr/local/opt/python@3.9/bin/pip3.9 /usr/local/bin/pip3
       fi
-
+      
+install:
+  # Install Python 3.9 for max and linux
   - sh: |
       if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
           sudo apt-get update
