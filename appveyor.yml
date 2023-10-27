@@ -53,13 +53,23 @@ install:
   - sh: |
       case $APPVEYOR_BUILD_WORKER_IMAGE in
       "ubuntu")
-        wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-bionic_amd64.deb -O liblsl.deb
-        dpkg -x liblsl.deb liblsl
-        export PYLSL_LIB=$PWD/liblsl/usr/lib/liblsl64.so.1.16.0  # Update this line
+        # Install Miniconda
+        wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+        bash miniconda.sh -b -p $HOME/miniconda
+        export PATH="$HOME/miniconda/bin:$PATH"
+        conda config --set always_yes yes --set changeps1 no
+        conda update -q conda
+        # Create a new conda environment with the desired Python version
+        conda create -q -n test-environment python=$PYTHON
+        source activate test-environment
+        # Install LSL
+        conda install -c conda-forge liblsl
         ;;
       "macOS")
-        wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-OSX_amd64.tar.bz2 -O liblsl.tar.bz2
-        tar xjf liblsl.tar.bz2 -C liblsl
+        # Install Brew (if not already installed)
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        # Install LSL
+        brew install sccn/labstreaminglayer/lsl
         ;;
       esac
   
