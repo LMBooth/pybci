@@ -55,6 +55,7 @@ install:
       "ubuntu")
         wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-bionic_amd64.deb -O liblsl.deb
         dpkg -x liblsl.deb liblsl
+        export PYLSL_LIB=$PWD/liblsl/usr/lib/liblsl64.so.1.16.0  # Update this line
         ;;
       "macOS")
         wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-OSX_amd64.tar.bz2 -O liblsl.tar.bz2
@@ -68,10 +69,10 @@ install:
           Move-Item liblsl/bin/lsl.dll $env:PYTHON/Lib/site-packages/
           $env:PYLSL_LIB="$env:PYTHON\Lib\site-packages\lsl.dll"
       }
-  - sh: |
-      if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio 2019" ]]; then
-          export PYLSL_LIB=$PWD/liblsl/lib/liblsl64.so
-      fi
+  #- sh: |
+  #    if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio 2019" ]]; then
+  #        export PYLSL_LIB=$PWD/liblsl/usr/lib/liblsl64.so.1.16.0  # Update this line
+  #    fi
 
 # Install dependencies
   - ps: |
