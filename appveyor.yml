@@ -29,14 +29,19 @@ install:
       case $APPVEYOR_BUILD_WORKER_IMAGE in
       "ubuntu")
         sudo apt-get update
-        sudo apt-get install -y python3-pip
+        sudo apt-get install -y python3-pip cmake
         python3 -m pip install --upgrade pip
-        wget https://github.com/sccn/liblsl/releases/download/${lsltag}/liblsl-${lslversion}-Linux_amd64.deb -O liblsl.deb
         
-        sudo dpkg -x liblsl.deb LSL
+        # Download and build liblsl
+        wget https://github.com/sccn/liblsl/releases/download/1.13.0/liblsl-1.13.0-bionic_amd64.deb -O liblsl.deb
+        sudo dpkg -i liblsl.deb
+        
+        # Create necessary directory
+        mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
+        
+        # Copy the liblsl.so library to the specified directory
+        cp /usr/local/lib/liblsl* /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/
 
-        sudo apt-get install cmake
-        cmake -S . -B build -DQt5_DIR=/usr/lib/x86_64-linux-gnu/cmake/Qt5 -Dlsl_DIR=LSL/usr/local/share/LSL/ %CMakeArgs%
         ;;
       "macOS")
         # Install Brew (if not already installed)
@@ -45,13 +50,7 @@ install:
         brew install sccn/labstreaminglayer/lsl
         ;;
       esac
-  - sh: |
-      # Diagnostic Commands (separated from the above block to ensure they run)
-      echo 'Diagnostic Information:'
-      conda list || echo 'Failed to list conda packages.'
-      find $HOME/miniconda -name 'liblsl*' || echo 'Failed to find liblsl.'
-      echo $LD_LIBRARY_PATH
-  
+
  # Move DLL to correct directory (Windows) or Set PYLSL_LIB environment variable (Linux, macOS)
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") {
