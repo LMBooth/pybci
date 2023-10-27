@@ -29,7 +29,7 @@ install:
   #- sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
   #- sh: if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macOS" ]]; then set -e; export PATH=$PYTHON:$PYTHON/Scripts:$PATH; fi
   # Update PATH
-    - sh: |
+  - sh: |
       if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu" ]]; then
           sudo apt-get update
           sudo apt-get install -y python3-pip
