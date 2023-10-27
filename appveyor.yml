@@ -5,6 +5,7 @@ environment:
   global:
     PYLSL_LIB: lsl.dll
   matrix:
+    - ID: Ubu20core
       APPVEYOR_BUILD_WORKER_IMAGE: Ubuntu2004
     - image: ubuntu
       PYTHON: "/usr/bin/python3"
