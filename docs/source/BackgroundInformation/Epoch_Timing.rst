@@ -37,7 +37,7 @@ Highlighting these epochs on some psuedo emg data looks like the following:
 .. _nosplitExample:
 
 .. image:: ../Images/splitEpochs/example1.png
-   :target: https://github.com/LMBooth/pybci/blob/main/docs/Images/splitEpochs/example1.png
+   :target: https://github.com/LMBooth/pybci/blob/main/docs/source/Images/splitEpochs/example1.png
 
 
 Overlapping Epoch Windows
@@ -48,7 +48,7 @@ By setting splitCheck to True for :py:data:`baselineSettings.splitCheck` and :py
 .. _nooverlapExample:
 
 .. image:: ../Images/splitEpochs/example1split0.png
-   :target: https://github.com/LMBooth/pybci/blob/main/docs/Images/splitEpochs/example1split0.png
+   :target: https://github.com/LMBooth/pybci/blob/main/docs/source/Images/splitEpochs/example1split0.png
    
    
 By setting :py:data:`gs.windowOverlap` to 0.5 we can overlap 1 second epochs by 50% yielding 19 (2n-1) epochs, shown below:
@@ -56,7 +56,7 @@ By setting :py:data:`gs.windowOverlap` to 0.5 we can overlap 1 second epochs by 
 .. _overlapExample:
 
 .. image:: ../Images/splitEpochs/example1split50.png
-   :target: https://github.com/LMBooth/pybci/blob/main/docs/Images/splitEpochs/example1split50.png
+   :target: https://github.com/LMBooth/pybci/blob/main/docs/source/Images/splitEpochs/example1split50.png
    
    
 Debugging Timing Errors
