@@ -37,13 +37,22 @@ install:
       pip install .
       pip install pytest pytest-timeout ruff
   - sh: |
-      echo "Updating system..."
-      sudo apt-get update
-      sudo apt-get install -y python3-pip cmake git
-      python3 -m pip install --upgrade --no-warn-script-location urllib3>=2.0.5
-      python3 -m pip install .
-      python3 -m pip install pytest pytest-timeout ruff
-
+      if ($env:ID -eq 'macOS') {
+        Write-Host "Updating Homebrew and installing packages..."
+        brew update
+        brew install python3
+        python3.9 -m pip install --upgrade urllib3>=2.0.5
+        python3.9 -m pip install .
+        python3.9 -m pip install pytest pytest-timeout ruff
+      }
+      else {
+        Write-Host "Updating system..."
+        sudo apt-get update
+        sudo apt-get install -y python3-pip cmake git
+        python3 -m pip install --upgrade urllib3>=2.0.5
+        python3 -m pip install .
+        python3 -m pip install pytest pytest-timeout ruff
+      }
   - sh: |
       set -e  # Exit immediately if a command exits with a non-zero status.
       case $APPVEYOR_BUILD_WORKER_IMAGE in
