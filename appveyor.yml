@@ -38,7 +38,7 @@ install:
       pip install pytest pytest-timeout ruff
   - sh: |
       echo "Updating system..."
-      #sudo apt-get update
+      sudo apt-get update
       sudo apt-get install -y python3-pip cmake git
       python3 -m pip install --upgrade --no-warn-script-location urllib3>=2.0.5
       python3 -m pip install .
@@ -61,7 +61,7 @@ install:
         #ls -alh build
         echo "Creating target directory..."
         ls -alh /home/appveyor/.local/lib/python3.10/site-packages/pylsl
-        #mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
+        mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
         echo "Copying liblsl.so to target directory..."
         
         # Update the source path based on where the build outputs the library.
