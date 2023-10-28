@@ -96,7 +96,7 @@ class PyBCI:
         if createPseudoDevice:
             current_os = get_os()
             print("current_os: "+current_os)
-            current_os =  "macOS"
+            #current_os =  "macOS"
             if current_os == "Windows":
                 if isinstance(pseudoDeviceController,PseudoDeviceController):
                     pseudoDevice = pseudoDeviceController
@@ -111,8 +111,11 @@ class PyBCI:
                 print("Mac current_script_path: "+current_script_path)
                 desiredpath = current_script_path + "Utils/PseudoSubprocess.py"
                 self.process = subprocess.Popen([sys.executable,"-u", desiredpath], stdin=subprocess.PIPE)
+                print(f"Return code: {self.process.returncode}")
                 self.process.stdin.write(b'begin\n')
+                print(f"Return code: {self.process.returncode}")
                 self.process.stdin.flush()
+                print(f"Return code: {self.process.returncode}")
 
             elif current_os == "Linux":
                 current_script_path = os.path.abspath(__file__)
@@ -120,8 +123,11 @@ class PyBCI:
                 print("Linux current_script_path: "+current_script_path) 
                 desiredpath = current_script_path + "Utils/PseudoSubprocess.py"
                 self.process = subprocess.Popen([sys.executable,"-u",  desiredpath], stdin=subprocess.PIPE)
+                print(f"Return code: {self.process.returncode}")
                 self.process.stdin.write(b'begin\n')
+                print(f"Return code: {self.process.returncode}")
                 self.process.stdin.flush()
+                print(f"Return code: {self.process.returncode}")
         self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes, logger =self.logger)
         self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second   
         self.Connect()

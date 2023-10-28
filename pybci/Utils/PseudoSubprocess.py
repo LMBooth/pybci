@@ -5,12 +5,15 @@ import sys
 
 class PseudoSubprocess:
     def __init__(self):
+        print("initializing PseudoSubprocess")
         self.pd = PseudoDeviceController(execution_mode="thread")
 
     def begin_subprocess_pseudo(self):
+        print("attempting to begin streaming")
         self.pd.BeginStreaming()
 
     def stop_subprocess_pseudo(self):
+        print("attempting to stop streaming")
         self.pd.StopStreaming()
 
 if __name__ == '__main__':
