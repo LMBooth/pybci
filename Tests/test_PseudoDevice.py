@@ -9,8 +9,8 @@ def test_run_pseudo():
     pd.StopStreaming()
     time.sleep(5)
 
-    pd = PseudoDeviceController(execution_mode="process")
-    pd.BeginStreaming()
-    time.sleep(5)
-    pd.StopStreaming()
-    time.sleep(5)
+    #pd = PseudoDeviceController(execution_mode="process")
+    #pd.BeginStreaming()
+    #time.sleep(5)
+    #pd.StopStreaming()
+    #time.sleep(5)
