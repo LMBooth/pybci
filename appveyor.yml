@@ -28,9 +28,12 @@ matrix:
 install:
 # Install dependencies
   - ps: |
-      pip install --upgrade --no-warn-script-location urllib3>=2.0.5
-      pip install .
-      pip install pytest pytest-timeout ruff
+      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
+        # Windows-specific setup here
+        pip install --upgrade urllib3>=2.0.5
+        pip install .
+        pip install pytest pytest-timeout ruff
+      }
   - sh: |
       case $APPVEYOR_BUILD_WORKER_IMAGE in
         "ubuntu2204")
