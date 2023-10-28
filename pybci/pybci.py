@@ -107,14 +107,16 @@ class PyBCI:
                 self.pseudoDevice = pseudoDevice
             elif current_os == "macOS":
                 current_script_path = os.path.abspath(__file__)
+                current_script_path = current_script_path.replace("pybci.py", "", 1)  
                 print("Mac current_script_path: "+current_script_path)
-                desiredpath = current_script_path + "/PseudoSubprocess.py"
+                desiredpath = current_script_path + "/Utils/PseudoSubprocess.py"
                 self.process = subprocess.Popen(["python3",desiredpath], stdin=subprocess.PIPE)
                 self.process.stdin.write(b'begin\n')
                 self.process.stdin.flush()
 
             elif current_os == "Linux":
                 current_script_path = os.path.abspath(__file__)
+                current_script_path = current_script_path.replace("pybci.py", "", 1)  
                 print("Linux current_script_path: "+current_script_path) 
                 desiredpath = current_script_path + "/PseudoSubprocess.py"
                 self.process = subprocess.Popen(["python3", desiredpath], stdin=subprocess.PIPE)
