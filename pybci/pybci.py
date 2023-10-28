@@ -13,6 +13,7 @@ import threading
 
 import subprocess
 import os
+import sys
 import platform
 
 def get_os():
@@ -90,9 +91,7 @@ class PyBCI:
         self.streamChsDropDict = streamChsDropDict
         self.loggingLevel = loggingLevel
         self.logger = Logger(self.loggingLevel)
-        self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes, logger =self.logger)
-        self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
-        self.Connect()
+
         self.createPseudoDevice = createPseudoDevice
         if createPseudoDevice:
             current_os = get_os()
@@ -110,7 +109,7 @@ class PyBCI:
                 current_script_path = current_script_path.replace("pybci.py", "", 1)  
                 print("Mac current_script_path: "+current_script_path)
                 desiredpath = current_script_path + "Utils/PseudoSubprocess.py"
-                self.process = subprocess.Popen(["python3",desiredpath], stdin=subprocess.PIPE)
+                self.process = subprocess.Popen([sys.executable,desiredpath], stdin=subprocess.PIPE)
                 self.process.stdin.write(b'begin\n')
                 self.process.stdin.flush()
 
@@ -119,9 +118,12 @@ class PyBCI:
                 current_script_path = current_script_path.replace("pybci.py", "", 1)  
                 print("Linux current_script_path: "+current_script_path) 
                 desiredpath = current_script_path + "Utils/PseudoSubprocess.py"
-                self.process = subprocess.Popen(["python3", desiredpath], stdin=subprocess.PIPE)
+                self.process = subprocess.Popen([sys.executable, desiredpath], stdin=subprocess.PIPE)
                 self.process.stdin.write(b'begin\n')
                 self.process.stdin.flush()
+        self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes, logger =self.logger)
+        self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second   
+        self.Connect()
 
     def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
