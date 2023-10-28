@@ -40,6 +40,7 @@ class PseudoDeviceController:
         self.os_name = get_operating_system()
         print("os_name: "+self.os_name)
         print(self.os_name)  # Output: Windows/macOS/Linux depending on the system
+        #self.os_name = "Linux"
         if self.os_name == 'Windows':
             if self.execution_mode == 'process':
                 self.command_queue = Queue()
@@ -50,9 +51,10 @@ class PseudoDeviceController:
             else:
                 print("got this mode:"+execution_mode)
                 raise ValueError(f"Unsupported execution mode: {execution_mode}")
+            self.worker.start()
         else:
             self.device = PseudoDevice(*self.args, **self.kwargs, stop_signal=self.stop_signal)
-        self.worker.start()
+        
 
     def _run_device(self):
         device = PseudoDevice(*self.args, **self.kwargs, stop_signal=self.stop_signal)
@@ -79,10 +81,13 @@ class PseudoDeviceController:
         #    self.worker.BeginStreaming()
 
     def StopStreaming(self):
-        self.stop_signal.set()
-        self.worker.join(timeout=1)
-        if self.worker.is_alive():
-            self.worker.terminate()
+        if self.os_name == 'Windows':
+            self.stop_signal.set()
+            self.worker.join(timeout=1)
+            if self.worker.is_alive():
+                self.worker.terminate()
+        else:
+            self.device.StopStreaming()
 
 def precise_sleep(duration):
     end_time = time.time() + duration
