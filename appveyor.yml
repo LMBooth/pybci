@@ -7,7 +7,7 @@ environment:
     #PYLSL_LIB: lsl.dll
   matrix:
     - ID: macOS
-      APPVEYOR_BUILD_WORKER_IMAGE: macOS
+      APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
       PYTHON: 3.9
     - ID: VS2019_Py311
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
