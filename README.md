@@ -44,7 +44,7 @@ Once the liblsl library has been downloaded ```pip install pybci-package``` shou
 
 (currently using pybci-package due to pybci having name too similar with another package on pypi, [issue here.](https://github.com/pypi/support/issues/2840))
 
-When ```createPseudoDevice=True```  none windows users must ```import pybci.Utils.PseudoDevice.PseudoDeviceController as pdc``` and pass it as an arguement to ```pseudoDeviceController=pdc``` as lsl outlets must be instantiated inthe main thread. #TODO: Add script example and place link here!
+When ```createPseudoDevice=True```  none windows users must ```import pybci.Utils.PseudoDevice import PseudoDeviceController as pdc``` and pass it as an arguement to ```pseudoDeviceController=pdc``` as lsl outlets must be instantiated inthe main thread. #TODO: Add script example and place link here!
 
 [ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/)      [Examples found here!](https://github.com/LMBooth/pybci/tree/main/pybci/Examples)
 
