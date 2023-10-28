@@ -116,7 +116,7 @@ test_script:
         echo 'About to run tests on non-Ubuntu...'
         $env:PYTEST_ERRORLEVEL=0
         try {
-          pytest Tests/
+          pytest -vv -s Tests/
         } catch {
           $env:PYTEST_ERRORLEVEL=$_.Exception.HResult
         }
