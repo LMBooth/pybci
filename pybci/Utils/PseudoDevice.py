@@ -14,6 +14,20 @@ from multiprocessing import Process, Queue, Event
 import multiprocessing
 import numpy as np
 
+import platform
+
+def get_operating_system():
+    os_name = platform.system()
+    if os_name == 'Windows':
+        return 'Windows'
+    elif os_name == 'Darwin':
+        return 'macOS'
+    elif os_name == 'Linux':
+        return 'Linux'
+    else:
+        return 'Unknown OS'
+
+
 class PseudoDeviceController:
     log_queue = None
 
@@ -21,18 +35,23 @@ class PseudoDeviceController:
         self.execution_mode = execution_mode
         self.args = args
         self.kwargs = kwargs
-        self.stop_signal = Event()
-
-        if self.execution_mode == 'process':
-            self.command_queue = Queue()
-            self.worker = Process(target=self._run_device)
-        elif self.execution_mode == 'thread':
-            self.command_queue = queue.Queue()
-            self.worker = threading.Thread(target=self._run_device)
+        self.stop_signal = Event()    
+        # Usage:
+        self.os_name = get_operating_system()
+        print("os_name: "+self.os_name)
+        print(self.os_name)  # Output: Windows/macOS/Linux depending on the system
+        if self.os_name == 'Windows':
+            if self.execution_mode == 'process':
+                self.command_queue = Queue()
+                self.worker = Process(target=self._run_device)
+            elif self.execution_mode == 'thread':
+                self.command_queue = queue.Queue()
+                self.worker = threading.Thread(target=self._run_device)
+            else:
+                print("got this mode:"+execution_mode)
+                raise ValueError(f"Unsupported execution mode: {execution_mode}")
         else:
-            print("got this mode:"+execution_mode)
-            raise ValueError(f"Unsupported execution mode: {execution_mode}")
-
+            self.device = PseudoDevice(*self.args, **self.kwargs, stop_signal=self.stop_signal)
         self.worker.start()
 
     def _run_device(self):
@@ -51,8 +70,11 @@ class PseudoDeviceController:
             time.sleep(0.5)
 
     def BeginStreaming(self):
+        if self.os_name == 'Windows':
         #if self.execution_mode == 'process':
-        self.command_queue.put("BeginStreaming")
+            self.command_queue.put("BeginStreaming")
+        else:
+            self.device.BeginStreaming()
         #else:
         #    self.worker.BeginStreaming()
 
