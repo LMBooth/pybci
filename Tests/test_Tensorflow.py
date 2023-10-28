@@ -20,8 +20,6 @@ model.compile(loss='sparse_categorical_crossentropy',# using sparse_categorical 
 
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
-    def test_run_bci():
-    clf = MLPClassifier(max_iter = 1000, solver ="lbfgs")#solver=clf, alpha=alpha,hidden_layer_sizes=hid)
     current_os = get_os()
     if current_os == "Windows":
         bci = PyBCI(minimumEpochsRequired = 3, model = model, createPseudoDevice=True)
