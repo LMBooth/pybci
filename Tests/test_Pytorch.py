@@ -62,6 +62,7 @@ def test_run_bci():
     accuracy_achieved = False
     marker_received = False
     accuracy=None
+    assert True
     while True:
         currentMarkers = bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
         time.sleep(0.5) # wait for marker updates
