@@ -1,12 +1,11 @@
 from pybci import PyBCI, get_os
 import time
 from pybci.Utils.PseudoDevice import PseudoDeviceController
-# Test case using the fixture
-#@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
+
 def test_run_bci():
     current_os = get_os()
     if current_os == "Windows":
-        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,)
+        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True)
     else:
         pdc = PseudoDeviceController(execution_mode="process")
         pdc.BeginStreaming()
