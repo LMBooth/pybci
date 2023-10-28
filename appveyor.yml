@@ -34,7 +34,8 @@ install:
 # Install dependencies
   - ps: |
       echo "Updating system..."
-      sudo apt-get update
+      #sudo apt-get update
+      sudo apt-get install -y python3-pip cmake git
       pip install --upgrade --no-warn-script-location urllib3>=2.0.5
       pip install .
       pip install pytest pytest-timeout ruff
