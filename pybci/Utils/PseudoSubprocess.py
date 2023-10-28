@@ -1,4 +1,4 @@
-from ..Utils.PseudoDevice import PseudoDeviceController
+from PyBCI.Utils.PseudoDevice import PseudoDeviceController
 import sys
 
 class PseudoSubprocess:
