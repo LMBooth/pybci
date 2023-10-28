@@ -78,7 +78,7 @@ install:
         ;;
       "macos-monterey")
         # Install LSL
-        brew install labstreaminglayer/tap/lsl
+        brew install --verbose labstreaminglayer/tap/lsl
         ;;
       esac
 
