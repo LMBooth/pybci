@@ -1,5 +1,6 @@
 
-from pybci import PyBCIfrom PyBCI.Utils.PseudoDevice import PseudoDeviceController
+#from pybci import PyBCI
+from pybci.Utils.PseudoDevice import PseudoDeviceController
 import sys
 
 class PseudoSubprocess:
