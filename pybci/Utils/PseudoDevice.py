@@ -14,20 +14,6 @@ from multiprocessing import Process, Queue, Event
 import multiprocessing
 import numpy as np
 
-import platform
-
-def get_operating_system():
-    os_name = platform.system()
-    if os_name == 'Windows':
-        return 'Windows'
-    elif os_name == 'Darwin':
-        return 'macOS'
-    elif os_name == 'Linux':
-        return 'Linux'
-    else:
-        return 'Unknown OS'
-
-
 class PseudoDeviceController:
     log_queue = None
 
@@ -35,26 +21,19 @@ class PseudoDeviceController:
         self.execution_mode = execution_mode
         self.args = args
         self.kwargs = kwargs
-        self.stop_signal = Event()    
-        # Usage:
-        self.os_name = get_operating_system()
-        print("os_name: "+self.os_name)
-        print(self.os_name)  # Output: Windows/macOS/Linux depending on the system
-        #self.os_name = "Linux"
-        if self.os_name == 'Windows':
-            if self.execution_mode == 'process':
-                self.command_queue = Queue()
-                self.worker = Process(target=self._run_device)
-            elif self.execution_mode == 'thread':
-                self.command_queue = queue.Queue()
-                self.worker = threading.Thread(target=self._run_device)
-            else:
-                print("got this mode:"+execution_mode)
-                raise ValueError(f"Unsupported execution mode: {execution_mode}")
-            self.worker.start()
+        self.stop_signal = Event()
+
+        if self.execution_mode == 'process':
+            self.command_queue = Queue()
+            self.worker = Process(target=self._run_device)
+        elif self.execution_mode == 'thread':
+            self.command_queue = queue.Queue()
+            self.worker = threading.Thread(target=self._run_device)
         else:
-            self.device = PseudoDevice(*self.args, **self.kwargs, stop_signal=self.stop_signal)
-        
+            print("got this mode:"+execution_mode)
+            raise ValueError(f"Unsupported execution mode: {execution_mode}")
+
+        self.worker.start()
 
     def _run_device(self):
         device = PseudoDevice(*self.args, **self.kwargs, stop_signal=self.stop_signal)
@@ -72,22 +51,16 @@ class PseudoDeviceController:
             time.sleep(0.5)
 
     def BeginStreaming(self):
-        if self.os_name == 'Windows':
         #if self.execution_mode == 'process':
-            self.command_queue.put("BeginStreaming")
-        else:
-            self.device.BeginStreaming()
+        self.command_queue.put("BeginStreaming")
         #else:
         #    self.worker.BeginStreaming()
 
     def StopStreaming(self):
-        if self.os_name == 'Windows':
-            self.stop_signal.set()
-            self.worker.join(timeout=1)
-            if self.worker.is_alive():
-                self.worker.terminate()
-        else:
-            self.device.StopStreaming()
+        self.stop_signal.set()
+        self.worker.join(timeout=1)
+        if self.worker.is_alive():
+            self.worker.terminate()
 
 def precise_sleep(duration):
     end_time = time.time() + duration
@@ -127,7 +100,7 @@ class PseudoDevice:
         self.pseudoMarkerConfig = pseudoMarkerConfig
         self.sampleRate = sampleRate
         self.channelCount = channelCount
-        markerInfo = pylsl.StreamInfo(pseudoMarkerConfig.markerName, pseudoMarkerConfig.markerType, 1, 0, 'string', 'Dev')
+        markerInfo = pylsl.StreamInfo(pseudoMarkerConfig.markerName, pseudoMarkerConfig.markerType, 1, 0, 'string', 'DevMarker')
         self.markerOutlet = pylsl.StreamOutlet(markerInfo)
         info = pylsl.StreamInfo(dataStreamName, dataStreamType, self.channelCount, self.sampleRate, 'float32', 'Dev')
         chns = info.desc().append_child("channels")
