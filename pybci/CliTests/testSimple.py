@@ -1,7 +1,8 @@
 import argparse
-from ..pybci import PyBCI
+from ..pybci import PyBCI, get_os
 import time 
 import threading
+from pybci.Utils.PseudoDevice import PseudoDeviceController
 
 stop_signal = threading.Event()  # Global event to control the main loop
 
@@ -22,7 +23,16 @@ class CLI_testSimpleWrapper:
         self.currentMarkers = {}
         if self.min_epochs_test <= self.min_epochs_train:
             self.min_epochs_test = self.min_epochs_train+1
-        self.bci = PyBCI(minimumEpochsRequired = self.min_epochs_train, createPseudoDevice=self.createPseudoDevice)
+        current_os = get_os()
+        if current_os == "Windows":
+            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True)
+        else:
+            pdc = PseudoDeviceController(execution_mode="process")
+            pdc.BeginStreaming()
+            time.sleep(10)
+            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc)
+
+        #self.bci = PyBCI(minimumEpochsRequired = self.min_epochs_train, createPseudoDevice=self.createPseudoDevice)
         main_thread = threading.Thread(target=self.loop)
         main_thread.start()
         if self.timeout:
@@ -43,8 +53,9 @@ class CLI_testSimpleWrapper:
         try:
             while not stop_signal.is_set():  # Add the check here
                 if test is False:
+                    print("we here?")
                     self.currentMarkers = self.bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
-                    time.sleep(0.5) # wait for marker updates
+                    time.sleep(0.1) # wait for marker updates
                     print("Markers received: " + str(self.currentMarkers) +" Accuracy: " + str(round(self.accuracy,2)), end="         \n\r")
                     if len(self.currentMarkers) > 1:  # check there is more then one marker type received
                         if min([self.currentMarkers[key][1] for key in self.currentMarkers]) > self.bci.minimumEpochsRequired:

@@ -12,7 +12,7 @@ class FeatureProcessorThread(threading.Thread):
                 globalEpochSettings = GlobalEpochSettings(),logger = Logger(Logger.INFO), 
                 featureExtractor = None):
         super().__init__()
-        if featureExtractor == None:
+        if featureExtractor is None:
             from ..Utils.FeatureExtractor import GenericFeatureExtractor
             featureExtractor = GenericFeatureExtractor()
         self.markerCountQueue = markerCountQueue

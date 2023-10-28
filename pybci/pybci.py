@@ -10,10 +10,6 @@ from .ThreadClasses.ClassifierThread import ClassifierThread
 from .Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
 import queue
 import threading
-
-import subprocess
-import os
-import sys
 import platform
 
 def get_os():
@@ -95,7 +91,7 @@ class PyBCI:
         self.createPseudoDevice = createPseudoDevice
         if createPseudoDevice:
             current_os = get_os()
-            print("current_os: "+current_os)
+            #print("current_os: "+current_os)
             #current_os =  "macOS"
             if current_os == "Windows":
                 if isinstance(pseudoDeviceController,PseudoDeviceController):

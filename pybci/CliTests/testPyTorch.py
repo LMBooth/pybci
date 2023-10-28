@@ -1,11 +1,11 @@
 import time
 import argparse
-from ..pybci import PyBCI
+from ..pybci import PyBCI, get_os
+from pybci.Utils.PseudoDevice import PseudoDeviceController
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 from torch import nn
 import threading
-
 stop_signal = threading.Event()  # Global event to control the main loop
 
 global num_chs_g, num_feats_g, num_classes_g
@@ -75,7 +75,6 @@ class CLI_testPytorchWrapper:
             self.num_feats = 2 # default is mean freq and rms to keep it simple
             self.num_classes = 4 # number of different triggers (can include baseline) sent, defines if we use softmax of binary
 
-        self.createPseudoDevice = createPseudoDevice
         self.timeout = timeout
         self.min_epochs_train = min_epochs_train
         self.min_epochs_test = min_epochs_test
@@ -83,8 +82,16 @@ class CLI_testPytorchWrapper:
         self.currentMarkers = {}
         if self.min_epochs_test <= self.min_epochs_train:
             self.min_epochs_test = self.min_epochs_train+1
-        
-        self.bci = PyBCI(minimumEpochsRequired = min_epochs_train, createPseudoDevice=createPseudoDevice,  torchModel = PyTorchModel)
+        current_os = get_os()
+        if current_os == "Windows":
+            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, torch = PyTorchModel)
+        else:
+            pdc = PseudoDeviceController(execution_mode="process")
+            pdc.BeginStreaming()
+            time.sleep(10)
+            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc, torch = PyTorchModel)
+
+        #self.bci = PyBCI(minimumEpochsRequired = min_epochs_train, torchModel = PyTorchModel)
         #self.bci = PyBCI(minimumEpochsRequired = self.min_epochs_train, createPseudoDevice=self.createPseudoDevice)
         main_thread = threading.Thread(target=self.loop)
         main_thread.start()
