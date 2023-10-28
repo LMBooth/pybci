@@ -26,33 +26,30 @@ matrix:
   fast_finish: true
 
 install:
-    #- sh: |
-  #    if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio 2019" ]]; then
-  #        export PYLSL_LIB=$PWD/liblsl/usr/lib/liblsl64.so.1.16.0  # Update this line
-  #    fi
-
 # Install dependencies
   - ps: |
       pip install --upgrade --no-warn-script-location urllib3>=2.0.5
       pip install .
       pip install pytest pytest-timeout ruff
   - sh: |
-      if ($env:ID -eq 'macOS') {
-        Write-Host "Updating Homebrew and installing packages..."
-        brew update
-        brew install python3
-        python3.9 -m pip install --upgrade urllib3>=2.0.5
-        python3.9 -m pip install .
-        python3.9 -m pip install pytest pytest-timeout ruff
-      }
-      else {
-        Write-Host "Updating system..."
-        sudo apt-get update
-        sudo apt-get install -y python3-pip cmake git
-        python3 -m pip install --upgrade urllib3>=2.0.5
-        python3 -m pip install .
-        python3 -m pip install pytest pytest-timeout ruff
-      }
+      case $APPVEYOR_BUILD_WORKER_IMAGE in
+        "ubuntu2204")
+          echo "Updating system..."
+          sudo apt-get update
+          sudo apt-get install -y python3-pip cmake git
+          python3 -m pip install --upgrade urllib3>=2.0.5
+          python3 -m pip install .
+          python3 -m pip install pytest pytest-timeout ruff
+          ;;
+        "macos-monterey")
+          echo "Updating Homebrew and installing packages..."
+          brew update
+          brew install python@3.9
+          python3.9 -m pip install --upgrade urllib3>=2.0.5
+          python3.9 -m pip install .
+          python3.9 -m pip install pytest pytest-timeout ruff
+          ;;
+      esac
   - sh: |
       set -e  # Exit immediately if a command exits with a non-zero status.
       case $APPVEYOR_BUILD_WORKER_IMAGE in
@@ -76,7 +73,7 @@ install:
         # Update the source path based on where the build outputs the library.
         cp build/liblsl.so /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/ || exit 1
         ;;
-      "macOS")
+      "macos-monterey")
         # Install Brew (if not already installed)
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         # Install LSL
