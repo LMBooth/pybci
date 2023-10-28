@@ -105,7 +105,7 @@ class PyBCI:
                     pseudoDevice = PseudoDeviceController()
                     pseudoDevice.BeginStreaming()
                 self.pseudoDevice = pseudoDevice
-            elif current_os == "Darwin":
+            elif current_os == "macOS":
                 current_script_path = os.path.abspath(__file__)
                 print("Mac current_script_path: "+current_script_path)
                 desiredpath = current_script_path + "/PseudoSubprocess.py"

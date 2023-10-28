@@ -11,8 +11,6 @@ class PseudoSubprocess:
     def stop_subprocess_pseudo(self):
         self.pd.StopStreaming()
 
-fifo_path = "/tmp/my_fifo"
-
 if __name__ == '__main__':
 
     ps = PseudoSubprocess()
