@@ -7,6 +7,7 @@ class PseudoSubprocess:
     def __init__(self):
         print("initializing PseudoSubprocess")
         self.pd = PseudoDeviceController(execution_mode="thread")
+        self.pd.BeginStreaming()
 
     def begin_subprocess_pseudo(self):
         print("attempting to begin streaming")
@@ -27,4 +28,5 @@ if __name__ == '__main__':
         elif command == 'stop':
             ps.stop_subprocess_pseudo()
         elif command == 'terminate':
+            ps.stop_subprocess_pseudo()
             break
