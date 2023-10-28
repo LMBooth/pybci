@@ -33,7 +33,7 @@ class PseudoDeviceController:
         else:
             raise ValueError(f"Unsupported execution mode: {execution_mode}")
         self.worker.start()
-
+        #self.worker.join()
 
     def _run_device(self):
         device = PseudoDevice(*self.args, **self.kwargs, stop_signal=self.stop_signal)
@@ -58,8 +58,9 @@ class PseudoDeviceController:
 
     def StopStreaming(self):
         self.stop_signal.set()
-        self.worker.join(timeout=1)
+        
         if self.worker.is_alive():
+            self.worker.join()
             self.worker.terminate()
 
 def precise_sleep(duration):
