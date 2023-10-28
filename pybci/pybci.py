@@ -96,6 +96,7 @@ class PyBCI:
         if createPseudoDevice:
             current_os = get_os()
             print("current_os: "+current_os)
+            current_os =  "macOS"
             if current_os == "Windows":
                 if isinstance(pseudoDeviceController,PseudoDeviceController):
                     pseudoDevice = pseudoDeviceController
@@ -109,7 +110,7 @@ class PyBCI:
                 current_script_path = current_script_path.replace("pybci.py", "", 1)  
                 print("Mac current_script_path: "+current_script_path)
                 desiredpath = current_script_path + "Utils/PseudoSubprocess.py"
-                self.process = subprocess.Popen([sys.executable,desiredpath], stdin=subprocess.PIPE)
+                self.process = subprocess.Popen([sys.executable,"-u", desiredpath], stdin=subprocess.PIPE)
                 self.process.stdin.write(b'begin\n')
                 self.process.stdin.flush()
 
@@ -118,7 +119,7 @@ class PyBCI:
                 current_script_path = current_script_path.replace("pybci.py", "", 1)  
                 print("Linux current_script_path: "+current_script_path) 
                 desiredpath = current_script_path + "Utils/PseudoSubprocess.py"
-                self.process = subprocess.Popen([sys.executable, desiredpath], stdin=subprocess.PIPE)
+                self.process = subprocess.Popen([sys.executable,"-u",  desiredpath], stdin=subprocess.PIPE)
                 self.process.stdin.write(b'begin\n')
                 self.process.stdin.flush()
         self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes, logger =self.logger)
