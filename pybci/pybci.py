@@ -29,12 +29,11 @@ class PyBCI:
     def __init__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
                  streamCustomFeatureExtract = {},minimumEpochsRequired = 10, 
-                 createPseudoDevice=False, pseudoDeviceArgs=None,
+                 createPseudoDevice=False, pseudoDeviceController=None,
                  clf= None, model = None, torchModel = None):
         """
         The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
-        and holds a configurable number of samples based on lsl marker strings.
-        If no marker strings are available on the LSL the class will close and return an error.
+PseudoDeviceController        If no marker strings are available on the LSL the class will close and return an error.
         Parameters
         ----------
         dataStreams: List[str] 
@@ -79,8 +78,8 @@ class PyBCI:
         self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
         self.Connect()
         if createPseudoDevice:
-            if isinstance(pseudoDeviceArgs,dict):
-                pseudoDevice = PseudoDeviceController(pseudoDeviceArgs)
+            if isinstance(pseudoDeviceController,PseudoDeviceController):
+                pseudoDevice = pseudoDeviceController
                 pseudoDevice.BeginStreaming()
             else:
                 pseudoDevice = PseudoDeviceController()
