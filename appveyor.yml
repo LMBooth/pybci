@@ -95,6 +95,7 @@ test_script:
         echo $PYLSL_LIB
         which python3
         python3 --version
+        cd $APPVEYOR_BUILD_FOLDER
         ls -alh Tests/
         export PYTEST_ERRORLEVEL=0
         python3 -m pytest -vv Tests/ || PYTEST_ERRORLEVEL=$?
