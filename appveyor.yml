@@ -26,12 +26,28 @@ matrix:
   fast_finish: true
 
 install:
+    #- sh: |
+  #    if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio 2019" ]]; then
+  #        export PYLSL_LIB=$PWD/liblsl/usr/lib/liblsl64.so.1.16.0  # Update this line
+  #    fi
+
+# Install dependencies
+  - ps: |
+      echo "Updating system..."
+      sudo apt-get update
+      pip install --upgrade --no-warn-script-location urllib3>=2.0.5
+      pip install .
+      pip install pytest pytest-timeout ruff
   - sh: |
+      python3 -m pip install --upgrade --no-warn-script-location urllib3>=2.0.5
+      python3 -m pip install .
+      python3 -m pip install pytest pytest-timeout ruff
+
+- sh: |
       set -e  # Exit immediately if a command exits with a non-zero status.
       case $APPVEYOR_BUILD_WORKER_IMAGE in
       "ubuntu2204")
-        echo "Updating system..."
-        sudo apt-get update
+        
         sudo apt-get install -y python3-pip cmake git
         echo "Cloning liblsl repository..."
         git clone --depth=1 https://github.com/sccn/liblsl.git
@@ -57,27 +73,6 @@ install:
         brew install sccn/labstreaminglayer/lsl
         ;;
       esac
-
- # Move DLL to correct directory (Windows) or Set PYLSL_LIB environment variable (Linux, macOS)
-  - ps: |
-      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -match "Visual Studio 2019") {
-          Move-Item liblsl/bin/lsl.dll $env:PYTHON/Lib/site-packages/
-          $env:PYLSL_LIB="$env:PYTHON\Lib\site-packages\lsl.dll"
-      }
-  #- sh: |
-  #    if [[ $APPVEYOR_BUILD_WORKER_IMAGE != "Visual Studio 2019" ]]; then
-  #        export PYLSL_LIB=$PWD/liblsl/usr/lib/liblsl64.so.1.16.0  # Update this line
-  #    fi
-
-# Install dependencies
-  - ps: |
-      pip install --upgrade --no-warn-script-location urllib3>=2.0.5
-      pip install .
-      pip install pytest pytest-timeout ruff
-  - sh: |
-      python3 -m pip install --upgrade --no-warn-script-location urllib3>=2.0.5
-      python3 -m pip install .
-      python3 -m pip install pytest pytest-timeout ruff
 
 # Exit if error
   #- ps: if ($LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode"; exit $LastExitCode }
