@@ -1,20 +1,23 @@
 Feature Selection
-############
+#################
+
 .. _feature-debugging:
+
 Recommended Debugging
---------------------------------
-When initialisaing the :class:`PyBCI()` class we can set :py:data:`loggingLevel` to "TIMING" to time our feature extraction time, note a warning will be produced if the feature extraction time is longer then the :py:data:`globalEpochSettings.windowLength`*(1-:py:data:`globalEpochSettings.windowOverlap`), if this is the case a delay will continuously grow as data builds in the queues. To fix this reduce channel count, feature count, feature complexity, or sample rate until the feature extraction time is acceptable, this will help create near-real-time classification.
+---------------------
+When initialisaing the :class:`PyBCI()` class we can set :py:data:`loggingLevel` to "TIMING" to time our feature extraction time, note a warning will be produced if the feature extraction time is longer then the :py:data:`globalEpochSettings.windowLength` * ( 1- :py:data:`globalEpochSettings.windowOverlap` ), if this is the case a delay will continuously grow as data builds in the queues. To fix this reduce channel count, feature count, feature complexity, or sample rate until the feature extraction time is acceptable, this will help create near-real-time classification.
 
 
 .. _generic-extractor:
+
 Generic Time-Series Feature Extractor
---------------------------------
+-------------------------------------
 
 The `generic feature extractor class found here <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_ is the default feature extractor for obtaining generic time-series features for classification, note this is used if nothing is passed to :class:`streamCustomFeatureExtract` for its respective datastream. See :ref:`custom-extractor` and :ref:`raw-extractor` for other feature extraction methods.
 
 The available features can be found below, each optional with a boolean operator. The `FeatureSettings class GeneralFeatureChoices <https://github.com/LMBooth/pybci/blob/main/pybci/Configuration/FeatureSettings.py>`_ gives a quick method for selecting the time and/or frequency based feature extraction techniques - useful for reducing stored data and computational complexity.
 
-The features can be selected by setting the respective attributes in the :class:`GeneralFeatureChoices` class to True. When initialising :class:`PyBCI()` we can pass :class:`GeneralFeatureChoices()` to :py:data:`featureChoices` which offers a list of booleans to decide the following features, not all options are set by default to reduce computation time:
+The features can be selected by setting the respective attributes in the :class:`GeneralFeatureChoices` class to :py:data:`True`. When initialising :class:`PyBCI()` we can pass :class:`GeneralFeatureChoices()` to :py:data:`featureChoices` which offers a list of booleans to decide the following features, not all options are set by default to reduce computation time:
 
 .. code-block:: python
 
@@ -39,8 +42,9 @@ If :class:`psdBand == True` we can also pass custom :class:`freqbands` when init
 The `FeatureExtractor.py <https://github.com/LMBooth/pybci/blob/main/pybci/Utils/FeatureExtractor.py>`_ file is part of the pybci project and is used to extract various features from time-series data, such as EEG, EMG, EOG or other consistent data with a consistent sample rate. The type of features to be extracted can be specified during initialisation, and the code supports extracting various types of entropy features, average power within specified frequency bands, root mean square, mean and median of power spectral density (PSD), variance, mean absolute value, waveform length, zero-crossings, and slope sign changes.
 
 .. _custom-extractor:
+
 Passing Custom Feature Extractor classes 
---------------------------------
+----------------------------------------
 Due to the idiosyncratic nature of each LSL data stream and the potential pre-processing/filtering that may be required before data is passed to the machine learning classifier, it can be desirable to have custom feature extraction classes passed to :class:`streamCustomFeatureExtract` When initialising :class:`PyBCI()`. 
 
 :class:`streamCustomFeatureExtract` is a dict where the key is a string for the LSL datastream name and the value is the custom created class that will be used for data on that LSL type, example:
@@ -64,7 +68,7 @@ Due to the idiosyncratic nature of each LSL data stream and the potential pre-pr
 
 NOTE: Every custom class for processing features requires the features to be processed in a function labelled with corresponding arguements as above, namely  :class:`def ProcessFeatures(self, epochData, sr, epochNum):`, the epochNum may be handy for distinguishing baseline information and holding that baseline information in the class to use with features from other markers (pupil data: baseline diameter change compared to stimulus, ECG: resting heart rate vs stimulus, heart rate variability, etc.). Look at :ref:`examples` for more inspiriation of custom class creation and integration. 
 
-:class:`epochData` is a 2D array in the shape of [samps,chs] where chs is the number of channels on the LSL datastream after any are dropped with the variable :class:`streamChsDropDict` and samps is the number of samples captured in the epoch time window depending on the :class:`globalEpochSettings` and :class:`customEpochSettings` - see :ref:`_epoch_timing` for more information on epoch time windows.
+:class:`epochData` is a 2D array in the shape of [samps,chs] where chs is the number of channels on the LSL datastream after any are dropped with the variable :class:`streamChsDropDict` and samps is the number of samples captured in the epoch time window depending on the :class:`globalEpochSettings` and :class:`customEpochSettings` - see :ref:`epoch_timing` for more information on epoch time windows.
 
 The above example returns a 1d array of features, but the target model may specify greater dimensions. More dimensions may be desirable for some pytorch and tensorflow models, but less applicable for sklearn classifiers, this is specific to the model selected.
 
@@ -72,8 +76,9 @@ A practical example of custom datastream decoding can be found in the `Pupil Lab
 
 
 .. _raw-extractor:
+
 Raw time-series
-----------------
+---------------
 If the raw time-series data is wanted to be the input for the classifier we can pass a custom class which will allow us to retain a 2d array of [samples, channels] as the input for our model, example given below:
 
 .. code-block:: python
