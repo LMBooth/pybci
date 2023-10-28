@@ -1,5 +1,5 @@
 from pybci.Utils.PseudoDevice import PseudoDeviceController
-import os
+import sys
 
 class PseudoSubprocess:
     def __init__(self):
@@ -14,19 +14,14 @@ class PseudoSubprocess:
 fifo_path = "/tmp/my_fifo"
 
 if __name__ == '__main__':
-    try:
-        os.mkfifo(fifo_path)
-    except FileExistsError:
-        pass
 
     ps = PseudoSubprocess()
 
-    while True:
-        with open(fifo_path, "r") as fifo:
-            command = fifo.read().strip()
-            if command == "begin":
-                ps.begin_subprocess_pseudo()
-            elif command == "stop":
-                ps.stop_subprocess_pseudo()
-            elif command == "terminate":
-                break
+    for line in sys.stdin:
+        command = line.strip()
+        if command == 'begin':
+            ps.begin_subprocess_pseudo()
+        elif command == 'stop':
+            ps.stop_subprocess_pseudo()
+        elif command == 'terminate':
+            break
