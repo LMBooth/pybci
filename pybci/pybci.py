@@ -11,6 +11,21 @@ from .Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSet
 import queue
 import threading
 
+import subprocess
+import os
+import platform
+
+def get_os():
+    os_name = platform.system()
+    if os_name == "Windows":
+        return "Windows"
+    elif os_name == "Darwin":
+        return "macOS"
+    elif os_name == "Linux":
+        return "Linux"
+    else:
+        return "Unknown"
+
 class PyBCI:
     globalEpochSettings = GlobalEpochSettings()
     customEpochSettings = {}
@@ -78,16 +93,34 @@ class PyBCI:
         self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes, logger =self.logger)
         self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
         self.Connect()
+        self.createPseudoDevice = createPseudoDevice
         if createPseudoDevice:
-            if isinstance(pseudoDeviceController,PseudoDeviceController):
-                pseudoDevice = pseudoDeviceController
-                pseudoDevice.BeginStreaming()
-            else:
-                pseudoDevice = PseudoDeviceController()
-                pseudoDevice.BeginStreaming()
-        self.pseudoDevice = pseudoDevice
+            current_os = get_os()
+            print("current_os: "+current_os)
+            if current_os == "Windows":
+                if isinstance(pseudoDeviceController,PseudoDeviceController):
+                    pseudoDevice = pseudoDeviceController
+                    pseudoDevice.BeginStreaming()
+                else:
+                    pseudoDevice = PseudoDeviceController()
+                    pseudoDevice.BeginStreaming()
+                self.pseudoDevice = pseudoDevice
+            elif current_os == "Darwin":
+                current_script_path = os.path.abspath(__file__)
+                print("Mac current_script_path: "+current_script_path)
+                desiredpath = current_script_path + "/PseudoSubprocess.py"
+                self.process = subprocess.Popen(["python3",desiredpath], stdin=subprocess.PIPE)
+                self.process.stdin.write(b'begin\n')
+                self.process.stdin.flush()
 
-       
+            elif current_os == "Linux":
+                current_script_path = os.path.abspath(__file__)
+                print("Linux current_script_path: "+current_script_path) 
+                desiredpath = current_script_path + "/PseudoSubprocess.py"
+                self.process = subprocess.Popen(["python3", desiredpath], stdin=subprocess.PIPE)
+                self.process.stdin.write(b'begin\n')
+                self.process.stdin.flush()
+
     def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
                  streamCustomFeatureExtract = {},
@@ -296,7 +329,18 @@ class PyBCI:
         """
         Stops all PyBCI threads.
         """
-        self.pseudoDevice.StopStreaming()
+        if self.createPseudoDevice:
+            current_os = get_os()
+            print("current_os: "+current_os)
+            if current_os == "Windows":
+                self.pseudoDevice.StopStreaming()
+            elif current_os == "Darwin":
+                self.process.stdin.write(b'stop\n')
+                self.process.stdin.flush()
+            elif current_os == "Linux":
+                self.process.stdin.write(b'stop\n')
+                self.process.stdin.flush()
+                
         self.closeEvent.set()
         self.markerThread.join()
         # wait for all threads to finish processing, probably worth pulling out finalised classifier information stored for later use.

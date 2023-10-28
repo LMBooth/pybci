@@ -23,6 +23,7 @@ class PseudoDeviceController:
         self.kwargs = kwargs
         self.stop_signal = Event()
 
+
         if self.execution_mode == 'process':
             self.command_queue = Queue()
             self.worker = Process(target=self._run_device)
@@ -31,8 +32,8 @@ class PseudoDeviceController:
             self.worker = threading.Thread(target=self._run_device)
         else:
             raise ValueError(f"Unsupported execution mode: {execution_mode}")
-
         self.worker.start()
+
 
     def _run_device(self):
         device = PseudoDevice(*self.args, **self.kwargs, stop_signal=self.stop_signal)
