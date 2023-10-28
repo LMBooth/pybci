@@ -46,7 +46,7 @@ install:
           ;;
         "macos-monterey")
           echo "Updating Homebrew and installing packages..."
-          #brew update
+          brew update
           brew install python@3.9
           python3.9 -m pip install --upgrade urllib3>=2.0.5
           python3.9 -m pip install .
