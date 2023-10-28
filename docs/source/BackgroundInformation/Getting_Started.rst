@@ -1,13 +1,13 @@
 Getting Started
-################
+###############
 
 
 
 Python Package Dependencies Version Minimums
-=============================================
+============================================
 PyBCI is tested on Python versions 3.9, 3.10 and 3.11 (`defined via appveyor.yml <https://github.com/LMBooth/pybci/blob/main/appveyor.yml>`__)
 
-The following package versions define the minimum supported by PyBCI, also defined in setup.py:
+The following package versions define the minimum supported by PyBCI, also defined in ``setup.py``:
 
 .. code-block:: console
 
@@ -27,7 +27,7 @@ If you are not using windows then there is a prerequisite stipulated on the `pyl
 
 .. _installation:
 Installation
-===================
+============
 
 For stable releases use: :code:`pip install pybci-package`
 
@@ -41,7 +41,7 @@ For development versions use: :code:`pip install git+https://github.com/LMBooth/
 
 
 Optional: Virtual Environment
-----------------------------
+-----------------------------
 Or optionally, install and run in a virtual environment:
 
 Windows:
@@ -67,11 +67,11 @@ Linux/MaxOS:
 
 .. _simpleimplementation:
 
-Simple Implementation:
-===================
+Simple Implementation
+=====================
 PyBCI requires an LSL marker stream for defining when time series data should be attributed to an action/marker/epoch and an LSL data stream to create time-series data. 
 
-If the user has no available LSL hardware to hand they can set `createPseudoDevice=True` when instantiating the PyBCI object to enable a pseudo LSL data stream to generate time-series data and LSL marker stream for epoching the data. More information on PyBCI's Pseudo Device class can be found here: :ref:`what-pseudo-device`. 
+If the user has no available LSL hardware to hand they can set ``createPseudoDevice=True`` when instantiating the PyBCI object to enable a pseudo LSL data stream to generate time-series data and LSL marker stream for epoching the data. More information on PyBCI's Pseudo Device class can be found here: :ref:`what-pseudo-device`. 
 
 The `example scripts <https://pybci.readthedocs.io/en/latest/BackgroundInformation/Examples.html>`_ illustrate various applied ML libraries (SKLearn, Tensorflow, PyTorch) or provide examples of how to integrate LSL hardware.
 

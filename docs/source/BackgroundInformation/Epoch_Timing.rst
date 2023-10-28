@@ -1,4 +1,5 @@
 .. _epoch_timing:
+
 Epoch Timing
 ############
 
@@ -11,8 +12,9 @@ In relation to training models on set actions for brain computer interfaces, it 
 Setting the :py:data:`globalEpochSettings` with the :class:`GlobalEpochSettings()` class sets the target window length and overlap for the training time windows. It is desirable to have a single global window length that all epochs are sliced to match, this gives a uniform array when passing to the classifier. When in testing mode a having a continuous rolling window of data is sliced to this size and overlapped based on the windowOverlap, see :ref:`set_custom_epoch_times` for more info.
 
 .. _set_custom_epoch_times:
+
 Setting Custom Epoch Times
-------------------------
+--------------------------
 
 The figure below illustrates when you may have epochs of differing lengths received on the LSL marker stream. A baseline marker may signify an extended period, in this case 10 seconds, and our motor task is only 1 second long. To account for this set :py:data:`customEpochSettings` and :py:data:`globalEpochSettings` accordingly:
 
@@ -39,7 +41,7 @@ Highlighting these epochs on some psuedo emg data looks like the following:
 
 
 Overlapping Epoch Windows
-------------------------
+-------------------------
 
 By setting splitCheck to True for :py:data:`baselineSettings.splitCheck` and :py:data:`gs.windowOverlap` to 0 we can turn one marker into 10 epochs, shown below:
 
@@ -58,5 +60,5 @@ By setting :py:data:`gs.windowOverlap` to 0.5 we can overlap 1 second epochs by 
    
    
 Debugging Timing Errors
-------------------------
-When initialising the :class:`PyBCI()` class set :py:data:`loggingLevel` to “TIMING” to time the feature extraction time for each data inlet as well as classification testing and training times. These are the most computationally intensive tasks and will induce the most lag in the the system. Each printed time must be shorter then :py:data:`globalEpochSettings.windowLength`*(1- :py:data:`globalEpochSettings.windowOverlap`) to minimise delays from input data action to classification output.
+-----------------------
+When initialising the :class:`PyBCI()` class set :py:data:`loggingLevel` to “TIMING” to time the feature extraction time for each data inlet as well as classification testing and training times. These are the most computationally intensive tasks and will induce the most lag in the the system. Each printed time must be shorter then :py:data:`globalEpochSettings.windowLength` * ( 1- :py:data:`globalEpochSettings.windowOverlap` ) to minimise delays from input data action to classification output.
