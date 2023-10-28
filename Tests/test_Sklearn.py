@@ -1,11 +1,20 @@
-from pybci import PyBCI
+from pybci import PyBCI, get_os
 import time
 from sklearn.neural_network import MLPClassifier
+from pybci.Utils.PseudoDevice import PseudoDeviceController
 # Test case using the fixture
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
     clf = MLPClassifier(max_iter = 1000, solver ="lbfgs")#solver=clf, alpha=alpha,hidden_layer_sizes=hid)
-    bci = PyBCI(minimumEpochsRequired=4, createPseudoDevice=True,  clf = clf)
+    current_os = get_os()
+    if current_os == "Windows":
+        bci = PyBCI(minimumEpochsRequired = 3, clf = clf, createPseudoDevice=True)
+    else:
+        pdc = PseudoDeviceController(execution_mode="process")
+        pdc.BeginStreaming()
+        time.sleep(10)
+        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,clf = clf, pseudoDeviceController=pdc)
+    
     while not bci.connected:
         bci.Connect()
         time.sleep(1)

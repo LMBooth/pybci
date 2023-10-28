@@ -1,7 +1,7 @@
-from pybci import PyBCI
+from pybci import PyBCI, get_os
 import time
 import tensorflow as tf# bring in tf for custom model creation
-
+from pybci.Utils.PseudoDevice import PseudoDeviceController
 num_chs = 8 # 8 channels are created in the PseudoLSLGenerator
 num_feats = 2 # default is mean freq and rms to keep it simple
 num_classes = 4 # number of different triggers (can include baseline) sent, defines if we use softmax of binary
@@ -20,7 +20,17 @@ model.compile(loss='sparse_categorical_crossentropy',# using sparse_categorical 
 
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
-    bci = PyBCI(minimumEpochsRequired = 4, createPseudoDevice=True, model = model)
+    def test_run_bci():
+    clf = MLPClassifier(max_iter = 1000, solver ="lbfgs")#solver=clf, alpha=alpha,hidden_layer_sizes=hid)
+    current_os = get_os()
+    if current_os == "Windows":
+        bci = PyBCI(minimumEpochsRequired = 3, model = model, createPseudoDevice=True)
+    else:
+        pdc = PseudoDeviceController(execution_mode="process")
+        pdc.BeginStreaming()
+        time.sleep(10)
+        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,model = model, pseudoDeviceController=pdc)
+
     while not bci.connected:
         bci.Connect()
         time.sleep(1)

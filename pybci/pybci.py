@@ -348,11 +348,13 @@ class PyBCI:
             if current_os == "Windows":
                 self.pseudoDevice.StopStreaming()
             elif current_os == "Darwin":
-                self.process.stdin.write(b'stop\n')
-                self.process.stdin.flush()
+                self.pseudoDevice.StopStreaming()
+                #self.process.stdin.write(b'stop\n')
+                #self.process.stdin.flush()
             elif current_os == "Linux":
-                self.process.stdin.write(b'stop\n')
-                self.process.stdin.flush()
+                self.pseudoDevice.StopStreaming()
+                #self.process.stdin.write(b'stop\n')
+                #self.process.stdin.flush()
                 
         self.closeEvent.set()
         self.markerThread.join()
