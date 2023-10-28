@@ -55,9 +55,9 @@ def PyTorchModel(x_train, x_test, y_train, y_test):
 
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
-    pdc = PseudoDeviceController(execution_mode="thread")
-    bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,torchModel = PyTorchModel, pseudoDeviceController=pdc)
-    while not bci.connected:
+    #pdc = PseudoDeviceController(execution_mode="thread")
+    
+    bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,torchModel = PyTorchModel)
         bci.Connect()
         time.sleep(1)
     bci.TrainMode()
