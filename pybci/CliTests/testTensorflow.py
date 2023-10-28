@@ -1,6 +1,7 @@
 import time
 import argparse
 from ..pybci import PyBCI
+
 import tensorflow as tf# bring in tf for custom model creation
 import threading
 

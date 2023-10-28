@@ -20,8 +20,8 @@ class MarkerThread(threading.Thread):
                     marker = marker[0]
                     for thread in self.dataThreads:
                         thread.ReceiveMarker(marker, timestamp)
-                    for thread in self.featureThreads:
-                        thread.ReceiveMarker(marker, timestamp)
+                    #for thread in self.featureThreads:
+                    #    thread.ReceiveMarker(marker, timestamp)
                 else:
                     pass
                     # add levels of debug 

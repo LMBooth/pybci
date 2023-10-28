@@ -33,7 +33,8 @@ class PyBCI:
                  clf= None, model = None, torchModel = None):
         """
         The PyBCI object stores data from available lsl time series data streams (EEG, pupilometry, EMG, etc.)
-PseudoDeviceController        If no marker strings are available on the LSL the class will close and return an error.
+        and holds a configurable number of samples based on lsl marker strings.
+        If no marker strings are available on the LSL the class will close and return an error.
         Parameters
         ----------
         dataStreams: List[str] 
@@ -72,6 +73,11 @@ PseudoDeviceController        If no marker strings are available on the LSL the 
         self.globalEpochSettings = globalEpochSettings
         self.customEpochSettings = customEpochSettings
         self.streamChsDropDict = streamChsDropDict
+        self.loggingLevel = loggingLevel
+        self.logger = Logger(self.loggingLevel)
+        self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes, logger =self.logger)
+        self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
+        self.Connect()
         if createPseudoDevice:
             if isinstance(pseudoDeviceController,PseudoDeviceController):
                 pseudoDevice = pseudoDeviceController
@@ -80,12 +86,6 @@ PseudoDeviceController        If no marker strings are available on the LSL the 
                 pseudoDevice = PseudoDeviceController()
                 pseudoDevice.BeginStreaming()
         self.pseudoDevice = pseudoDevice
-        self.loggingLevel = loggingLevel
-        self.logger = Logger(self.loggingLevel)
-        self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes, logger =self.logger)
-        self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
-        self.Connect()
-
 
        
     def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
@@ -245,8 +245,22 @@ PseudoDeviceController        If no marker strings are available on the LSL the 
             #                                self.globalEpochSettings, len(self.dataThreads))
             #else: # cold be desirable to capture samples only relative to timestammps with async, so maybe make this configurable?
             #if stream.info().nominal_srate() == 0:
-            print(len(self.dataThreads))
-            print(stream.info().name())
+            #print(len(self.dataThreads))
+            #print(stream.info().name())
+
+            if stream.info().name() in self.streamCustomFeatureExtract.keys():
+                ft = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueueTrain, self.dataQueueTest,
+                                                self.featureQueueTest,self.featureQueueTrain, len(self.dataStreams),
+                                                self.markerCountRetrieveEvent, self.markerCountQueue,logger=self.logger,
+                                                featureExtractor = self.streamCustomFeatureExtract[stream.info().name()],
+                                                globalEpochSettings = self.globalEpochSettings, customEpochSettings = self.customEpochSettings)
+            else:
+                ft = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueueTrain, self.dataQueueTest,
+                                                self.featureQueueTest,self.featureQueueTrain, len(self.dataStreams),
+                                                self.markerCountRetrieveEvent, self.markerCountQueue,logger=self.logger,
+                                                globalEpochSettings = self.globalEpochSettings, customEpochSettings = self.customEpochSettings)
+            ft.start()
+            self.featureThreads.append(ft)
             if stream.info().name() in self.streamChsDropDict.keys(): ## all use optimised now (pull_chunk and timestamp relative)
                 #print(self.streamChsDropDict[stream.info().name()])
                 dt = OptimisedDataReceiverThread(self.closeEvent, self.trainTestEvent, self.dataQueueTrain,self.dataQueueTest, stream,  self.customEpochSettings, 
@@ -264,19 +278,8 @@ PseudoDeviceController        If no marker strings are available on the LSL the 
             #                                self.globalEpochSettings, len(self.dataThreads),maxExpectedSampleRate = stream.info().nominal_srate())
             dt.start()
             self.dataThreads.append(dt)
-            if stream.info().name() in self.streamCustomFeatureExtract.keys():
-                self.ft = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueueTrain, self.dataQueueTest,
-                                                self.featureQueueTest,self.featureQueueTrain, len(self.dataStreams),
-                                                self.markerCountRetrieveEvent, self.markerCountQueue,logger=self.logger,
-                                                featureExtractor = self.streamCustomFeatureExtract[stream.info().name()],
-                                                globalEpochSettings = self.globalEpochSettings, customEpochSettings = self.customEpochSettings)
-            else:
-                self.ft = FeatureProcessorThread(self.closeEvent,self.trainTestEvent, self.dataQueueTrain, self.dataQueueTest,
-                                                self.featureQueueTest,self.featureQueueTrain, len(self.dataStreams),
-                                                self.markerCountRetrieveEvent, self.markerCountQueue,logger=self.logger,
-                                                globalEpochSettings = self.globalEpochSettings, customEpochSettings = self.customEpochSettings)
-            self.ft.start()
-            self.featureThreads.append(dt)
+
+
         # marker thread requires data and feature threads to push new markers too
         self.markerThread = MarkerThread(self.closeEvent,self.trainTestEvent, self.markerStream,self.dataThreads, self.featureThreads)
         self.markerThread.start()
