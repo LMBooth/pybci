@@ -37,7 +37,7 @@ install:
   - sh: |
       case $APPVEYOR_BUILD_WORKER_IMAGE in
         "ubuntu2204")
-          echo "Updating system..."
+          echo "Updating ubuntu system..."
           sudo apt-get update
           sudo apt-get install -y python3-pip cmake git
           python3 -m pip install --upgrade urllib3>=2.0.5
@@ -46,7 +46,7 @@ install:
           ;;
         "macos-monterey")
           echo "Updating Homebrew and installing packages..."
-          brew update
+          #brew update
           brew install python@3.9
           python3.9 -m pip install --upgrade urllib3>=2.0.5
           python3.9 -m pip install .
@@ -77,10 +77,8 @@ install:
         cp build/liblsl.so /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/ || exit 1
         ;;
       "macos-monterey")
-        # Install Brew (if not already installed)
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         # Install LSL
-        brew install sccn/labstreaminglayer/lsl
+        brew install labstreaminglayer/tap/lsl
         ;;
       esac
 
