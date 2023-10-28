@@ -43,7 +43,7 @@ install:
       python3 -m pip install .
       python3 -m pip install pytest pytest-timeout ruff
 
-- sh: |
+  - sh: |
       set -e  # Exit immediately if a command exits with a non-zero status.
       case $APPVEYOR_BUILD_WORKER_IMAGE in
       "ubuntu2204")
