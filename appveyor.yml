@@ -62,8 +62,10 @@ install:
         echo "Listing contents of build directory..."
         ls -alh build
         echo "Creating target directory..."
-        mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
+        ls -alh /home/appveyor/.local/lib/python3.10/site-packages/
+        #mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
         echo "Copying liblsl.so to target directory..."
+        
         # Update the source path based on where the build outputs the library.
         cp build/liblsl.so /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/ || exit 1
         ;;
