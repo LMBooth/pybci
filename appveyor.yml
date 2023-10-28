@@ -94,7 +94,7 @@ test_script:
         cd $APPVEYOR_BUILD_FOLDER
         ls -alh Tests/
         export PYTEST_ERRORLEVEL=0
-        python3 -m pytest -vv Tests/ || PYTEST_ERRORLEVEL=$?
+        python3 -m pytest -vv -s Tests/ || PYTEST_ERRORLEVEL=$?
         if [[ $PYTEST_ERRORLEVEL != 0 ]]; then
           echo 'Pytest failed. Terminating python process.'
           pkill -f python3 || echo 'No Python3 process found to terminate.'
