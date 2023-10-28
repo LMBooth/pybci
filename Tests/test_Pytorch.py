@@ -58,8 +58,8 @@ def test_run_bci():
     #pdc = PseudoDeviceController(execution_mode="thread")
     
     bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,torchModel = PyTorchModel)
-        bci.Connect()
-        time.sleep(1)
+    bci.Connect()
+    time.sleep(1)
     bci.TrainMode()
     accuracy_achieved = False
     marker_received = False
