@@ -84,7 +84,11 @@ def test_run_bci():
                 if accuracy > 0:
                     # set to above 0 to show some accuracy was retruend from model
                     accuracy_achieved = True
-                    bci.StopThreads()
+                    if current_os != "Windows":
+                        pdc.StopStreaming()
+                        bci.StopThreads()
+                    else:
+                        bci.StopThreads()
                     break
             #if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+4:
             #    break

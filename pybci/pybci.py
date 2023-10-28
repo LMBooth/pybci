@@ -343,16 +343,16 @@ class PyBCI:
         Stops all PyBCI threads.
         """
         if self.createPseudoDevice:
-            current_os = get_os()
-            print("current_os: "+current_os)
-            if current_os == "Windows":
-                self.pseudoDevice.StopStreaming()
-            elif current_os == "Darwin":
-                self.pseudoDevice.StopStreaming()
+        #    current_os = get_os()
+        #    print("current_os: "+current_os)
+        #    if current_os == "Windows":
+        #        self.pseudoDevice.StopStreaming()
+        #    elif current_os == "Darwin":
+        #        self.pseudoDevice.StopStreaming()
                 #self.process.stdin.write(b'stop\n')
                 #self.process.stdin.flush()
-            elif current_os == "Linux":
-                self.pseudoDevice.StopStreaming()
+        #    elif current_os == "Linux":
+            self.pseudoDevice.StopStreaming()
                 #self.process.stdin.write(b'stop\n')
                 #self.process.stdin.flush()
                 
