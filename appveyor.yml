@@ -33,13 +33,13 @@ install:
 
 # Install dependencies
   - ps: |
-      echo "Updating system..."
-      #sudo apt-get update
-      sudo apt-get install -y python3-pip cmake git
       pip install --upgrade --no-warn-script-location urllib3>=2.0.5
       pip install .
       pip install pytest pytest-timeout ruff
   - sh: |
+      echo "Updating system..."
+      #sudo apt-get update
+      sudo apt-get install -y python3-pip cmake git
       python3 -m pip install --upgrade --no-warn-script-location urllib3>=2.0.5
       python3 -m pip install .
       python3 -m pip install pytest pytest-timeout ruff
@@ -48,21 +48,19 @@ install:
       set -e  # Exit immediately if a command exits with a non-zero status.
       case $APPVEYOR_BUILD_WORKER_IMAGE in
       "ubuntu2204")
-        
-        sudo apt-get install -y python3-pip cmake git
         echo "Cloning liblsl repository..."
         git clone --depth=1 https://github.com/sccn/liblsl.git
         echo "Listing contents of liblsl directory..."
-        ls -alh liblsl
+        #ls -alh liblsl
         echo "Configuring liblsl project..."
         cd liblsl
         cmake -S . -B build
         echo "Building liblsl..."
         cmake --build build
         echo "Listing contents of build directory..."
-        ls -alh build
+        #ls -alh build
         echo "Creating target directory..."
-        ls -alh /home/appveyor/.local/lib/python3.10/site-packages/
+        ls -alh /home/appveyor/.local/lib/python3.10/site-packages/pylsl
         #mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
         echo "Copying liblsl.so to target directory..."
         
