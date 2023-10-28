@@ -78,7 +78,11 @@ install:
         ;;
       "macos-monterey")
         # Install LSL
+        # Remove conflicting binaries
+        rm -f /usr/local/bin/ccmake /usr/local/bin/cmake /usr/local/bin/cpack /usr/local/bin/ctest
+        # Install LSL
         brew install --verbose labstreaminglayer/tap/lsl
+        #brew install --verbose labstreaminglayer/tap/lsl
         ;;
       esac
 
