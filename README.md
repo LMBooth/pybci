@@ -1,6 +1,6 @@
 [![PyPI - Downloads](https://img.shields.io/pypi/dm/pybci-package)](https://pypi.org/project/pybci-package) [![PyPI - version](https://img.shields.io/pypi/v/pybci-package)](https://pypi.org/project/pybci-package)  [![Documentation Status](https://readthedocs.org/projects/pybci/badge/?version=latest)](https://pybci.readthedocs.io/en/latest/?badge=latest) [![AppVeyor Build](https://img.shields.io/appveyor/build/LMBooth/pybci)](https://ci.appveyor.com/project/LMBooth/pybci) [![codecov](https://codecov.io/gh/LMBooth/pybci/graph/badge.svg?token=5Z60JQP197)](https://codecov.io/gh/LMBooth/pybci)
 
-[![pybci](https://raw.githubusercontent.com/LMBooth/pybci/main/docs/Images/pyBCITitle.svg)](https://github.com/LMBooth/pybci)
+[![pybci](https://raw.githubusercontent.com/LMBooth/pybci/main/docs/source/Images/pyBCITitle.svg)](https://github.com/LMBooth/pybci)
 
 A Python package to create real-time Brain Computer Interfaces (BCI's). Data synchronisation and pipelining handled by the [Lab Streaming Layer](https://github.com/sccn/labstreaminglayer), machine learning with [Pytorch](https://pytorch.org/), [scikit-learn](https://scikit-learn.org/stable/#) or [TensorFlow](https://www.tensorflow.org/install), leveraging packages like [AntroPy](https://github.com/raphaelvallat/antropy), [SciPy](https://scipy.org/) and [NumPy](https://numpy.org/) for generic time and/or frequency based feature extraction or optionally have the users own custom feature extraction class used.
 
