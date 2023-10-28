@@ -72,11 +72,6 @@ PseudoDeviceController        If no marker strings are available on the LSL the 
         self.globalEpochSettings = globalEpochSettings
         self.customEpochSettings = customEpochSettings
         self.streamChsDropDict = streamChsDropDict
-        self.loggingLevel = loggingLevel
-        self.logger = Logger(self.loggingLevel)
-        self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes, logger =self.logger)
-        self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
-        self.Connect()
         if createPseudoDevice:
             if isinstance(pseudoDeviceController,PseudoDeviceController):
                 pseudoDevice = pseudoDeviceController
@@ -85,6 +80,12 @@ PseudoDeviceController        If no marker strings are available on the LSL the 
                 pseudoDevice = PseudoDeviceController()
                 pseudoDevice.BeginStreaming()
         self.pseudoDevice = pseudoDevice
+        self.loggingLevel = loggingLevel
+        self.logger = Logger(self.loggingLevel)
+        self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes, logger =self.logger)
+        self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second
+        self.Connect()
+
 
        
     def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
