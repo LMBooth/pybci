@@ -104,9 +104,9 @@ class PyBCI:
                 else:
                     pseudoDevice = PseudoDeviceController()
                     pseudoDevice.BeginStreaming()
-                self.pseudoDevice = pseudoDevice
+                self.pseudoDevice = pseudoDeviceController
             elif current_os == "macOS":
-                self.pseudoDevice = pseudoDevice
+                self.pseudoDevice = pseudoDeviceController
                 #current_script_path = os.path.abspath(__file__)
                 #current_script_path = current_script_path.replace("pybci.py", "", 1)  
                 #print("Mac current_script_path: "+current_script_path)
@@ -119,7 +119,7 @@ class PyBCI:
                 #print(f"Return code: {self.process.returncode}")
 
             elif current_os == "Linux":
-                self.pseudoDevice = pseudoDevice
+                self.pseudoDevice = pseudoDeviceController
                 #current_script_path = os.path.abspath(__file__)
                 #current_script_path = current_script_path.replace("pybci.py", "", 1)  
                 #print("Linux current_script_path: "+current_script_path) 
