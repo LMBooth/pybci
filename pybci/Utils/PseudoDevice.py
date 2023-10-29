@@ -61,7 +61,7 @@ class PseudoDeviceController:
         
         if self.worker.is_alive():
             self.worker.join()
-            self.worker.terminate()
+            #self.worker.terminate()
 
 def precise_sleep(duration):
     end_time = time.time() + duration
