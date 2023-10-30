@@ -84,7 +84,7 @@ class CLI_testPytorchWrapper:
             self.min_epochs_test = self.min_epochs_train+1
         current_os = get_os()
         if current_os == "Windows":
-            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, torch = PyTorchModel)
+            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, torchModel = PyTorchModel)
         else:
             pdc = PseudoDeviceController(execution_mode="process")
             pdc.BeginStreaming()
