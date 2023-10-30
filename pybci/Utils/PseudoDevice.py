@@ -49,6 +49,7 @@ class PseudoDeviceController:
             #    device.update()
 
             time.sleep(0.01)
+        device.StopStreaming()
 
     def BeginStreaming(self):
         #if self.execution_mode == 'process':

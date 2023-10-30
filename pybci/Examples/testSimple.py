@@ -2,16 +2,11 @@ from pybci import PyBCI
 import time 
 
 if __name__ == '__main__': # Note: this line is needed when calling pseudoDevice as by default runs in a multiprocessed operation
-    
-    print("Starting bci")
     bci = PyBCI(minimumEpochsRequired = 5, createPseudoDevice=True)
-    print("attemting connect to bci")
     while not bci.connected: # check to see if lsl marker and datastream are available
         bci.Connect()
         time.sleep(1)
-    print("Connected to device")
     bci.TrainMode() # now both marker and datastreams available start training on received epochs
-    print("Training mode started")
     accuracy = 0
     try:
         while(True):
