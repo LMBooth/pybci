@@ -89,7 +89,7 @@ class CLI_testPytorchWrapper:
             pdc = PseudoDeviceController(execution_mode="process")
             pdc.BeginStreaming()
             time.sleep(10)
-            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc, torch = PyTorchModel)
+            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc, torchModel = PyTorchModel)
 
         #self.bci = PyBCI(minimumEpochsRequired = min_epochs_train, torchModel = PyTorchModel)
         #self.bci = PyBCI(minimumEpochsRequired = self.min_epochs_train, createPseudoDevice=self.createPseudoDevice)
