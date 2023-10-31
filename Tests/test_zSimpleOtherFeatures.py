@@ -25,7 +25,7 @@ def test_run_bci():
     extractor = GenericFeatureExtractor(featureChoices=features)
     current_os = get_os()
     if current_os == "Windows":
-        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,pseudoDeviceController=pdc, streamCustomFeatureExtract={"PyBCIPseudoDataStream":extractor}) 
+        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice= True, streamCustomFeatureExtract={"PyBCIPseudoDataStream":extractor}) 
     else:
         pdc = PseudoDeviceController(execution_mode="process")
         pdc.BeginStreaming()
