@@ -1,6 +1,7 @@
-from pybci import PyBCI
+from pybci import PyBCI, get_os
 from pybci.Configuration.FeatureSettings import GeneralFeatureChoices
 from pybci.Utils.FeatureExtractor import GenericFeatureExtractor
+from pybci.Utils.PseudoDevice import PseudoDeviceController
 import time
 
 # Test case using the fixture
@@ -22,7 +23,16 @@ def test_run_bci():
     features.slopeSignChange = True
 
     extractor = GenericFeatureExtractor(featureChoices=features)
-    bci = PyBCI(minimumEpochsRequired=1, createPseudoDevice=True, streamCustomFeatureExtract={"PyBCIPseudoDataStream":extractor})
+    current_os = get_os()
+    if current_os == "Windows":
+        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,pseudoDeviceController=pdc, streamCustomFeatureExtract={"PyBCIPseudoDataStream":extractor}) 
+    else:
+        pdc = PseudoDeviceController(execution_mode="process")
+        pdc.BeginStreaming()
+        time.sleep(10)
+        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc, streamCustomFeatureExtract={"PyBCIPseudoDataStream":extractor})
+    #while not bci.connected:
+    #bci = PyBCI(minimumEpochsRequired=1, createPseudoDevice=True, streamCustomFeatureExtract={"PyBCIPseudoDataStream":extractor})
     while not bci.connected:
         bci.Connect()
         time.sleep(1)
