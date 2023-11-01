@@ -34,7 +34,10 @@ install:
         setx PATH "%PATH:;C:\Python312=%" /M
         setx PATH "%PATH:;C:\Python312\Scripts=%" /M
         setx PATH "%PATH:;C:\Python312-x64\Scripts=%" /M
-        
+
+        # Set PYTHON environment variable based on the matrix configuration
+        $env:PYTHON = $env:PYTHON # Change this line to set the appropriate Python version based on the matrix
+
         set PATH="%PYTHON%;%PYTHON%\Scripts;%PATH%"
         where python
         python -m pip install --upgrade pip
