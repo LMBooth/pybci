@@ -45,7 +45,8 @@ install:
           $env:PYTHONPATH = "%PYTHON_PATH%\Lib;%PYTHON_PATH%\Lib\site-packages"
           setx PYTHONPATH "$env:PYTHONPATH" /M
         }
-
+        echo PYTHONPATH
+        echo python
         where python
         python -m pip install --upgrade pip
         python --version
