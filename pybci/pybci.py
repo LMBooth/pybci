@@ -91,52 +91,30 @@ class PyBCI:
         self.createPseudoDevice = createPseudoDevice
         if createPseudoDevice:
             current_os = get_os()
-            #print("current_os: "+current_os)
-            #current_os =  "macOS"
             if current_os == "Windows":
                 if isinstance(pseudoDeviceController,PseudoDeviceController):
-                    pseudoDevice = pseudoDeviceController
-                    pseudoDevice.BeginStreaming()
+                    pseudoDeviceController.BeginStreaming()
                 else:
-                    pseudoDevice = PseudoDeviceController()
-                    pseudoDevice.BeginStreaming()
-                self.pseudoDevice = pseudoDeviceController
+                    pseudoDeviceController = PseudoDeviceController()
+                    pseudoDeviceController.BeginStreaming()
+                self.pseudoDeviceController = pseudoDeviceController
             elif current_os == "macOS":
-                self.pseudoDevice = pseudoDeviceController
-                #current_script_path = os.path.abspath(__file__)
-                #current_script_path = current_script_path.replace("pybci.py", "", 1)  
-                #print("Mac current_script_path: "+current_script_path)
-                #desiredpath = current_script_path + "Utils/PseudoSubprocess.py"
-                #self.process = subprocess.Popen([sys.executable,"-u", desiredpath], stdin=subprocess.PIPE)
-                #print(f"Return code: {self.process.returncode}")
-                #self.process.stdin.write(b'begin\n')
-                #print(f"Return code: {self.process.returncode}")
-                #self.process.stdin.flush()
-                #print(f"Return code: {self.process.returncode}")
+                self.pseudoDeviceController = pseudoDeviceController
 
             elif current_os == "Linux":
-                self.pseudoDevice = pseudoDeviceController
-                #current_script_path = os.path.abspath(__file__)
-                #current_script_path = current_script_path.replace("pybci.py", "", 1)  
-                #print("Linux current_script_path: "+current_script_path) 
-                #desiredpath = current_script_path + "Utils/PseudoSubprocess.py"
-                #self.process = subprocess.Popen([sys.executable,"-u",  desiredpath], stdin=subprocess.PIPE)
-                #print(f"Return code: {self.process.returncode}")
-                #self.process.stdin.write(b'begin\n')
-                #print(f"Return code: {self.process.returncode}")
-                #self.process.stdin.flush()
-                #print(f"Return code: {self.process.returncode}")
+                self.pseudoDeviceController = pseudoDeviceController
+
         self.lslScanner = LSLScanner(self, dataStreams, markerStream,streamTypes, markerTypes, logger =self.logger)
         self.ConfigureMachineLearning(minimumEpochsRequired,  clf, model, torchModel) # configure first, connect second   
         #self.Connect()
 
-    def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
+    """def __enter__(self, dataStreams = None, markerStream= None, streamTypes = None, markerTypes = None, loggingLevel = Logger.INFO,
                  globalEpochSettings = GlobalEpochSettings(), customEpochSettings = {}, streamChsDropDict = {},
                  streamCustomFeatureExtract = {},
                  minimumEpochsRequired = 10, clf= None, model = None, torchModel = None): # with bci
-        """
-        Please look at PyBCI.__init__ (same parameters, setup and description)
-        """
+        
+        #Please look at PyBCI.__init__ (same parameters, setup and description)
+        
         self.streamCustomFeatureExtract = streamCustomFeatureExtract
         self.globalEpochSettings = globalEpochSettings
         self.customEpochSettings = customEpochSettings
@@ -148,7 +126,7 @@ class PyBCI:
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         self.StopThreads()
-        
+        """
 
     def Connect(self): # Checks valid data and markers streams are present, controls dependant functions by setting self.connected
         if self.lslScanner.CheckAvailableLSL():
@@ -348,7 +326,7 @@ class PyBCI:
                 #self.process.stdin.write(b'stop\n')
                 #self.process.stdin.flush()
         #    elif current_os == "Linux":
-            self.pseudoDevice.StopStreaming()
+            self.pseudoDeviceController.StopStreaming()
                 #self.process.stdin.write(b'stop\n')
                 #self.process.stdin.flush()
                 
