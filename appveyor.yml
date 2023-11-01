@@ -31,8 +31,9 @@ install:
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
         # Windows-specific setup here
         #setx PATH %PYTHON%;%PATH%
-        $pythonPath = "$env:PYTHON;\python"
-        setx PATH "$env:PYTHON;$PATH"
+        #$pythonPath = "$env:PYTHON;\python"
+        #setx PATH "$env:%PYTHON%;$PATH"
+        set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
         where python
         echo %PATH%
         #SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
