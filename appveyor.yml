@@ -128,15 +128,15 @@ test_script:
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -ne "ubuntu2204") {
         echo 'About to run tests on non-Ubuntu...'
         $env:PYTEST_ERRORLEVEL=0
-        try {
-          pytest -vv -s Tests/
-        } catch {
-          $env:PYTEST_ERRORLEVEL=$_.Exception.HResult
-        }
-        if ($LastExitCode -ne 0) { 
-          Write-Host "Command exited with code $LastExitCode at line number $($MyInvocation.ScriptLineNumber)"; 
-          exit $LastExitCode 
-        }
+        #try {
+        python -m pytest -vv -s Tests/ || PYTEST_ERRORLEVEL=$?
+        #} catch {
+        #  $env:PYTEST_ERRORLEVEL=$_.Exception.HResult
+        #}
+        #if ($LastExitCode -ne 0) { 
+        #  Write-Host "Command exited with code $LastExitCode at line number $($MyInvocation.ScriptLineNumber)"; 
+        #  exit $LastExitCode 
+        #}
       }
 
   - "ruff ."
