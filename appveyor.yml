@@ -6,9 +6,6 @@ environment:
     PYLSL_LIB: /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/liblsl.so
     #PYLSL_LIB: lsl.dll
   matrix:
-    - ID: macOS
-      APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
-      PYTHON: 3.9
     - ID: VS2019_Py311
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python311-x64"
@@ -18,6 +15,9 @@ environment:
     - ID: VS2019_Py39
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python39-x64"
+    - ID: macOS
+      APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
+      PYTHON: 3.9
     - ID: Ubuntu
       APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2204
       PYTHON: 3.10  # Added Python version
