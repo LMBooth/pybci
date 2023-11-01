@@ -36,8 +36,16 @@ install:
         # Windows-specific setup here
         $env:PYTHON_PATH = $env:PYTHON
         setx PATH "%PATH:;$env:PYTHON_PATH%" /M
+
         # Set PYTHON environment variable based on the matrix configuration
         set PATH="%PYTHON_PATH%;%PYTHON_PATH%\Scripts;%PATH%"
+        
+        # Check if PYTHONPATH is set, and if not, set it
+        if (-not $env:PYTHONPATH) {
+          $env:PYTHONPATH = "%PYTHON_PATH%\Lib;%PYTHON_PATH%\Lib\site-packages"
+          setx PYTHONPATH "$env:PYTHONPATH" /M
+        }
+
         where python
         python -m pip install --upgrade pip
         python --version
