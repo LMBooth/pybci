@@ -8,13 +8,13 @@ environment:
   matrix:
     - ID: VS2019_Py311
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PYTHON: "C:\\Python311"
+      PYTHON: "C:\\Python311-x64"
     - ID: VS2019_Py310
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PYTHON: "C:\\Python310"
+      PYTHON: "C:\\Python310-x64"
     - ID: VS2019_Py39
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PYTHON: "C:\\Python39"
+      PYTHON: "C:\\Python39-x64"
     - ID: macOS
       APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
       PYTHON: 3.9
@@ -30,7 +30,7 @@ install:
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
         # Windows-specific setup here
-        "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+        setx PATH %PYTHON%;%PATH%
         #SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
         python -m pip install --upgrade pip
         python --version
