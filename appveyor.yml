@@ -30,12 +30,13 @@ install:
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
         # Windows-specific setup here
-        SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
+        "SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%"
+        #SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
         python -m pip install --upgrade pip
         python --version
         pip --version
-        pip uninstall -y urllib3
-        pip install --upgrade setuptools wheel
+        #pip uninstall -y urllib3
+        #pip install --upgrade setuptools wheel
         pip install --upgrade urllib3>=2.0.5
         pip install .
         pip install pytest pytest-timeout ruff
