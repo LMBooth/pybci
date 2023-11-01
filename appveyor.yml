@@ -33,8 +33,8 @@ install:
   # Install dependencies
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
-        # Update PATH environment variable
-        $env:Path = "$env:PYTHON;$env:Path"
+        # Update PATH environment variable for Python and Scripts directory
+        $env:Path = "$env:PYTHON;$env:PYTHON\Scripts;$env:Path"
         # Check if correct python is being used
         Write-Host "Current Python from Path"
         Get-Command python
