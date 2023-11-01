@@ -30,13 +30,9 @@ install:
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
         # Windows-specific setup here
-        #setx PATH %PYTHON%;%PATH%
-        #$pythonPath = "$env:PYTHON;\python"
-        #setx PATH "$env:%PYTHON%;$PATH"
-        set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
+        #set PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
+        set PATH="%PYTHON%;%PYTHON%\Scripts;%PATH%"
         where python
-        echo %PATH%
-        #SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
         python -m pip install --upgrade pip
         python --version
         dir C:\
@@ -46,6 +42,7 @@ install:
         pip install --upgrade urllib3>=2.0.5
         pip install .
         pip install pytest pytest-timeout ruff
+        $env:PYLSL_LIB = "lsl.dll"
       }
   - sh: |
       case $APPVEYOR_BUILD_WORKER_IMAGE in
