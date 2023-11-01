@@ -126,9 +126,15 @@ test_script:
       fi
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -ne "ubuntu2204") {
-        set PYTEST_ERRORLEVEL=0
-        pytest Tests/ || SET PYTEST_ERRORLEVEL=%errorlevel%
-        if %PYTEST_ERRORLEVEL% neq 0 (echo 'Pytest failed. Terminating python process.' & taskkill /IM python.exe /F) else (echo 'Pytest succeeded.')
+        $PYTEST_ERRORLEVEL = 0
+        pytest Tests/ -W "ignore::DeprecationWarning" -W "ignore::RuntimeWarning"
+        $PYTEST_ERRORLEVEL = $LASTEXITCODE
+        if ($PYTEST_ERRORLEVEL -ne 0) {
+          Write-Host 'Pytest failed. Terminating python process.'
+          Stop-Process -Name python -Force
+        } else {
+          Write-Host 'Pytest succeeded.'
+        }
       }
 
   - "ruff ."
