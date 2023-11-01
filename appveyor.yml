@@ -30,6 +30,8 @@ install:
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
         # Windows-specific setup here
+        setx PATH "%PATH:;C:\Python312-x64=%" /M
+        setx PATH "%PATH:;C:\Python312=%" /M
         set PATH="%PYTHON%;%PYTHON%\Scripts;%PATH%"
         where python
         python -m pip install --upgrade pip
