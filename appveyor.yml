@@ -4,35 +4,38 @@ build: off
 environment:
   global:
     PYLSL_LIB: /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/liblsl.so
-    #PYLSL_LIB: lsl.dll
   matrix:
     - ID: VS2019_Py311
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python311-x64"
+      PYTHON_VERSION: "3.11"
     - ID: VS2019_Py310
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python310-x64"
+      PYTHON_VERSION: "3.10"
     - ID: VS2019_Py39
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python39-x64"
+      PYTHON_VERSION: "3.9"
     - ID: macOS
       APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
-      PYTHON: 3.9
+      PYTHON: "3.9"
+      PYTHON_VERSION: "3.9"
     - ID: Ubuntu
       APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2204
-      PYTHON: 3.10  # Added Python version
+      PYTHON: "3.10"
+      PYTHON_VERSION: "3.10"
 
 matrix:
   fast_finish: true
 
 install:
-# Install dependencies
+  # Install dependencies
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
         # Windows-specific setup here
         $env:PYTHON_PATH = $env:PYTHON
         setx PATH "%PATH:;$env:PYTHON_PATH%" /M
-
         # Set PYTHON environment variable based on the matrix configuration
         set PATH="%PYTHON_PATH%;%PYTHON_PATH%\Scripts;%PATH%"
         where python
@@ -43,6 +46,8 @@ install:
         pip install .
         pip install pytest pytest-timeout ruff
         $env:PYLSL_LIB = "lsl.dll"
+        # Set the PYTHON_VERSION environment variable
+        $env:PYTHON_VERSION = $env:PYTHON_VERSION
       }
   - sh: |
       case $APPVEYOR_BUILD_WORKER_IMAGE in
