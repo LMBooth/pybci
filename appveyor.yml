@@ -126,8 +126,9 @@ test_script:
       fi
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -ne "ubuntu2204") {
-        echo 'About to run tests on non-Ubuntu...'
-        python -m pytest -vv -s Tests/
+        set PYTEST_ERRORLEVEL=0
+        pytest Tests/ || SET PYTEST_ERRORLEVEL=%errorlevel%
+        if %PYTEST_ERRORLEVEL% neq 0 (echo 'Pytest failed. Terminating python process.' & taskkill /IM python.exe /F) else (echo 'Pytest succeeded.')
       }
 
   - "ruff ."
