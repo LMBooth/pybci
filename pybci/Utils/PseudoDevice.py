@@ -176,7 +176,8 @@ class PseudoDevice:
             self.stop_signal.set()
         else:  # For threading
             self.stop_signal = True
-
+        self.markerOutlet.__del__()
+        self.outlet.__del__()
         if hasattr(self, 'thread'):
             self.thread.join()  # Wait for the thread to finish
 

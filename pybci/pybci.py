@@ -329,8 +329,8 @@ class PyBCI:
         self.classifierThread.join()
         for outlet in self.dataStreams:
             outlet.close_stream()
-        for outlet in self.markerStream:
-            outlet.close_stream()
+        #for outlet in self.markerStream:
+        self.markerStream.close_stream()
         self.connected = False
         self.logger.log(Logger.INFO," Threads stopped.")
         
