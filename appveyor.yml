@@ -133,9 +133,9 @@ test_script:
         } catch {
           $env:PYTEST_ERRORLEVEL=$_.Exception.HResult
         }
-        if ($env:PYTEST_ERRORLEVEL -ne 0) {
-          echo 'Pytest failed. Terminating python process.'
-          Stop-Process -Name python -Force
+        if ($LastExitCode -ne 0) { 
+          Write-Host "Command exited with code $LastExitCode at line number $($MyInvocation.ScriptLineNumber)"; 
+          exit $LastExitCode 
         }
       }
 
