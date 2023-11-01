@@ -30,15 +30,11 @@ install:
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
         # Windows-specific setup here
-        setx PATH "%PATH:;C:\Python312-x64=%" /M
-        setx PATH "%PATH:;C:\Python312=%" /M
-        setx PATH "%PATH:;C:\Python312\Scripts=%" /M
-        setx PATH "%PATH:;C:\Python312-x64\Scripts=%" /M
+        $env:PYTHON_PATH = $env:PYTHON
+        setx PATH "%PATH:;$env:PYTHON_PATH%" /M
 
         # Set PYTHON environment variable based on the matrix configuration
-        $env:PYTHON = $env:PYTHON # Change this line to set the appropriate Python version based on the matrix
-
-        set PATH="%PYTHON%;%PYTHON%\Scripts;%PATH%"
+        set PATH="%PYTHON_PATH%;%PYTHON_PATH%\Scripts;%PATH%"
         where python
         python -m pip install --upgrade pip
         python --version
