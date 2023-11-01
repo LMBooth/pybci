@@ -316,6 +316,15 @@ class PyBCI:
         """
         Stops all PyBCI threads.
         """
+
+        self.closeEvent.set()
+        self.markerThread.join()
+        # wait for all threads to finish processing, probably worth pulling out finalised classifier information stored for later use.
+        for dt in self.dataThreads:
+            dt.join()
+        for ft in self.featureThreads:
+            ft.join()
+        self.classifierThread.join()
         if self.createPseudoDevice:
         #    current_os = get_os()
         #    print("current_os: "+current_os)
@@ -330,14 +339,6 @@ class PyBCI:
                 #self.process.stdin.write(b'stop\n')
                 #self.process.stdin.flush()
                 
-        self.closeEvent.set()
-        self.markerThread.join()
-        # wait for all threads to finish processing, probably worth pulling out finalised classifier information stored for later use.
-        for dt in self.dataThreads:
-            dt.join()
-        for ft in self.featureThreads:
-            ft.join()
-        self.classifierThread.join()
         self.connected = False
         self.logger.log(Logger.INFO," Threads stopped.")
         
