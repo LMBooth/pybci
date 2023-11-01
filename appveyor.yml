@@ -32,32 +32,31 @@ matrix:
 install:
   # Install dependencies
   - ps: |
-      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
-        # Windows-specific setup here
-        $env:PYTHON_PATH = $env:PYTHON
-        setx PATH "%PATH:;$env:PYTHON_PATH%" /M
-
-        # Set PYTHON environment variable based on the matrix configuration
-        set PATH="%PYTHON_PATH%;%PYTHON_PATH%\Scripts;%PATH%"
-        
-        # Check if PYTHONPATH is set, and if not, set it
-        if (-not $env:PYTHONPATH) {
-          $env:PYTHONPATH = "%PYTHON_PATH%\Lib;%PYTHON_PATH%\Lib\site-packages"
-          setx PYTHONPATH "$env:PYTHONPATH" /M
-        }
-        echo %PYTHON_PATH%
-        echo %PYTHON%
-        where python
-        python -m pip install --upgrade pip
-        python --version
-        pip --version
-        pip install --upgrade urllib3>=2.0.5
-        pip install .
-        pip install pytest pytest-timeout ruff
-        $env:PYLSL_LIB = "lsl.dll"
-        # Set the PYTHON_VERSION environment variable
-        $env:PYTHON_VERSION = $env:PYTHON_VERSION
+    if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
+      # Windows-specific setup here
+      $env:PYTHON_PATH = $env:PYTHON
+      setx PATH "%PATH:;$env:PYTHON_PATH%" /M
+      # Set PYTHON environment variable based on the matrix configuration
+      set PATH="%PYTHON_PATH%;%PYTHON_PATH%\Scripts;%PATH%"
+      
+      # Check if PYTHONPATH is set, and if not, set it
+      if (-not $env:PYTHONPATH) {
+        $env:PYTHONPATH = "%PYTHON_PATH%\Lib;%PYTHON_PATH%\Lib\site-packages"
+        setx PYTHONPATH "$env:PYTHONPATH" /M
       }
+      echo %PYTHON_PATH%
+      echo %PYTHON%
+      where python
+      python -m pip install --upgrade pip
+      python --version
+      pip --version
+      pip install --upgrade urllib3>=2.0.5
+      pip install .
+      pip install pytest pytest-timeout ruff
+      $env:PYLSL_LIB = "lsl.dll"
+      # Set the PYTHON_VERSION environment variable
+      $env:PYTHON_VERSION = $env:PYTHON_VERSION
+    }
   - sh: |
       case $APPVEYOR_BUILD_WORKER_IMAGE in
         "ubuntu2204")
