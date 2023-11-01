@@ -8,13 +8,13 @@ environment:
   matrix:
     - ID: VS2019_Py311
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PY: 311-x64
+      PYTHON: "C:\\Python311"
     - ID: VS2019_Py310
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PY: 310-x64
+      PYTHON: "C:\\Python310"
     - ID: VS2019_Py39
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PY: 39-x64
+      PYTHON: "C:\\Python39"
     - ID: macOS
       APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
       PYTHON: 3.9
@@ -34,6 +34,7 @@ install:
         #SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
         python -m pip install --upgrade pip
         python --version
+        dir
         pip --version
         #pip uninstall -y urllib3
         #pip install --upgrade setuptools wheel
