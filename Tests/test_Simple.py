@@ -27,7 +27,7 @@ def test_run_bci():
             if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired:
                 classInfo = bci.CurrentClassifierInfo() # hangs if called too early
                 accuracy = classInfo["accuracy"]###
-                if accuracy >= 0:
+                if accuracy > 0:
                     # set to above 0 to show some accuracy was retruend from model
                     accuracy_achieved = True
                     bci.StopThreads()

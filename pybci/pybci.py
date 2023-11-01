@@ -316,6 +316,8 @@ class PyBCI:
         """
         Stops all PyBCI threads.
         """
+        if self.createPseudoDevice:
+            self.pseudoDeviceController.StopStreaming()
 
         self.closeEvent.set()
         self.markerThread.join()
@@ -325,20 +327,10 @@ class PyBCI:
         for ft in self.featureThreads:
             ft.join()
         self.classifierThread.join()
-        if self.createPseudoDevice:
-        #    current_os = get_os()
-        #    print("current_os: "+current_os)
-        #    if current_os == "Windows":
-        #        self.pseudoDevice.StopStreaming()
-        #    elif current_os == "Darwin":
-        #        self.pseudoDevice.StopStreaming()
-                #self.process.stdin.write(b'stop\n')
-                #self.process.stdin.flush()
-        #    elif current_os == "Linux":
-            self.pseudoDeviceController.StopStreaming()
-                #self.process.stdin.write(b'stop\n')
-                #self.process.stdin.flush()
-                
+        for outlet in self.dataStreams:
+            outlet.close_stream()
+        for outlet in self.markerStream:
+            outlet.close_stream()
         self.connected = False
         self.logger.log(Logger.INFO," Threads stopped.")
         
