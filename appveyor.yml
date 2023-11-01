@@ -33,11 +33,12 @@ install:
   # Install dependencies
   - ps: |
       if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
-        # Windows-specific setup here
-        $env:PYTHONPATH = $env:PYTHON
-        echo %PYTHONPATH%
-        echo %PYTHON%
-        where python
+        # Update PATH environment variable
+        $env:Path = "$env:PYTHON;$env:Path"
+        # Check if correct python is being used
+        Write-Host "Current Python from Path"
+        Get-Command python
+        # Other commands
         python -m pip install --upgrade pip
         python --version
         pip --version
@@ -45,8 +46,6 @@ install:
         pip install .
         pip install pytest pytest-timeout ruff
         $env:PYLSL_LIB = "lsl.dll"
-        # Set the PYTHON_VERSION environment variable
-        $env:PYTHON_VERSION = $env:PYTHON_VERSION
       }
   - sh: |
       case $APPVEYOR_BUILD_WORKER_IMAGE in
