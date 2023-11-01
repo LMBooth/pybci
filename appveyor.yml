@@ -33,7 +33,7 @@ install:
         #setx PATH %PYTHON%;%PATH%
         $pythonPath = "$env:PYTHON;\python"
         setx PATH "$env:PYTHON;$PATH"
-        echo 
+        where python
         echo %PATH%
         #SET PATH=%PYTHON%;%PYTHON%\\Scripts;%PATH%
         python -m pip install --upgrade pip
