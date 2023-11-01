@@ -1,6 +1,6 @@
 class GeneralFeatureChoices:
     psdBand = False
-    appr_entropy = False
+    #appr_entropy = False
     perm_entropy = False
     spec_entropy = False
     svd_entropy = False

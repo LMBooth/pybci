@@ -9,7 +9,7 @@ import time
 def test_run_bci():
     features = GeneralFeatureChoices
     features.psdBand = True
-    features.appr_entropy = True
+    #features.appr_entropy = True
     features.perm_entropy = True    
     features.spec_entropy = True
     features.svd_entropy = True

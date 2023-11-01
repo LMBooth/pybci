@@ -19,7 +19,7 @@ class GenericFeatureExtractor():
         self.featureChoices = featureChoices
         #for key, value in self.featureChoices.__dict__.items():
         #    print(f"{key} = {value}")
-        selFeats = sum([self.featureChoices.appr_entropy,
+        selFeats = sum([#self.featureChoices.appr_entropy,
             self.featureChoices.perm_entropy,
             self.featureChoices.spec_entropy,
             self.featureChoices.svd_entropy,
@@ -82,9 +82,9 @@ class GenericFeatureExtractor():
                     features[(ch* self.numFeatures)+ct] = np.median(psd) # len(freqs) can be 0 if signal is all DC
                 else: 
                     features[(ch* self.numFeatures)+ct] = 0
-            if self.featureChoices.appr_entropy:  # Approximate entropy(X,M,R) X = data, M is , R is 30% standard deviation of X 
-                ct += 1
-                features[(ch* self.numFeatures)+ct] = antropy.app_entropy(epoch[:,ch]) 
+            #if self.featureChoices.appr_entropy:  # Approximate entropy(X,M,R) X = data, M is , R is 30% standard deviation of X 
+            #    ct += 1
+            #    features[(ch* self.numFeatures)+ct] = antropy.app_entropy(epoch[:,ch]) 
             if self.featureChoices.perm_entropy: # permutation_entropy
                 ct += 1
                 features[(ch* self.numFeatures)+ct] = antropy.perm_entropy(epoch[:,ch],normalize=True)
