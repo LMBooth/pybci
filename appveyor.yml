@@ -32,6 +32,9 @@ install:
         # Windows-specific setup here
         setx PATH "%PATH:;C:\Python312-x64=%" /M
         setx PATH "%PATH:;C:\Python312=%" /M
+        setx PATH "%PATH:;C:\Python312\Scripts=%" /M
+        setx PATH "%PATH:;C:\Python312-x64\Scripts=%" /M
+        
         set PATH="%PYTHON%;%PYTHON%\Scripts;%PATH%"
         where python
         python -m pip install --upgrade pip
