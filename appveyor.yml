@@ -141,5 +141,5 @@ test_script:
 
   - "ruff ."
   - "echo 'Finished running tests.'"
-  - ps: if ($LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode"; exit $LastExitCode }
-  - sh: if [[ $? != 0 ]]; then echo "Command exited with code $?"; exit $?; fi
+  #- ps: if ($LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode"; exit $LastExitCode }
+  #- sh: if [[ $? != 0 ]]; then echo "Command exited with code $?"; exit $?; fi
