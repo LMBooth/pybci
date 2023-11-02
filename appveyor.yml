@@ -56,17 +56,17 @@ install:
           sudo apt-get install python3.10
           # Install pip for Python 3.10
           sudo apt-get install python3-distutils
-          ls /usr/bin/python*
-          sudo find / -name python3.10
+          #ls /usr/bin/python*
+          #sudo find / -name python3.10
           wget https://bootstrap.pypa.io/get-pip.py
-          python310 get-pip.py
+          /opt/az/bin/python3.10 get-pip.py
 
           # Set Python 3.10 as the default Python version
-          sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
+          #sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
           sudo apt-get install -y python3-pip cmake git
-          python310 -m pip install --upgrade urllib3>=2.0.5
-          python310 -m pip install .
-          python310 -m pip install pytest pytest-timeout ruff
+          /opt/az/bin/python3.10 -m pip install --upgrade urllib3>=2.0.5
+          /opt/az/bin/python3.10 -m pip install .
+          /opt/az/bin/python3.10 -m pip install pytest pytest-timeout ruff
           ;;
         "macos-monterey")
           echo "Updating Homebrew and installing packages..."
