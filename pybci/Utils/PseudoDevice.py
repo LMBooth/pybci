@@ -11,7 +11,8 @@ import threading
 import pylsl
 import queue
 from multiprocessing import Process, Queue, Event
-import multiprocessing
+import multiprocessing as mp
+mp.set_start_method('spawn')
 import numpy as np
 
 class PseudoDeviceController:
@@ -123,13 +124,13 @@ class PseudoDevice:
         return np.tile(full_signal, (self.channelCount, 1)).T
 
     def log_message(self, level='INFO', message = ""):
-        if self.log_queue is not None and isinstance(self.log_queue, type(multiprocessing.Queue)):
+        if self.log_queue is not None and isinstance(self.log_queue, type(mp.Queue)):
             self.log_queue.put(f'PyBCI: [{level}] - {message}')
         else:
             self.logger.log(level, message)
     
     def _should_stop(self):
-        if isinstance(self.stop_signal, multiprocessing.synchronize.Event):
+        if isinstance(self.stop_signal, mp.synchronize.Event):
             return self.stop_signal.is_set()
         else:  # boolean flag for threads
             return self.stop_signal
