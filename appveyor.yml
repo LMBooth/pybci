@@ -6,7 +6,7 @@ environment:
     PYLSL_LIB: /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/liblsl.so
   matrix:
     - ID: Ubuntu
-      APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2204
+      APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2004
       PYTHON: "3.10"
       PYTHON_VERSION: "3.10"
     - ID: VS2019_Py311
