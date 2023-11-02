@@ -57,6 +57,7 @@ install:
           # Install pip for Python 3.10
           sudo apt-get install python3-distutils
           #ls /usr/bin/python*
+          #where python3.10
           sudo find / -name python3.10
           wget https://bootstrap.pypa.io/get-pip.py
           /opt/az/bin/python3.10 get-pip.py
@@ -77,10 +78,11 @@ install:
           python3.9 -m pip install pytest pytest-timeout ruff
           ;;
       esac
+  - "echo 'About to install lsl lib for mac and linux...'"    
   - sh: |
       set -e  # Exit immediately if a command exits with a non-zero status.
       case $APPVEYOR_BUILD_WORKER_IMAGE in
-      "ubuntu2204")
+      "ubuntu2004")
         echo "Cloning liblsl repository..."
         git clone --depth=1 https://github.com/sccn/liblsl.git
         echo "Listing contents of liblsl directory..."
