@@ -12,7 +12,7 @@ import pylsl
 import queue
 from multiprocessing import Process, Queue, Event
 import multiprocessing as mp
-mp.set_start_method('spawn')
+#mp.set_start_method('spawn')
 import numpy as np
 
 class PseudoDeviceController:
