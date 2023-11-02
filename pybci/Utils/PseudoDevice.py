@@ -105,6 +105,10 @@ class PseudoDevice:
         self.channelCount = channelCount
         markerInfo = pylsl.StreamInfo(pseudoMarkerConfig.markerName, pseudoMarkerConfig.markerType, 1, 0, 'string', 'Dev')
         self.markerOutlet = pylsl.StreamOutlet(markerInfo)
+        streams = pylsl.resolve_stream()
+        for stream in streams:
+            self.logger.log(Logger.INFO," Found stream name: " + stream.name())
+            self.logger.log(Logger.INFO," Found stream type: " + stream.type())
         info = pylsl.StreamInfo(dataStreamName, dataStreamType, self.channelCount, self.sampleRate, 'float32', 'Dev')
         chns = info.desc().append_child("channels")
         for label in range(self.channelCount):
