@@ -11,10 +11,8 @@ import threading
 import pylsl
 import queue
 from multiprocessing import Process, Queue, Event
-import multiprocessing as mp
-#mp.set_start_method('spawn')
+import multiprocessing
 import numpy as np
-import asyncio
 
 class PseudoDeviceController:
     log_queue = None
@@ -40,13 +38,13 @@ class PseudoDeviceController:
     def _run_device(self):
         device = PseudoDevice(*self.args, **self.kwargs, stop_signal=self.stop_signal)
         while not self.stop_signal.is_set():
-            #if self.execution_mode == 'process':
-            try:
-                command = self.command_queue.get_nowait()
-                if command == "BeginStreaming":
-                    device.BeginStreaming()
-            except queue.Empty:
-                pass
+            if self.execution_mode == 'process':
+                try:
+                    command = self.command_queue.get_nowait()
+                    if command == "BeginStreaming":
+                        device.BeginStreaming()
+                except queue.Empty:
+                    pass
             #elif self.execution_mode == 'thread':
             #    device.update()
 
@@ -104,16 +102,15 @@ class PseudoDevice:
         self.pseudoMarkerConfig = pseudoMarkerConfig
         self.sampleRate = sampleRate
         self.channelCount = channelCount
-        self.markerInfo = pylsl.StreamInfo(self.pseudoMarkerConfig.markerName, self.pseudoMarkerConfig.markerType, 1, pylsl.IRREGULAR_RATE, 'string', 'Dev')
-        self.markerOutlet = pylsl.StreamOutlet(self.markerInfo)
-        
-        self.dataInfo = pylsl.StreamInfo(dataStreamName, dataStreamType, self.channelCount, self.sampleRate, 'float32', 'Dev')
-        chns = self.dataInfo.desc().append_child("channels")
+        markerInfo = pylsl.StreamInfo(pseudoMarkerConfig.markerName, pseudoMarkerConfig.markerType, 1, 0, 'string', 'Dev')
+        self.markerOutlet = pylsl.StreamOutlet(markerInfo)
+        info = pylsl.StreamInfo(dataStreamName, dataStreamType, self.channelCount, self.sampleRate, 'float32', 'Dev')
+        chns = info.desc().append_child("channels")
         for label in range(self.channelCount):
             ch = chns.append_child("channel")
             ch.append_child_value("label", str(label+1))
             ch.append_child_value("type", dataStreamType)
-        self.outlet = pylsl.StreamOutlet(self.dataInfo)
+        self.outlet = pylsl.StreamOutlet(info)
         self.last_update_time = time.time()
         self.phase_offset = 0.0
 
@@ -126,36 +123,18 @@ class PseudoDevice:
         return np.tile(full_signal, (self.channelCount, 1)).T
 
     def log_message(self, level='INFO', message = ""):
-        if self.log_queue is not None and isinstance(self.log_queue, type(mp.Queue)):
+        if self.log_queue is not None and isinstance(self.log_queue, type(multiprocessing.Queue)):
             self.log_queue.put(f'PyBCI: [{level}] - {message}')
         else:
             self.logger.log(level, message)
     
     def _should_stop(self):
-        if isinstance(self.stop_signal, mp.synchronize.Event):
+        if isinstance(self.stop_signal, multiprocessing.synchronize.Event):
             return self.stop_signal.is_set()
         else:  # boolean flag for threads
             return self.stop_signal
 
-    async def _generate_signal(self):
-        #self.outlet = pylsl.StreamOutlet(self.dataInfo)
-        self.marker_task = asyncio.create_task(self._maker_timing())  # Create marker task after starting event loop
-        while not self._should_stop():
-            start_time = time.time()
-            await self.update()
-            end_time = time.time()
-            elapsed_time = end_time - start_time
-            expected_samples = int(self.sampleRate * elapsed_time)
-            if self.samples_generated >= expected_samples:
-                sleep_duration = max(0, (1.0 / 10) - elapsed_time)
-                await asyncio.sleep(sleep_duration)
-        #while not self._should_stop():
-        #    start_time = time.time()
-        #    await self.update()
-        #    sleep_duration = max(0, (1.0/10) - (start_time - time.time()))
-        #    await asyncio.sleep(sleep_duration)
-
-    async def update(self):
+    def update(self):
         with self.lock:
             if not self._should_stop():
                 current_time = time.time()
@@ -207,16 +186,32 @@ class PseudoDevice:
             self.stop_signal.clear()
         else:
             self.stop_signal = False
-        self.loop = asyncio.get_event_loop()
-        self.loop.run_until_complete(self._generate_signal())
+        #else:  # For threading
+        self.thread = threading.Thread(target=self._generate_signal)
+        self.thread.start()
+        if self.pseudoMarkerConfig.autoplay:
+            self.StartMarkers()
+        self.log_message(Logger.INFO, " PseudoDevice - Begin streaming.")
+
+    def _generate_signal(self):
+        while not self._should_stop():
+            start_time = time.time()
+            self.update()
+            sleep_duration = max(0, (1.0 / 10) - (start_time - time.time()))
+            time.sleep(sleep_duration)
+#            precise_sleep(sleep_duration)
 
     def _should_stop(self):
         if self.is_multiprocessing:
             return self.stop_signal.is_set()
         else:
             return self.stop_signal
+        
+    def StartMarkers(self):
+        self.marker_thread = threading.Thread(target=self._maker_timing)
+        self.marker_thread.start()
 
-    async def _maker_timing(self):
+    def _maker_timing(self):
         marker_iterations = 0
         baseline_iterations = 0
         while not (self.stop_signal.is_set() if self.is_multiprocessing else self.stop_signal):
@@ -225,15 +220,13 @@ class PseudoDevice:
                     self.markerOutlet.push_sample([marker])  
                     self.markerQueue.put(marker)  # Put the marker into the queue
                     self.log_message(Logger.INFO," PseudoDevice - sending marker " + marker)
-                    await asyncio.sleep(self.pseudoMarkerConfig.seconds_between_markers)
-                    #time.sleep(self.pseudoMarkerConfig.seconds_between_markers)
+                    time.sleep(self.pseudoMarkerConfig.seconds_between_markers)
             if baseline_iterations < self.pseudoMarkerConfig.num_baseline_markers:
                 self.markerOutlet.push_sample([self.pseudoMarkerConfig.baselineMarkerString])
                 self.log_message(Logger.INFO," PseudoDevice - sending " + self.pseudoMarkerConfig.baselineMarkerString)
                 baseline_iterations += 1
                 marker_iterations += 1
-                await asyncio.sleep(self.pseudoMarkerConfig.seconds_between_markers)
-                #time.sleep(self.pseudoMarkerConfig.seconds_between_baseline_marker)
+                time.sleep(self.pseudoMarkerConfig.seconds_between_baseline_marker)
             if baseline_iterations < self.pseudoMarkerConfig.num_baseline_markers and marker_iterations < self.pseudoMarkerConfig.number_marker_iterations:
                 if self.pseudoMarkerConfig.repeat:
                     marker_iterations = 0
