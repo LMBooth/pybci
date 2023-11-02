@@ -118,21 +118,20 @@ test_script:
   # Run tests
   - "echo 'About to run tests...'"
   - sh: |
-      if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu2204" ]]; then
+      if [[ $APPVEYOR_BUILD_WORKER_IMAGE == "ubuntu2004" ]]; then
         echo 'About to run tests on Ubuntu...'
         # Diagnostic commands
         echo "PYLSL_LIB: $PYLSL_LIB"
         ls -alh /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
         echo $PYLSL_LIB
-        which python3
-        python3 --version
+        /opt/az/bin/python3.10 --version
         cd $APPVEYOR_BUILD_FOLDER
         ls -alh Tests/
         export PYTEST_ERRORLEVEL=0
-        python3 -m pytest -vv -s Tests/ || PYTEST_ERRORLEVEL=$?
+        /opt/az/bin/python3.10 -m pytest -vv -s Tests/ || PYTEST_ERRORLEVEL=$?
         if [[ $PYTEST_ERRORLEVEL != 0 ]]; then
           echo 'Pytest failed. Terminating python process.'
-          pkill -f python3 || echo 'No Python3 process found to terminate.'
+          pkill -f /opt/az/bin/python3.10 || echo 'No Python310 process found to terminate.'
         fi
       fi
   - ps: |
