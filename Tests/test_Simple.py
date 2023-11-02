@@ -7,7 +7,7 @@ def test_run_bci():
     if current_os == "Windows":
         bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True)
     elif current_os == "Linux":
-        pdc = PseudoDeviceController(execution_mode="thread")
+        pdc = PseudoDeviceController(execution_mode="process")
         pdc.BeginStreaming()
         time.sleep(10)
         bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc)

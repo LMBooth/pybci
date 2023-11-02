@@ -112,6 +112,11 @@ class PseudoDevice:
             ch.append_child_value("label", str(label+1))
             ch.append_child_value("type", dataStreamType)
         self.outlet = pylsl.StreamOutlet(info)
+
+        streams = pylsl.resolve_stream()
+        for stream in streams:
+            self.logger.log(Logger.INFO," Found stream name: " + stream.name())
+            self.logger.log(Logger.INFO," Found stream type: " + stream.type())
         self.last_update_time = time.time()
         self.phase_offset = 0.0
 

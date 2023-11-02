@@ -1,4 +1,5 @@
-import multiprocessing
+import multiprocessing as mp
+mp.set_start_method('spawn')
 
 class Logger:
     INFO = "INFO"
@@ -22,7 +23,7 @@ class Logger:
             self.level = level
 
     def log(self, level, message):
-        if self.queue is not None and isinstance(self.queue, multiprocessing.Queue):
+        if self.queue is not None and isinstance(self.queue, mp.Queue):
             if self.level == self.NONE:
                 return None
             if level == self.INFO:
