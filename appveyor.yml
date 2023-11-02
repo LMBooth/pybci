@@ -58,7 +58,7 @@ install:
           sudo apt-get install python3-distutils
           #ls /usr/bin/python*
           #where python3.10
-          sudo find / -name python3.10
+          #sudo find / -name python3.10
           wget https://bootstrap.pypa.io/get-pip.py
           /opt/az/bin/python3.10 get-pip.py
 
@@ -96,12 +96,14 @@ install:
         echo "Listing contents of build directory..."
         #ls -alh build
         echo "Creating target directory..."
-        ls -alh /opt/az/lib/python3.10/site-packages//pylsl
-        mkdir -p /opt/az/lib/python3.10/site-packages//pylsl/lib
+        ls -alh /home/appveyor/.local/lib/python3.10/site-packages/pylsl
+        mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
+        #ls -alh /opt/az/lib/python3.10/site-packages/pylsl
+        #mkdir -p /opt/az/lib/python3.10/site-packages/pylsl/lib
         echo "Copying liblsl.so to target directory..."
         
         # Update the source path based on where the build outputs the library.
-        cp build/liblsl.so /opt/az/lib/python3.10/site-packages/pylsl/lib/ || exit 1
+        cp build/liblsl.so /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/ || exit 1
         ;;
       "macos-monterey")
         # Install LSL
