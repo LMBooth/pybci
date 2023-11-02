@@ -103,26 +103,25 @@ class PseudoDevice:
         self.pseudoMarkerConfig = pseudoMarkerConfig
         self.sampleRate = sampleRate
         self.channelCount = channelCount
-        markerInfo = pylsl.StreamInfo(pseudoMarkerConfig.markerName, pseudoMarkerConfig.markerType, 1, 0, 'string', 'Dev')
+        self.markerInfo = pylsl.StreamInfo(pseudoMarkerConfig.markerName, pseudoMarkerConfig.markerType, 1, pylsl.IRREGULAR_RATE, 'string', 'Dev')
         
-        info = pylsl.StreamInfo(dataStreamName, dataStreamType, self.channelCount, self.sampleRate, 'float32', 'Dev')
-        chns = info.desc().append_child("channels")
+        self.dataInfo = pylsl.StreamInfo(dataStreamName, dataStreamType, self.channelCount, self.sampleRate, 'float32', 'Dev')
+        chns = self.dataInfo.desc().append_child("channels")
         for label in range(self.channelCount):
             ch = chns.append_child("channel")
             ch.append_child_value("label", str(label+1))
             ch.append_child_value("type", dataStreamType)
-        self.outlet = pylsl.StreamOutlet(info)
+        #self.outlet = pylsl.StreamOutlet(self.dataInfo)
         
-        streams = pylsl.resolve_stream()
-        for stream in streams:
-            self.logger.log(Logger.INFO," Found stream name: " + stream.name())
-            self.logger.log(Logger.INFO," Found stream type: " + stream.type())
-        self.markerOutlet = pylsl.StreamOutlet(markerInfo)
-        streams = pylsl.resolve_stream()
-        for stream in streams:
-            
-            self.logger.log(Logger.INFO," Marker found stream name: " + stream.name())
-            self.logger.log(Logger.INFO," Marker found stream type: " + stream.type())
+        #streams = pylsl.resolve_stream()
+        #for stream in streams:
+        #    self.logger.log(Logger.INFO," Found stream name: " + stream.name())
+        #    self.logger.log(Logger.INFO," Found stream type: " + stream.type())
+        #self.markerOutlet = pylsl.StreamOutlet(self.markerInfo)
+        #streams = pylsl.resolve_stream()
+        #for stream in streams:   
+        #    self.logger.log(Logger.INFO," Marker found stream name: " + stream.name())
+        #    self.logger.log(Logger.INFO," Marker found stream type: " + stream.type())
         self.last_update_time = time.time()
         self.phase_offset = 0.0
 
@@ -206,6 +205,8 @@ class PseudoDevice:
         self.log_message(Logger.INFO, " PseudoDevice - Begin streaming.")
 
     def _generate_signal(self):
+        self.outlet = pylsl.StreamOutlet(self.dataInfo)
+        
         while not self._should_stop():
             start_time = time.time()
             self.update()
@@ -226,6 +227,8 @@ class PseudoDevice:
     def _maker_timing(self):
         marker_iterations = 0
         baseline_iterations = 0
+        self.mrkerOutlet = pylsl.StreamOutlet(self.markerInfo)
+        
         while not (self.stop_signal.is_set() if self.is_multiprocessing else self.stop_signal):
             if marker_iterations < self.pseudoMarkerConfig.number_marker_iterations:
                 for marker in self.markerConfigStrings:
