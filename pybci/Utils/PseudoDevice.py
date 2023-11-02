@@ -103,7 +103,7 @@ class PseudoDevice:
         self.pseudoMarkerConfig = pseudoMarkerConfig
         self.sampleRate = sampleRate
         self.channelCount = channelCount
-        self.markerInfo = pylsl.StreamInfo(pseudoMarkerConfig.markerName, pseudoMarkerConfig.markerType, 1, pylsl.IRREGULAR_RATE, 'string', 'Dev')
+        self.markerInfo = pylsl.StreamInfo(self.pseudoMarkerConfig.markerName, self.pseudoMarkerConfig.markerType, 1, pylsl.IRREGULAR_RATE, 'string', 'Dev')
         
         self.dataInfo = pylsl.StreamInfo(dataStreamName, dataStreamType, self.channelCount, self.sampleRate, 'float32', 'Dev')
         chns = self.dataInfo.desc().append_child("channels")
@@ -111,7 +111,7 @@ class PseudoDevice:
             ch = chns.append_child("channel")
             ch.append_child_value("label", str(label+1))
             ch.append_child_value("type", dataStreamType)
-        #self.outlet = pylsl.StreamOutlet(self.dataInfo)
+        self.outlet = pylsl.StreamOutlet(self.dataInfo)
         
         #streams = pylsl.resolve_stream()
         #for stream in streams:
@@ -227,7 +227,7 @@ class PseudoDevice:
     def _maker_timing(self):
         marker_iterations = 0
         baseline_iterations = 0
-        self.mrkerOutlet = pylsl.StreamOutlet(self.markerInfo)
+        self.markerOutlet = pylsl.StreamOutlet(self.markerInfo)
         
         while not (self.stop_signal.is_set() if self.is_multiprocessing else self.stop_signal):
             if marker_iterations < self.pseudoMarkerConfig.number_marker_iterations:
