@@ -59,12 +59,17 @@ def PyTorchModel(x_train, x_test, y_train, y_test):
 def test_run_bci():
     current_os = get_os()
     if current_os == "Windows":
-        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,torchModel = PyTorchModel)
+        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True)
+    elif current_os == "Linux":
+        pdc = PseudoDeviceController(execution_mode="thread")
+        pdc.BeginStreaming()
+        time.sleep(10)
+        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc)
     else:
         pdc = PseudoDeviceController(execution_mode="process")
         pdc.BeginStreaming()
         time.sleep(10)
-        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,torchModel = PyTorchModel, pseudoDeviceController=pdc)
+        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc)
     while not bci.connected:
         bci.Connect()
         time.sleep(1)
