@@ -66,8 +66,8 @@ class LSLScanner:
         markerStreams = []
         self.markerStream = None
         for stream in streams:
-            print(stream.info().name())
-            print(stream.type())
+            self.log_message(Logger.INFO," Found stream name: " + stream.name())
+            self.log_message(Logger.INFO," Found stream name: " + stream.type())
             if stream.type() in self.markerTypes:
                 markerStreams.append(StreamInlet(stream))
         if self.markerStreamPredefined:
