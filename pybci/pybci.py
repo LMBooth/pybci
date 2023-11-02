@@ -89,6 +89,7 @@ class PyBCI:
         self.logger = Logger(self.loggingLevel)
 
         self.createPseudoDevice = createPseudoDevice
+        print(get_os())
         if createPseudoDevice:
             current_os = get_os()
             if current_os == "Windows":
