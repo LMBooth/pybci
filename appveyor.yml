@@ -57,6 +57,7 @@ install:
           # Install pip for Python 3.10
           sudo apt-get install python3-distutils
           ls /usr/bin/python*
+          sudo find / -name python3.10
           wget https://bootstrap.pypa.io/get-pip.py
           python310 get-pip.py
 
