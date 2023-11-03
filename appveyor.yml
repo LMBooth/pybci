@@ -85,7 +85,7 @@ install:
       "ubuntu2004")
         sudo apt-get install -y libpugixml1v5
         echo "Downloading liblsl DEB package..."
-        wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-focal_amd64.deb -O liblsl.deb || exit 1
+        wget https://github.com/sccn/liblsl/releases/download/v1.16.0/liblsl-1.16.0-focal_amd64.deb -O liblsl.deb || exit 1
         echo "Installing liblsl DEB package..."
         sudo dpkg -i liblsl.deb || exit 1
         
