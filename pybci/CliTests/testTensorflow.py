@@ -3,6 +3,8 @@ import argparse
 from ..pybci import PyBCI, get_os
 from pybci.Utils.PseudoDevice import PseudoDeviceController
 import tensorflow as tf# bring in tf for custom model creation
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 import threading
 
 stop_signal = threading.Event()  # Global event to control the main loop
