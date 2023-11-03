@@ -9,6 +9,10 @@ environment:
     #  APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2004
     #  PYTHON: "3.10"
     #  PYTHON_VERSION: "3.10"
+    - ID: macOS
+      APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
+      PYTHON: "3.9"
+      PYTHON_VERSION: "3.9"
     - ID: VS2019_Py311
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python311-x64"
@@ -21,11 +25,6 @@ environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python39-x64"
       PYTHON_VERSION: "3.9"
-    - ID: macOS
-      APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
-      PYTHON: "3.9"
-      PYTHON_VERSION: "3.9"
-
 
 matrix:
   fast_finish: true
