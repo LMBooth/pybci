@@ -1,7 +1,8 @@
 import time
 from pybci import PyBCI
 import tensorflow as tf# bring in tf for custom model creation
-
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 num_chs = 8 # 8 channels are created in the PseudoLSLGenerator
 num_feats = 2 # default is mean freq and rms to keep it simple
 num_classes = 4 # number of different triggers (can include baseline) sent, defines if we use softmax of binary
