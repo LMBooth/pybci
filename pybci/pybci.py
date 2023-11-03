@@ -346,6 +346,8 @@ class PyBCI:
             self.clf = None
             self.logger.log(Logger.INFO," Invalid or no sklearn classifier passed to clf. Checking tensorflow model... ")
             import tensorflow as tf
+            import os
+            os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
             if isinstance(model, tf.keras.Model):
                 self.model = model
             else:
