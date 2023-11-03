@@ -5,10 +5,10 @@ environment:
   global:
     PYLSL_LIB: /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/liblsl.so
   matrix:
-    #- ID: Ubuntu
-    #  APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2004
-    #  PYTHON: "3.10"
-    #  PYTHON_VERSION: "3.10"
+    - ID: Ubuntu
+      APPVEYOR_BUILD_WORKER_IMAGE: ubuntu2004
+      PYTHON: "3.10"
+      PYTHON_VERSION: "3.10"
     - ID: macOS
       APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
       PYTHON: "3.9"
@@ -83,26 +83,44 @@ install:
       set -e  # Exit immediately if a command exits with a non-zero status.
       case $APPVEYOR_BUILD_WORKER_IMAGE in
       "ubuntu2004")
-        echo "Cloning liblsl repository..."
-        git clone --depth=1 https://github.com/sccn/liblsl.git
-        echo "Listing contents of liblsl directory..."
-        #ls -alh liblsl
-        echo "Configuring liblsl project..."
-        cd liblsl
-        cmake -S . -B build
-        echo "Building liblsl..."
-        cmake --build build
-        echo "Listing contents of build directory..."
-        #ls -alh build
+        echo "Downloading liblsl DEB package..."
+        wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-focal_amd64.deb -O liblsl.deb || exit 1
+        echo "Installing liblsl DEB package..."
+        sudo dpkg -i liblsl.deb || exit 1
+        
+        echo "Verifying installation..."
+        # This command checks if the library is installed and lists its files.
+        dpkg -L liblsl || exit 1
+        
         echo "Creating target directory..."
-        ls -alh /home/appveyor/.local/lib/python3.10/site-packages/pylsl
-        mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
-        #ls -alh /opt/az/lib/python3.10/site-packages/pylsl
-        #mkdir -p /opt/az/lib/python3.10/site-packages/pylsl/lib
+        mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib || exit 1
+        
         echo "Copying liblsl.so to target directory..."
+        # You need to verify the exact path where the .deb package installs the library.
+        # Usually, it should be under /usr/lib or /usr/local/lib. The path below is just an example.
+        cp /usr/lib/liblsl.so /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/ || exit 1
+
+      
+        #echo "Cloning liblsl repository..."
+        #git clone --depth=1 https://github.com/sccn/liblsl.git
+        #echo "Listing contents of liblsl directory..."
+        ##ls -alh liblsl
+        #echo "Configuring liblsl project..."
+        #cd liblsl
+        #cmake -S . -B build
+        #echo "Building liblsl..."
+        #cmake --build build
+        #echo "Listing contents of build directory..."
+        ##ls -alh build
+        #echo "Creating target directory..."
+        #ls -alh /home/appveyor/.local/lib/python3.10/site-packages/pylsl
+        #mkdir -p /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib
+        ##ls -alh /opt/az/lib/python3.10/site-packages/pylsl
+        ##mkdir -p /opt/az/lib/python3.10/site-packages/pylsl/lib
+        #echo "Copying liblsl.so to target directory..."
         
         # Update the source path based on where the build outputs the library.
-        cp build/liblsl.so /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/ || exit 1
+        #cp build/liblsl.so /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/ || exit 1
         ;;
       "macos-monterey")
         # Install LSL
