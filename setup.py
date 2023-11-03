@@ -96,7 +96,7 @@ setup(
 
     install_requires=[
         "numpy>=1.21,<1.26",
-        "pylsl>=1.16.1",
+        "pylsl==1.16.1",
         "scipy>=1.11.1",
         "antropy>=0.1.6",
         "tensorflow>=2.13.0",
