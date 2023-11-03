@@ -64,11 +64,6 @@ class PseudoDeviceController:
             self.worker.join()
             #self.worker.terminate()
 
-def precise_sleep(duration):
-    end_time = time.time() + duration
-    while time.time() < end_time:
-        pass
-
 class PseudoDevice:
     samples_generated = 0
     chunkCount = 0
@@ -104,7 +99,6 @@ class PseudoDevice:
         self.channelCount = channelCount
         markerInfo = pylsl.StreamInfo(pseudoMarkerConfig.markerName, pseudoMarkerConfig.markerType, 1, 0, 'string', 'Dev')
         self.markerOutlet = pylsl.StreamOutlet(markerInfo)
-        self.markerOutlet.push_sample([self.pseudoMarkerConfig.baselineMarkerString]) 
         info = pylsl.StreamInfo(dataStreamName, dataStreamType, self.channelCount, self.sampleRate, 'float32', 'Dev')
         chns = info.desc().append_child("channels")
         for label in range(self.channelCount):
