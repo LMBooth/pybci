@@ -126,6 +126,10 @@ class PseudoDeviceController:
         self.pseudoMarkerDataConfigs = pseudoMarkerDataConfigs
         self.pseudoMarkerConfig = pseudoMarkerConfig
         self.baselineConfig = pseudoMarkerConfig.baselineConfig
+        if self.is_multiprocessing:
+            self.stop_signal = multiprocessing.Event()
+        else:
+            self.stop_signal = threading.Event() 
         self.log_message("Initialised PseudoDevice...")
 
     def StopStreaming(self):
@@ -133,7 +137,6 @@ class PseudoDeviceController:
 
     def BeginStreaming(self):
         if self.is_multiprocessing:
-            self.stop_signal = multiprocessing.Event()
             self.markerQueue = multiprocessing.Queue() 
             self.worker_process = multiprocessing.Process(target=generate_signal, args=(self.dataStreamName, self.dataStreamType, self.channelCount, 
                                                                         self.sampleRate,  self.stop_signal, self.markerQueue, #self.log_queue,
@@ -143,7 +146,6 @@ class PseudoDeviceController:
                                                                      self.markerQueue, self.stop_signal, self.log_queue))
             self.marker_process.start()
         else:
-            self.stop_signal = threading.Event() 
             self.markerQueue = queue.Queue()
             self.stop_signal.clear()
             self.thread = threading.Thread(
