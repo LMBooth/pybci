@@ -170,8 +170,10 @@ class PseudoDeviceController:
 
     def log_message(self, level='INFO', message = ""):
         while not self.stop_signal.is_set():
-            message = self.log_queue.get_nowait()
-            if message is None:  # A sentinel value to indicate the end of logging
-                break
-            self.logger.log(level, message)
-    
+            try:
+                message = self.log_queue.get_nowait()  # Non-blocking retrieval of messages
+                if message is None:  # A sentinel value to indicate the end of logging
+                    break
+                self.logger.log(level, message)
+            except queue.Empty:  # If the queue is empty
+                pass
