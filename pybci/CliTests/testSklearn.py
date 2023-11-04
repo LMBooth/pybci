@@ -26,13 +26,13 @@ class CLI_testSklearnWrapper:
             self.min_epochs_test = self.min_epochs_train+1
         clf = MLPClassifier(max_iter = 1000, solver ="lbfgs")#solver=clf, alpha=alpha,hidden_layer_sizes=hid)
         current_os = get_os()
-        if current_os == "Windows":
-            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, clf = clf)
-        else:
-            pdc = PseudoDeviceController(execution_mode="process")
-            pdc.BeginStreaming()
-            time.sleep(10)
-            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc, clf = clf)
+        #if current_os == "Windows":
+        self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, clf = clf)
+        #else:
+        #    pdc = PseudoDeviceController(execution_mode="process")
+        #    pdc.BeginStreaming()
+        #    time.sleep(10)
+        #    self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc, clf = clf)
 
         #self.bci = PyBCI(minimumEpochsRequired = min_epochs_train, createPseudoDevice=createPseudoDevice, clf = clf)
         main_thread = threading.Thread(target=self.loop)
