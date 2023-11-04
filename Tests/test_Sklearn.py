@@ -7,13 +7,13 @@ from pybci.Utils.PseudoDevice import PseudoDeviceController
 def test_run_bci():
     clf = MLPClassifier(max_iter = 1000, solver ="lbfgs")#solver=clf, alpha=alpha,hidden_layer_sizes=hid)
     current_os = get_os()
-    if current_os == "Windows":
-        bci = PyBCI(minimumEpochsRequired = 3, clf = clf, createPseudoDevice=True)
-    else:
-        pdc = PseudoDeviceController(execution_mode="process")
-        pdc.BeginStreaming()
-        time.sleep(10)
-        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,clf = clf, pseudoDeviceController=pdc)
+    #if current_os == "Windows":
+    bci = PyBCI(minimumEpochsRequired = 3, clf = clf, createPseudoDevice=True)
+    #else:
+    #    pdc = PseudoDeviceController(execution_mode="process")
+    #    pdc.BeginStreaming()
+    #    time.sleep(10)
+    #    bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,clf = clf, pseudoDeviceController=pdc)
     
     while not bci.connected:
         bci.Connect()
