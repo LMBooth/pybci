@@ -24,13 +24,7 @@ class CLI_testSimpleWrapper:
         if self.min_epochs_test <= self.min_epochs_train:
             self.min_epochs_test = self.min_epochs_train+1
         current_os = get_os()
-        if current_os == "Windows":
-            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True)
-        else:
-            pdc = PseudoDeviceController(execution_mode="process")
-            pdc.BeginStreaming()
-            time.sleep(10)
-            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc)
+        self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True)
 
         #self.bci = PyBCI(minimumEpochsRequired = self.min_epochs_train, createPseudoDevice=self.createPseudoDevice)
         main_thread = threading.Thread(target=self.loop)
