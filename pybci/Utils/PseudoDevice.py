@@ -25,13 +25,19 @@ def maker_timing(markerName,markerType, pseudoMarkerConfig,markerConfigStrings, 
                 markerOutlet.push_sample([marker])  
                 markerQueue.put(marker)  # Put the marker into the queue
                 log_queue.put(" PseudoDevice - sending marker " + marker)
-                time.sleep(pseudoMarkerConfig.seconds_between_markers)
+                for _ in range(int(pseudoMarkerConfig.seconds_between_baseline_marker * 10)):  # Assuming 0.1s intervals
+                    time.sleep(0.1)
+                    if stop_signal.is_set():
+                        return 
         if baseline_iterations < pseudoMarkerConfig.num_baseline_markers:
             markerOutlet.push_sample([pseudoMarkerConfig.baselineMarkerString])
             log_queue.put(" PseudoDevice - sending " + pseudoMarkerConfig.baselineMarkerString)
             baseline_iterations += 1
             marker_iterations += 1
-            time.sleep(pseudoMarkerConfig.seconds_between_baseline_marker)
+            for _ in range(int(pseudoMarkerConfig.seconds_between_baseline_marker * 10)):  # Assuming 0.1s intervals
+                time.sleep(0.1)
+                if stop_signal.is_set():
+                    return 
         if baseline_iterations < pseudoMarkerConfig.num_baseline_markers and marker_iterations < pseudoMarkerConfig.number_marker_iterations:
             if pseudoMarkerConfig.repeat:
                 marker_iterations = 0
