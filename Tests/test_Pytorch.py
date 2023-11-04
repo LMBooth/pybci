@@ -59,7 +59,7 @@ def PyTorchModel(x_train, x_test, y_train, y_test):
 def test_run_bci():
     current_os = get_os()
     if current_os == "Windows":
-        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True)
+        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, torchModel=PyTorchModel)
     elif current_os == "Linux":
         pdc = PseudoDeviceController(execution_mode="process")
         pdc.BeginStreaming()
