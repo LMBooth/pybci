@@ -130,11 +130,16 @@ class PseudoDeviceController:
             self.stop_signal = multiprocessing.Event()
         else:
             self.stop_signal = threading.Event() 
-        self.log_message("Initialised PseudoDevice...")
-
+        self.stop_signal.clear()
+        self.log_thread = threading.Thread(target=self.log_message)
+        self.log_thread.start()
+        #self.log_message()
+        self.log_queue.put("Initialised PseudoDevice...")
+        #self.log_message("Initialised PseudoDevice...")
+    
     def StopStreaming(self):
-        self.stop_signal.set()  # Set the Event to signal termination
-
+        self.stop_signal.set() # Set the Event to signal termination
+    
     def BeginStreaming(self):
         if self.is_multiprocessing:
             self.markerQueue = multiprocessing.Queue() 
@@ -161,13 +166,14 @@ class PseudoDeviceController:
                       self.markerQueue, self.stop_signal)
             )
             self.marker_thread.start()
-
-        self.log_message(Logger.INFO, " PseudoDevice - Begin streaming.")
+        self.log_queue.put(" PseudoDevice - Begin streaming.")
 
     def log_message(self, level='INFO', message = ""):
         while not self.stop_signal.is_set():
-            message = self.log_queue.get()
-            if message is None:  # A sentinel value to indicate the end of logging
-                break
-            self.logger.log(level, message)
-    
+            try:
+                message = self.log_queue.get_nowait()  # Non-blocking retrieval of messages
+                if message is None:  # A sentinel value to indicate the end of logging
+                    break
+                self.logger.log(level, message)
+            except queue.Empty:  # If the queue is empty
+                time.sleep(0.1)  # Sleep for a short duration before checking the queue again
