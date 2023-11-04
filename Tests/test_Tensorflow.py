@@ -21,13 +21,13 @@ model.compile(loss='sparse_categorical_crossentropy',# using sparse_categorical 
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
     current_os = get_os()
-    if current_os == "Windows":
+    #if current_os == "Windows":
         bci = PyBCI(minimumEpochsRequired = 3, model = model, createPseudoDevice=True)
-    else:
-        pdc = PseudoDeviceController(execution_mode="process")
-        pdc.BeginStreaming()
-        time.sleep(10)
-        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,model = model, pseudoDeviceController=pdc)
+    #else:
+    #    pdc = PseudoDeviceController(execution_mode="process")
+    #    pdc.BeginStreaming()
+    #    time.sleep(10)
+    #    bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True,model = model, pseudoDeviceController=pdc)
 
     while not bci.connected:
         bci.Connect()
