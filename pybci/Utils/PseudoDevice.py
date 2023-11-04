@@ -14,7 +14,7 @@ import multiprocessing
 import numpy as np
 
 
-def maker_timing(markerName,markerType, pseudoMarkerConfig,markerConfigStrings, markerQueue, stop_signal):
+def maker_timing(markerName,markerType, pseudoMarkerConfig,markerConfigStrings, markerQueue, stop_signal, log_queue):
     markerInfo = pylsl.StreamInfo(markerName, markerType, 1, 0, 'string', 'Dev')
     markerOutlet = pylsl.StreamOutlet(markerInfo)
     marker_iterations = 0
@@ -24,11 +24,11 @@ def maker_timing(markerName,markerType, pseudoMarkerConfig,markerConfigStrings, 
             for marker in markerConfigStrings:
                 markerOutlet.push_sample([marker])  
                 markerQueue.put(marker)  # Put the marker into the queue
-                #log_message(Logger.INFO," PseudoDevice - sending marker " + marker)
+                log_queue.put(" PseudoDevice - sending marker " + marker)
                 time.sleep(pseudoMarkerConfig.seconds_between_markers)
         if baseline_iterations < pseudoMarkerConfig.num_baseline_markers:
             markerOutlet.push_sample([pseudoMarkerConfig.baselineMarkerString])
-            #log_message(Logger.INFO," PseudoDevice - sending " + pseudoMarkerConfig.baselineMarkerString)
+            log_queue.put(" PseudoDevice - sending " + pseudoMarkerConfig.baselineMarkerString)
             baseline_iterations += 1
             marker_iterations += 1
             time.sleep(pseudoMarkerConfig.seconds_between_baseline_marker)
@@ -105,6 +105,7 @@ class PseudoDeviceController:
                 sampleRate= 250, channelCount= 8, logger = Logger(Logger.INFO),log_queue=None):
         self.is_multiprocessing = is_multiprocessing 
         self.logger = logger
+        self.log_queue = multiprocessing.Queue() if self.is_multiprocessing else queue.Queue()
         # worker_process args
         self.dataStreamName = dataStreamName
         self.dataStreamType = dataStreamType
@@ -139,7 +140,7 @@ class PseudoDeviceController:
                                                                         self.markerConfigStrings,self.pseudoMarkerDataConfigs, self.baselineConfig))
             self.worker_process.start()
             self.marker_process = multiprocessing.Process(target=maker_timing, args=(self.markerName, self.markerType, self.pseudoMarkerConfig, self.markerConfigStrings, 
-                                                                     self.markerQueue, self.stop_signal))
+                                                                     self.markerQueue, self.stop_signal, self.log_queue))
             self.marker_process.start()
         else:
             self.stop_signal = threading.Event() 
@@ -162,8 +163,9 @@ class PseudoDeviceController:
         self.log_message(Logger.INFO, " PseudoDevice - Begin streaming.")
 
     def log_message(self, level='INFO', message = ""):
-        if self.log_queue is not None and isinstance(self.log_queue, type(multiprocessing.Queue)):
-            self.log_queue.put(f'PyBCI: [{level}] - {message}')
-        else:
+        while not self.stop_signal.is_set():
+            message = self.log_queue.get()
+            if message is None:  # A sentinel value to indicate the end of logging
+                break
             self.logger.log(level, message)
     
