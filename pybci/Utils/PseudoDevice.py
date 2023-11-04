@@ -145,6 +145,7 @@ class PseudoDeviceController:
     
     def StopStreaming(self):
         self.stop_signal.set() # Set the Event to signal termination
+        time.sleep(2)
     
     def BeginStreaming(self):
         if self.is_multiprocessing:
