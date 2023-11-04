@@ -47,7 +47,14 @@ class CLI_testPytorchWrapper:
                 optimizer='adam',
                 metrics=['accuracy'])
         current_os = get_os()
-        self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, model = model)
+        if current_os == "Windows":
+            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, model = model)
+        else:
+            pdc = PseudoDeviceController(execution_mode="process")
+            pdc.BeginStreaming()
+            time.sleep(10)
+            self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc, model = model)
+
         #self.bci = PyBCI(minimumEpochsRequired = min_epochs_train, createPseudoDevice=createPseudoDevice, model = model)
         main_thread = threading.Thread(target=self.loop)
         main_thread.start()
