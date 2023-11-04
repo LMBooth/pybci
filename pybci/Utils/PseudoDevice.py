@@ -172,5 +172,5 @@ class PseudoDeviceController:
             message = self.log_queue.get_nowait()
             if message is None:  # A sentinel value to indicate the end of logging
                 break
-            self.logger.log(level, message)a
+            self.logger.log(level, message)
     
