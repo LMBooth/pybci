@@ -58,18 +58,18 @@ def PyTorchModel(x_train, x_test, y_train, y_test):
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
     current_os = get_os()
-    if current_os == "Windows":
-        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, torchModel=PyTorchModel)
-    elif current_os == "Linux":
-        pdc = PseudoDeviceController(execution_mode="process")
-        pdc.BeginStreaming()
-        time.sleep(10)
-        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc)
-    else:
-        pdc = PseudoDeviceController(execution_mode="process")
-        pdc.BeginStreaming()
-        time.sleep(10)
-        bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc)
+    #if current_os == "Windows":
+    bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, torchModel=PyTorchModel)
+    #elif current_os == "Linux":
+    #    pdc = PseudoDeviceController(execution_mode="process")
+    #    pdc.BeginStreaming()
+    #    time.sleep(10)
+    #    bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc)
+    #else:
+    #    pdc = PseudoDeviceController(execution_mode="process")
+    #    pdc.BeginStreaming()
+    #    time.sleep(10)
+    #    bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc)
     while not bci.connected:
         bci.Connect()
         time.sleep(1)
