@@ -15,7 +15,6 @@ import numpy as np
 
 
 def maker_timing(markerName,markerType, pseudoMarkerConfig,markerConfigStrings, markerQueue, stop_signal):
-    #
     markerInfo = pylsl.StreamInfo(markerName, markerType, 1, 0, 'string', 'Dev')
     markerOutlet = pylsl.StreamOutlet(markerInfo)
     marker_iterations = 0
@@ -55,7 +54,6 @@ def generate_signal(dataStreamName,dataStreamType, channelCount,
         outlet = pylsl.StreamOutlet(info)
         while not stop_signal.is_set():
             start_time = time.time()
-
             current_time = time.time()
             delta_time = current_time - last_update_time
             if currentMarker is None and not markerQueue.empty():
@@ -106,8 +104,6 @@ class PseudoDeviceController:
                 dataStreamName = "PyBCIPseudoDataStream" , dataStreamType="EMG", 
                 sampleRate= 250, channelCount= 8, logger = Logger(Logger.INFO),log_queue=None):
         self.is_multiprocessing = is_multiprocessing 
-        #shared variables
-        self.stop_signal = multiprocessing.Event()
         self.logger = logger
         # worker_process args
         self.dataStreamName = dataStreamName
@@ -136,7 +132,7 @@ class PseudoDeviceController:
 
     def BeginStreaming(self):
         if self.is_multiprocessing:
-            # For multiprocessing, start the worker process
+            self.stop_signal = multiprocessing.Event()
             self.markerQueue = multiprocessing.Queue() 
             self.worker_process = multiprocessing.Process(target=generate_signal, args=(self.dataStreamName, self.dataStreamType, self.channelCount, 
                                                                         self.sampleRate,  self.stop_signal, self.markerQueue, #self.log_queue,
@@ -146,13 +142,23 @@ class PseudoDeviceController:
                                                                      self.markerQueue, self.stop_signal))
             self.marker_process.start()
         else:
-            # For threading, start threads
-            self.markerQueue = queue.Queue() 
+            self.stop_signal = threading.Event() 
+            self.markerQueue = queue.Queue()
             self.stop_signal.clear()
-            self.thread = threading.Thread(target=generate_signal)
+            self.thread = threading.Thread(
+                target=generate_signal,
+                args=(self.dataStreamName, self.dataStreamType, self.channelCount, self.sampleRate,
+                      self.stop_signal, self.markerQueue, self.markerConfigStrings,
+                      self.pseudoMarkerDataConfigs, self.baselineConfig)
+            )
             self.thread.start()
-            self.marker_thread = threading.Thread(target=maker_timing)
+            self.marker_thread = threading.Thread(
+                target=maker_timing,
+                args=(self.markerName, self.markerType, self.pseudoMarkerConfig, self.markerConfigStrings,
+                      self.markerQueue, self.stop_signal)
+            )
             self.marker_thread.start()
+
         self.log_message(Logger.INFO, " PseudoDevice - Begin streaming.")
 
     def log_message(self, level='INFO', message = ""):
