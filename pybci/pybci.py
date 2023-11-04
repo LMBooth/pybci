@@ -91,14 +91,14 @@ class PyBCI:
         self.createPseudoDevice = createPseudoDevice
         print(get_os())
         if createPseudoDevice:
-            current_os = get_os()
+            #current_os = get_os()
             #if current_os == "Windows":
             if isinstance(pseudoDeviceController,PseudoDeviceController):
                 pseudoDeviceController.BeginStreaming()
             else:
                 pseudoDeviceController = PseudoDeviceController()
                 pseudoDeviceController.BeginStreaming()
-            #    self.pseudoDeviceController = pseudoDeviceController
+            self.pseudoDeviceController = pseudoDeviceController
             #elif current_os == "macOS":
             #    self.pseudoDeviceController = pseudoDeviceController
 
