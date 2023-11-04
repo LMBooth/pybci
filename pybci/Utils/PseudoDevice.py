@@ -131,7 +131,10 @@ class PseudoDeviceController:
         else:
             self.stop_signal = threading.Event() 
         self.stop_signal.clear()
-        self.log_message("Initialised PseudoDevice...")
+        self.log_thread = threading.Thread(target=self.log_message)
+        self.log_thread.start()
+        self.log_queue.put("Initialised PseudoDevice...")
+        #self.log_message("Initialised PseudoDevice...")
 
     def StopStreaming(self):
         self.stop_signal.set() # Set the Event to signal termination
@@ -162,13 +165,12 @@ class PseudoDeviceController:
                       self.markerQueue, self.stop_signal)
             )
             self.marker_thread.start()
-
-        self.log_message(Logger.INFO, " PseudoDevice - Begin streaming.")
+        self.log_queue.put(" PseudoDevice - Begin streaming.")
 
     def log_message(self, level='INFO', message = ""):
         while not self.stop_signal.is_set():
-            message = self.log_queue.get()
+            message = self.log_queue.get_nowait()
             if message is None:  # A sentinel value to indicate the end of logging
                 break
-            self.logger.log(level, message)
+            self.logger.log(level, message)a
     
