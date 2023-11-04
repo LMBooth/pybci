@@ -130,10 +130,11 @@ class PseudoDeviceController:
             self.stop_signal = multiprocessing.Event()
         else:
             self.stop_signal = threading.Event() 
+        self.stop_signal.clear()
         self.log_message("Initialised PseudoDevice...")
 
     def StopStreaming(self):
-        self.stop_signal.set()  # Set the Event to signal termination
+        self.stop_signal.set() # Set the Event to signal termination
 
     def BeginStreaming(self):
         if self.is_multiprocessing:
