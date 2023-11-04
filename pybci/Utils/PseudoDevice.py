@@ -131,11 +131,12 @@ class PseudoDeviceController:
         else:
             self.stop_signal = threading.Event() 
         self.stop_signal.clear()
-        self.log_thread = threading.Thread(target=self.log_message)
-        self.log_thread.start()
+        #self.log_thread = threading.Thread(target=self.log_message)
+        #self.log_thread.start()
+        self.log_message()
         self.log_queue.put("Initialised PseudoDevice...")
         #self.log_message("Initialised PseudoDevice...")
-
+    
     def StopStreaming(self):
         self.stop_signal.set() # Set the Event to signal termination
 
