@@ -40,7 +40,7 @@ Upon creating PyBCI object a dict of the following ``kwargs`` can be passed to d
   log_queue – multiprocessing.Queue: Queue object for logging activities in a multiprocessing environment. Default is None.
 
 
-Where PseudoDataConfig and PseudoDataConfig are:
+The following show the contents of the PseudoDataConfig and PseudoDataConfig classes:
 
 .. code-block:: python
 
