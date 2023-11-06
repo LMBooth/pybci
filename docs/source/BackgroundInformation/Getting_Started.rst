@@ -64,6 +64,9 @@ Linux/MaxOS:
    # OR
    pip install git+https://github.com/LMBooth/pybci.git  # For development version
 
+Running Pytest Locally
+======================
+After instaling pybci and downloading and extracting the pybci git repository, navigate to the extracted location and run  :py:data:`pip install requirements-devel.txt` to install pytest, then call  :py:data:`pytest -vv -s Tests\` to run all the automated tests and ensure all 10 tests pass (should take approximately 15 mins to complete), this will ensure pybci functionality is as desired.
 
 .. _simpleimplementation:
 
