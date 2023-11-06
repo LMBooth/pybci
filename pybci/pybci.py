@@ -12,16 +12,16 @@ import queue
 import threading
 import platform
 
-def get_os():
-    os_name = platform.system()
-    if os_name == "Windows":
-        return "Windows"
-    elif os_name == "Darwin":
-        return "macOS"
-    elif os_name == "Linux":
-        return "Linux"
-    else:
-        return "Unknown"
+#def get_os():
+#    os_name = platform.system()
+#    if os_name == "Windows":
+#        return "Windows"
+#    elif os_name == "Darwin":
+#        return "macOS"
+#    elif os_name == "Linux":
+#        return "Linux"
+#    else:
+#        return "Unknown"
 
 class PyBCI:
     globalEpochSettings = GlobalEpochSettings()
@@ -89,7 +89,7 @@ class PyBCI:
         self.logger = Logger(self.loggingLevel)
 
         self.createPseudoDevice = createPseudoDevice
-        print(get_os())
+        #print(get_os())
         if createPseudoDevice:
             #current_os = get_os()
             #if current_os == "Windows":
