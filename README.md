@@ -52,7 +52,7 @@ When ```createPseudoDevice=True```  none windows users must ```import pybci.Util
 
 ## Running Pytest Locally
 
-After instaling pybci and downloading and extracting the pybci git repository, navigate to the extracted location and run ```pip install requirements-devel.txt``` to install pytest, then call pytest -vv -s Tests\ to run all the automated tests and ensure all 10 tests pass (should take approximately 15 mins to complete), this will ensure pybci functionality is as desired.
+After instaling pybci and downloading and extracting the pybci git repository, navigate to the extracted location and run ```pip install requirements-devel.txt``` to install pytest, then call ```pytest -vv -s Tests\``` to run all the automated tests and ensure all 10 tests pass (should take approximately 15 mins to complete), this will ensure pybci functionality is as desired.
 
 ## Python Package Dependencies Version Minimums
 Tested on Python 3.9, 3.10 & 3.11 ([appveyor.yml](https://github.com/LMBooth/pybci/blob/main/appveyor.yml))
