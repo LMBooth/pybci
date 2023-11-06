@@ -1,9 +1,9 @@
-from pybci import PyBCI, get_os
+from pybci import PyBCI#, get_os
 import time
 from pybci.Utils.PseudoDevice import PseudoDeviceController
 
 def test_run_bci():
-    current_os = get_os()
+    #current_os = get_os()
     #if current_os == "Windows":
     bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True)
     #elif current_os == "Linux":

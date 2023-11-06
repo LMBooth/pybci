@@ -1,4 +1,4 @@
-from pybci import PyBCI, get_os
+from pybci import PyBCI#, get_os
 import time
 import tensorflow as tf# bring in tf for custom model creation
 from pybci.Utils.PseudoDevice import PseudoDeviceController
@@ -20,7 +20,7 @@ model.compile(loss='sparse_categorical_crossentropy',# using sparse_categorical 
 
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
-    current_os = get_os()
+    #current_os = get_os()
     #if current_os == "Windows":
     bci = PyBCI(minimumEpochsRequired = 3, model = model, createPseudoDevice=True)
     #else:

@@ -1,4 +1,4 @@
-from pybci import PyBCI, get_os
+from pybci import PyBCI# get_os
 
 import time
 import torch
@@ -57,7 +57,7 @@ def PyTorchModel(x_train, x_test, y_train, y_test):
 
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
-    current_os = get_os()
+    #current_os = get_os()
     #if current_os == "Windows":
     bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, torchModel=PyTorchModel)
     #elif current_os == "Linux":

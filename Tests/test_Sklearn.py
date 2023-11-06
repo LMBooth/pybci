@@ -1,4 +1,4 @@
-from pybci import PyBCI, get_os
+from pybci import PyBCI#, get_os
 import time
 from sklearn.neural_network import MLPClassifier
 from pybci.Utils.PseudoDevice import PseudoDeviceController
@@ -6,7 +6,7 @@ from pybci.Utils.PseudoDevice import PseudoDeviceController
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
     clf = MLPClassifier(max_iter = 1000, solver ="lbfgs")#solver=clf, alpha=alpha,hidden_layer_sizes=hid)
-    current_os = get_os()
+    #current_os = get_os()
     #if current_os == "Windows":
     bci = PyBCI(minimumEpochsRequired = 3, clf = clf, createPseudoDevice=True)
     #else:
