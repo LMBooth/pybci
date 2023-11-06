@@ -1,5 +1,4 @@
-from ..pybci import PyBCI#, get_os
-from pybci.Utils.PseudoDevice import PseudoDeviceController
+from ..pybci import PyBCI
 import time
 import argparse
 from sklearn.neural_network import MLPClassifier

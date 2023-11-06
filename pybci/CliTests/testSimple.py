@@ -1,8 +1,7 @@
 import argparse
-from ..pybci import PyBCI#, get_os
+from ..pybci import PyBCI
 import time 
 import threading
-from pybci.Utils.PseudoDevice import PseudoDeviceController
 
 stop_signal = threading.Event()  # Global event to control the main loop
 

@@ -10,18 +10,6 @@ from .ThreadClasses.ClassifierThread import ClassifierThread
 from .Configuration.EpochSettings import GlobalEpochSettings, IndividualEpochSetting
 import queue
 import threading
-import platform
-
-#def get_os():
-#    os_name = platform.system()
-#    if os_name == "Windows":
-#        return "Windows"
-#    elif os_name == "Darwin":
-#        return "macOS"
-#    elif os_name == "Linux":
-#        return "Linux"
-#    else:
-#        return "Unknown"
 
 class PyBCI:
     globalEpochSettings = GlobalEpochSettings()

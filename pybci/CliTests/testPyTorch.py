@@ -1,7 +1,6 @@
 import time
 import argparse
-from ..pybci import PyBCI#, get_os
-from pybci.Utils.PseudoDevice import PseudoDeviceController
+from ..pybci import PyBCI
 import torch
 from torch.utils.data import DataLoader, TensorDataset
 from torch import nn

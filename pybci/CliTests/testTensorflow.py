@@ -1,8 +1,7 @@
 import time
 import threading
 import argparse
-from ..pybci import PyBCI#, get_os
-from pybci.Utils.PseudoDevice import PseudoDeviceController
+from ..pybci import PyBCI
 import tensorflow as tf# bring in tf for custom model creation
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'

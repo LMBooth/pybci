@@ -1,21 +1,9 @@
-from pybci import PyBCI#, get_os
+from pybci import PyBCI
 import time
-from pybci.Utils.PseudoDevice import PseudoDeviceController
 
 def test_run_bci():
-    #current_os = get_os()
-    #if current_os == "Windows":
     bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True)
-    #elif current_os == "Linux":
-    #    pdc = PseudoDeviceController(execution_mode="process")
-    #    pdc.BeginStreaming()
-    #    time.sleep(10)
-    #    bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc)
-    #else:
-    #    pdc = PseudoDeviceController(execution_mode="process")
-    #    pdc.BeginStreaming()
-    #    time.sleep(10)
-    #    bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, pseudoDeviceController=pdc)
+
     while not bci.connected:
         bci.Connect()
         time.sleep(1)
