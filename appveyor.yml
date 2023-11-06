@@ -68,6 +68,8 @@ install:
           /opt/az/bin/python3.10 -m pip install .
           /opt/az/bin/python3.10 -m pip install pytest pytest-timeout ruff
           /opt/az/bin/python3.10 -m site
+          sh: echo 'export PATH=$PATH:/home/appveyor/.local/bin' >> ~/.bashrc
+          sh: source ~/.bashrc
           ;;
         "macos-monterey")
           echo "Updating Homebrew and installing packages..."
