@@ -1,6 +1,6 @@
 import time
 import argparse
-from ..pybci import PyBCI, get_os
+from ..pybci import PyBCI#, get_os
 from pybci.Utils.PseudoDevice import PseudoDeviceController
 import torch
 from torch.utils.data import DataLoader, TensorDataset
@@ -82,7 +82,7 @@ class CLI_testPytorchWrapper:
         self.currentMarkers = {}
         if self.min_epochs_test <= self.min_epochs_train:
             self.min_epochs_test = self.min_epochs_train+1
-        current_os = get_os()
+        #current_os = get_os()
         #if current_os == "Windows":
         self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, torchModel = PyTorchModel)
         #else:

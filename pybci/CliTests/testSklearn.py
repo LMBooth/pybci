@@ -1,4 +1,4 @@
-from ..pybci import PyBCI, get_os
+from ..pybci import PyBCI#, get_os
 from pybci.Utils.PseudoDevice import PseudoDeviceController
 import time
 import argparse
@@ -25,7 +25,7 @@ class CLI_testSklearnWrapper:
         if self.min_epochs_test <= self.min_epochs_train:
             self.min_epochs_test = self.min_epochs_train+1
         clf = MLPClassifier(max_iter = 1000, solver ="lbfgs")#solver=clf, alpha=alpha,hidden_layer_sizes=hid)
-        current_os = get_os()
+        #current_os = get_os()
         #if current_os == "Windows":
         self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, clf = clf)
         #else:

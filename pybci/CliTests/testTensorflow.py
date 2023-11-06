@@ -1,7 +1,7 @@
 import time
 import threading
 import argparse
-from ..pybci import PyBCI, get_os
+from ..pybci import PyBCI#, get_os
 from pybci.Utils.PseudoDevice import PseudoDeviceController
 import tensorflow as tf# bring in tf for custom model creation
 import os
@@ -46,7 +46,7 @@ class CLI_testPytorchWrapper:
         model.compile(loss='sparse_categorical_crossentropy',# using sparse_categorical as we expect multi-class (>2) output, sparse because we encode targetvalues with integers
                 optimizer='adam',
                 metrics=['accuracy'])
-        current_os = get_os()
+        #current_os = get_os()
         #if current_os == "Windows":
         self.bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=True, model = model)
         #else:
