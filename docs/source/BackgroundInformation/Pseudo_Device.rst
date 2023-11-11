@@ -11,16 +11,16 @@ The :py:data:`PseudoDeviceController` class can be used when the user has no ava
 
 The :class:`PseudoDeviceController` class holds marker information and generates signal data based on the given configuration set in :ref:`configuring-pseudo-device`.
 
-The :py:data:`PseudoDeviceController` can have the string "process" or "thread" set to decide whether the pseudo device should be a multiprocessed or threaded operation respectively, by default it is set to "process", then passes all the same configuration arguments to :class:`PseudoDevice`.
+The :py:data:`PseudoDeviceController` can have the string "process" or "thread" set to decide whether the pseudo device should be a multiprocessed or threaded operation respectively, by default it is set to "process".
 
 Any generic LSLViewer can be used to view the generated data, `example viewers found on this link. <https://labstreaminglayer.readthedocs.io/info/viewers.html>`_
 
 .. _configuring-pseudo-device:
 
-Configuring the Pseudo Device
-=============================
+Configuring the Pseudo Device Controller
+========================================
 
-By default the :class:`PseudoDevice` has 4 markers, "baseline", "Marker1", "Marker2", "Marker3" and "Marker4", each with peak frequencies of 3, 8, 10 and 12 Hz respectively.
+By default the :class:`PseudoDeviceController` has 4 markers, "baseline", "Marker1", "Marker2", "Marker3" and "Marker4", each with peak frequencies of 3, 8, 10 and 12 Hz respectively.
 Each signal is modified for 1 second after the marker has occurred, and the seconds between the markers are spaced by 5 seconds.
   
 Upon creating PyBCI object a dict of the following ``kwargs`` can be passed to dictate the behaviour of the pseudo device:
