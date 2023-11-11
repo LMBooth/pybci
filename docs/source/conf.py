@@ -5,7 +5,7 @@ copyright = '2023, Liam Booth'
 author = 'Liam Booth'
 
 # The full version, including alpha/beta/rc tags
-release = '1.2.4'
+release = '1.4.2'
 
 # -- General configuration ---------------------------------------------------
 extensions = [
