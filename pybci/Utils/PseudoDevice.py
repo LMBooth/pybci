@@ -105,7 +105,7 @@ class PseudoDeviceController:
     log_queue = None
 
     def __init__(self, is_multiprocessing=True, markerConfigStrings = ["Marker1", "Marker2", "Marker3"], 
-                pseudoMarkerDataConfigs = None, 
+                pseudoMarkerDataConfigs = None, createMarkers = True,
                 pseudoMarkerConfig = PseudoMarkerConfig,
                 dataStreamName = "PyBCIPseudoDataStream" , dataStreamType="EMG", 
                 sampleRate= 250, channelCount= 8, logger = Logger(Logger.INFO),log_queue=None):
@@ -117,6 +117,7 @@ class PseudoDeviceController:
         self.dataStreamType = dataStreamType
         self.sampleRate = sampleRate
         self.channelCount = channelCount
+        self.createMarkers = createMarkers
         # marker process args
         self.markerName = pseudoMarkerConfig.markerName
         self.markerType = pseudoMarkerConfig.markerType
@@ -154,11 +155,13 @@ class PseudoDeviceController:
                                                                         self.sampleRate,  self.stop_signal, self.markerQueue, #self.log_queue,
                                                                         self.markerConfigStrings,self.pseudoMarkerDataConfigs, self.baselineConfig))
             self.worker_process.start()
-            self.marker_process = multiprocessing.Process(target=maker_timing, args=(self.markerName, self.markerType, self.pseudoMarkerConfig, self.markerConfigStrings, 
-                                                                     self.markerQueue, self.stop_signal, self.log_queue))
-            self.marker_process.start()
+            if self.createMarkers is True:
+                self.marker_process = multiprocessing.Process(target=maker_timing, args=(self.markerName, self.markerType, self.pseudoMarkerConfig, self.markerConfigStrings, 
+                                                                        self.markerQueue, self.stop_signal, self.log_queue))
+                self.marker_process.start()
         else:
-            self.markerQueue = queue.Queue()
+            if self.createMarkers is True:
+                self.markerQueue = queue.Queue()
             self.stop_signal.clear()
             self.thread = threading.Thread(
                 target=generate_signal,
@@ -167,12 +170,13 @@ class PseudoDeviceController:
                       self.pseudoMarkerDataConfigs, self.baselineConfig)
             )
             self.thread.start()
-            self.marker_thread = threading.Thread(
-                target=maker_timing,
-                args=(self.markerName, self.markerType, self.pseudoMarkerConfig, self.markerConfigStrings,
-                      self.markerQueue, self.stop_signal)
-            )
-            self.marker_thread.start()
+            if self.createMarkers is True:
+                self.marker_thread = threading.Thread(
+                    target=maker_timing,
+                    args=(self.markerName, self.markerType, self.pseudoMarkerConfig, self.markerConfigStrings,
+                        self.markerQueue, self.stop_signal, self.log_queue)
+                )
+                self.marker_thread.start()
         self.log_queue.put(" PseudoDevice - Begin streaming.")
 
     def log_message(self, level='INFO', message = ""):
