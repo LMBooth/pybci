@@ -42,4 +42,4 @@ RUN mkdir -p /usr/local/lib/python3.10/site-packages/pylsl/lib && \
 EXPOSE 8080
 
 # Command to run when starting the container
-CMD ["/usr/bin/python3.10", "-m", "pybci"]
+CMD ["/bin/bash"]
