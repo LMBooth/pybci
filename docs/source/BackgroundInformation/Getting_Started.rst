@@ -64,6 +64,23 @@ Linux/MaxOS:
    # OR
    pip install git+https://github.com/LMBooth/pybci.git  # For development version
 
+There has been issues raised with Linux successfully running all pytests and examples, there is a dockerfile included in the root repository outlining what should be a successful build of ubuntu 22:04.
+
+Dockerfile
+======================
+There is an Ubuntu 22.04 setup found in the [Dockerfile](https://github.com/LMBooth/pybci/blob/main/Dockerfile) in the root of the directory which can be used in conjunction with [docker](https://docs.docker.com/desktop/).
+
+Once docker is installed call the following in the root directory:
+
+.. code-block:: console
+
+    sudo docker build -t pybci .
+    sudo docker run -it -p 4000:8080 pybci
+
+Then either run the `pybci` CLI command or run `pytest Tests`.
+
+Download the Dockerfile and run 
+
 Running Pytest Locally
 ======================
 After instaling pybci and downloading and extracting the pybci git repository, navigate to the extracted location and run  :py:data:`pip install requirements-devel.txt` to install pytest, then call  :py:data:`pytest -vv -s Tests\` to run all the automated tests and ensure all 10 tests pass (should take approximately 15 mins to complete), this will ensure pybci functionality is as desired.
