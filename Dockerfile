@@ -1,5 +1,5 @@
 # Use Ubuntu 22.04 LTS as the base image
-FROM ubuntu:20.04
+FROM ubuntu:22.04
 
 # Avoid prompts from apt-get
 ARG DEBIAN_FRONTEND=noninteractive
