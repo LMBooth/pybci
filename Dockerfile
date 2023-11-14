@@ -1,4 +1,4 @@
-# Use Ubuntu 20.04 LTS as the base image
+# Use Ubuntu 22.04 LTS as the base image
 FROM ubuntu:20.04
 
 # Avoid prompts from apt-get
