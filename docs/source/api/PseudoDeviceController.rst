@@ -1,53 +1,42 @@
 pybci.Utils.PseudoDevice import PseudoDeviceController
-======================
+========================
 
-.. class:: PseudoDeviceController(execution_mode='process', *args, **kwargs)
+.. class:: PseudoDeviceController(is_multiprocessing=True, markerConfigStrings=["Marker1", "Marker2", "Marker3"], pseudoMarkerDataConfigs=None, createMarkers=True, pseudoMarkerConfig=PseudoMarkerConfig, dataStreamName="PyBCIPseudoDataStream", dataStreamType="EMG", sampleRate=250, channelCount=8, logger=Logger(Logger.INFO), log_queue=None)
 
-   The PseudoDeviceController class serves as a manager for the PseudoDevice. It is responsible for controlling the behavior of the PseudoDevice, including starting and stopping data streams. The class is designed to run either in multiprocessing mode or threading mode, depending on the ``execution_mode`` parameter.
+   The PseudoDeviceController class is designed for generating pseudo EMG signals and markers, simulating a Lab Streaming Layer (LSL) device. It supports both multiprocessing and threading environments, depending on the `is_multiprocessing` parameter.
 
-   :param execution_mode: string: Determines the mode of execution. It can be either 'process' for multiprocessing or 'thread' for multi-threading. Default is 'process'.
-   :param args: tuple: Additional positional arguments that are passed directly to the PseudoDevice instance.
-   :param kwargs: dict: Additional keyword arguments that are passed directly to the PseudoDevice instance.
+   :param is_multiprocessing: bool: Indicates if the class instance operates in a multiprocessing environment. Default is `True`.
+   :param markerConfigStrings: list(str): Marker strings for generating marker data. Default is ["Marker1", "Marker2", "Marker3"].
+   :param pseudoMarkerDataConfigs: list: Configurations for pseudo EMG signals. Uses default configurations if `None`.
+   :param createMarkers: bool: Flag to determine if markers should be created. Default is `True`.
+   :param pseudoMarkerConfig: PseudoMarkerConfig: Settings for pseudo markers.
+   :param dataStreamName: string: Name for the data stream.
+   :param dataStreamType: string: Data stream type (e.g., "EMG").
+   :param sampleRate: int: Sample rate in Hz.
+   :param channelCount: int: Number of channels.
+   :param logger: Logger: Logger object for logging.
+   :param log_queue: multiprocessing.Queue or queue.Queue: Queue object for logging.
 
-   .. note:: 
-      The `execution_mode` parameter is crucial for defining the type of parallelization to use. Ensure to set it appropriately based on your application requirements.
-
-   .. py:method:: _run_device()
-
-      This is an internal method used to initiate the execution of the PseudoDevice. It runs the device based on the execution mode specified during the initialization.
-
-      :raises ValueError: If an unsupported execution mode is provided.
-      
-      .. warning::
-         This method is intended for internal use only and should not be called directly.
-
-   .. py:method:: _should_stop()
-
-      An internal method that checks whether the execution of the PseudoDevice should be stopped based on the ``stop_signal``.
-
-      :returns: `True` if the execution should be stopped, `False` otherwise.
-
-      .. warning::
-         This method is intended for internal use only and should not be called directly.
+   .. note::
+      The sample rate is not exact and may vary with CPU strain. 
 
    .. py:method:: BeginStreaming()
 
-      Starts the streaming of pseudo EMG data and markers. This method initiates the generation and transmission of data based on the configurations provided.
-
-      .. note:: 
-         The actual behavior of the data streaming is defined in the PseudoDevice class. This method serves as a controller interface.
+      Initiates streaming of pseudo EMG data and markers. This method should be called to start the device's operation.
 
    .. py:method:: StopStreaming()
 
-      Stops the data streaming process. This method sets the ``stop_signal`` flag, which subsequently terminates the data generation and transmission.
+      Stops the data and marker streaming, signaling the termination.
 
-      .. note:: 
-         It is recommended to call this method for graceful termination of the device.
+   .. py:method:: log_message(level='INFO', message="")
 
-   .. py:method:: close()
+      Logs a message to the `log_queue` or directly, based on the operation mode.
 
-      This method is responsible for cleaning up resources and ensuring a graceful shutdown of the controller. It joins the worker threads or processes and performs necessary cleanup operations.
+      :param level: string: Log message level (e.g., "INFO", "ERROR").
+      :param message: string: Message to log.
 
-      .. note::
-         Always call this method before terminating the application to ensure proper resource management.
+   .. note::
+      Ensure a graceful shutdown by calling `StopStreaming()`.
 
+.. note::
+   The PseudoDeviceController is suitable for simulations and testing purposes. It may require specific setup for multiprocessing or threading environments.
