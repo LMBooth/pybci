@@ -29,7 +29,8 @@ RUN python3.10 -m pip install --upgrade urllib3>=2.0.5
 RUN python3.10 -m pip install . pytest pytest-timeout ruff
 
 # Download and install liblsl
-RUN wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-focal_amd64.deb -O liblsl.deb && \
+
+RUN wget https://github.com/sccn/liblsl/releases/download/v1.16.2/liblsl-1.16.2-jammy_amd64.deb -O liblsl.deb && \
     dpkg -i liblsl.deb && \
     rm liblsl.deb
 

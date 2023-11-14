@@ -32,9 +32,10 @@ def test_run_dual():
                 if accuracy > 0:
                     # set to above 0 to show some accuracy was retruend from model
                     accuracy_achieved = True
-                    bci.StopThreads()
+                    
                     pd1.StopStreaming()
                     pd2.StopStreaming()
+                    bci.StopThreads()
                     time.sleep(1)
                     break
             #if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+4:
