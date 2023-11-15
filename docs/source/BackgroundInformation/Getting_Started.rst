@@ -68,7 +68,7 @@ There has been issues raised with Linux successfully running all pytests and exa
 
 Dockerfile
 ======================
-There is an Ubuntu 22.04 setup found in the [Dockerfile](https://github.com/LMBooth/pybci/blob/main/Dockerfile) in the root of the directory which can be used in conjunction with [docker](https://docs.docker.com/desktop/).
+There is an Ubuntu 22.04 setup found in the `Dockerfile <https://github.com/LMBooth/pybci/blob/main/Dockerfile>`__ in the root of the directory which can be used in conjunction with `docker <https://docs.docker.com/desktop/>`__ .
 
 Once docker is installed call the following in the root directory:
 
