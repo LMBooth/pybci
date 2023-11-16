@@ -77,13 +77,13 @@ Once docker is installed call the following in the root directory:
     sudo docker build -t pybci .
     sudo docker run -it -p 4000:8080 pybci
 
-Then either run the ``pybci`` CLI command or run ``pytest Tests``.
+Then either run the :py:data:`pybci` CLI command or run :py:data:`pytest Tests`.
 
 Download the Dockerfile and run 
 
 Running Pytest Locally
 ======================
-After installing pybci and downloading and extracting the pybci git repository, navigate to the extracted location and run  ``pip install requirements-devel.txt`1 to install pytest, then call  ``pytest -vv -s Tests\`` to run all the automated tests and ensure all 10 tests pass (should take approximately 15 mins to complete), this will ensure pybci functionality is as desired.
+After installing pybci and downloading and extracting the pybci git repository, navigate to the extracted location and run  :py:data:`pip install requirements-devel.txt` to install pytest, then call  :py:data:`pytest -vv -s Tests\` to run all the automated tests and ensure all 10 tests pass (should take approximately 15 mins to complete), this will ensure pybci functionality is as desired.
 
 .. _simpleimplementation:
 
