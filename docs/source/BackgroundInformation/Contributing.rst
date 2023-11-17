@@ -53,7 +53,7 @@ We use Sphinx with ReadTheDocs for documentation. Ensure that you update the doc
 Continuous Integration
 ----------------------
 
-We use AppVeyor for continuous integration to maintain the stability of the codebase. Ensure that your changes pass the build on AppVeyor before submitting a pull request. The configuration is located in the ``appveyor.yml`` file in the project root.
+We use AppVeyor for continuous integration to maintain the stability of the codebase. Ensure that your changes pass the build on AppVeyor before submitting a pull request. The configuration is located in the :py:data:`appveyor.yml` file in the project root.
 
 Licensing
 ---------
