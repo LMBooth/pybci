@@ -64,7 +64,7 @@ testPytorch
 -----------
 .. image:: https://img.shields.io/badge/Pseudo_Device-Available-blue
    :alt: pseudo device not available shield
-- **GitHub Link**: `testPytorch <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPytorch.py>`_
+- **GitHub Link**: `testPytorch <https://github.com/LMBooth/pybci/blob/main/pybci/Examples/testPyTorch.py>`_
 - **Description**: Provides an example of using a PyTorch Neural Net Model as the classifier.
 
 testRaw
