@@ -61,7 +61,7 @@ Once docker is installed call the following in the root directory:
 sudo docker build -t pybci .
 sudo docker run -it -p 4000:8080 pybci
 ```
-Then either run the `pybci` CLI command or run `pytest Tests`.
+Then either run the `pybci` CLI command or run `pytest Tests` to verify functionality.
 
 Download the Dockerfile and run 
 
