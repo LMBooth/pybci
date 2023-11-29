@@ -41,6 +41,7 @@ def test_run_bci():
         markerGuess = bci.CurrentClassifierMarkerGuess() # when in test mode only y_pred returned
         guess = [key for key, value in currentMarkers.items() if value[0] == markerGuess]
         in_test_mode = True
+        time.sleep(1) 
         break
         #print("Current marker estimation: " + str(guess), end="           \r")
     assert accuracy_achieved and marker_received and in_test_mode
