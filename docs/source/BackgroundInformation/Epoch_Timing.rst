@@ -16,7 +16,7 @@ Setting the :py:data:`globalEpochSettings` with the :class:`GlobalEpochSettings(
 Setting Custom Epoch Times
 --------------------------
 
-The figure below illustrates when you may have epochs of differing lengths received on the LSL marker stream. A baseline marker may signify an extended period, in this case 10 seconds, and our motor task is only 1 second long. To account for this set :py:data:`customEpochSettings` and :py:data:`globalEpochSettings` accordingly, note the LSL Marker for baseline should match the key for the :py:data:`customEpochSettings` dict:
+The figure below illustrates when you may have epochs of differing lengths received on the LSL marker stream. A baseline marker may signify an extended period, in this case 10 seconds, and our motor task is only 1 second long. To account for this set :py:data:`customEpochSettings` and :py:data:`globalEpochSettings` accordingly, note the LSL Marker for baseline should match the key for the :py:data:`customEpochSettings` dict. NOTE: when using :py:data:`customEpochSettings` all epochs must be defined in the dict, other markers will be ignored, if :py:data:`customEpochSettings` is not used all markers on the selected marker stream will be used as a classification type:
 
 .. code-block:: python
 
@@ -24,14 +24,19 @@ The figure below illustrates when you may have epochs of differing lengths recei
    gs.tmax = 1 # grab 1 second after marker
    gs.tmin = 0 # grabs 0 seconds before marker
    gs.splitCheck = False # splits samples between tmin and tmax
-   gs.windowLength = 1 # window length of 1 s
+   gs.windowLength = 1 # window length of 1 s, means all marker timing windows will be 1 second long
    gs.windowOverlap = 0.5 # windows overap by 50%, so for a total len
-   baselineSettings = {}
-   baselineSettings["baseline"] = IndividualEpochSetting()
-   baselineSettings["baseline"].splitCheck = False
-   baselineSettings["baseline"].tmin = 0      # time in seconds to capture samples before trigger
-   baselineSettings["baseline"].tmax=  10      # time in seconds to capture samples after trigger
-   bci = PyBCI(customEpochSettings=baselineSettings, globalEpochSettings=gs)
+   markerSettings = {}
+   markerSettings["baseline"] = IndividualEpochSetting()
+   markerSettings["baseline"].splitCheck = True
+   markerSettings["baseline"].tmin = 0      # time in seconds to capture samples before trigger
+   markerSettings["baseline"].tmax=  10      # time in seconds to capture samples after trigger
+   markerSettings["Marker1"] = IndividualEpochSetting()
+   markerSettings["Marker1"].splitCheck = False
+   markerSettings["Marker1"].tmin = 0      # time in seconds to capture samples before trigger
+   markerSettings["Marker1"].tmax=  1      # time in seconds to capture samples after trigger
+
+   bci = PyBCI(customEpochSettings=markerSettings, globalEpochSettings=gs)
 
 Highlighting these epochs on some psuedo emg data looks like the following:
 
