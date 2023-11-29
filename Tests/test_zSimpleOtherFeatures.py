@@ -62,7 +62,7 @@ def test_run_bci():
             #    break
     while True:
         markerGuess = bci.CurrentClassifierMarkerGuess() # when in test mode only y_pred returned
-        guess = [key for key, value in currentMarkers.items() if value[0] == markerGuess]
+        print(markerGuess)
         in_test_mode = True
         time.sleep(1) 
         bci.StopThreads()

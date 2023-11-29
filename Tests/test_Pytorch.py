@@ -61,7 +61,8 @@ def test_run_bci():
     bci.TrainMode()
     accuracy_achieved = False
     marker_received = False
-    accuracy=0
+    in_test_mode = False
+    accuracy=None
     while True:
         currentMarkers = bci.ReceivedMarkerCount() # check to see how many received epochs, if markers sent to close together will be ignored till done processing
         time.sleep(0.5) # wait for marker updates
@@ -74,8 +75,17 @@ def test_run_bci():
                 if accuracy > 0:
                     # set to above 0 to show some accuracy was retruend from model
                     accuracy_achieved = True
-                    bci.StopThreads()
+                    bci.TestMode()
                     break
             #if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+4:
             #    break
-    assert accuracy_achieved and marker_received
+    while True:
+        markerGuess = bci.CurrentClassifierMarkerGuess() # when in test mode only y_pred returned
+        print(markerGuess)
+        #guess = [key for key, value in currentMarkers.items() if value[0] == markerGuess]
+        in_test_mode = True
+        time.sleep(1) 
+        bci.StopThreads()
+        break
+        #print("Current marker estimation: " + str(guess), end="           \r")
+    assert accuracy_achieved and marker_received and in_test_mode
