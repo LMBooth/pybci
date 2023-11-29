@@ -10,7 +10,7 @@ gs.windowLength = 0.5 #
 gs.windowOverlap = 0.5 # windows overap by 50%, so for a total len
 
 if __name__ == '__main__': # Note: this line is needed when calling pseudoDevice as by default runs in a multiprocessed operation
-    bci = PyBCI(minimumEpochsRequired = 4, createPseudoDevice=True, globalEpochSettings=gs)#, loggingLevel = Logger.TIMING)
+    bci = PyBCI(minimumEpochsRequired = 4, createPseudoDevice=True, globalEpochSettings=gs, loggingLevel = "TIMING")
     while not bci.connected: # check to see if lsl marker and datastream are available
         bci.Connect()
         time.sleep(1)
