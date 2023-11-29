@@ -28,9 +28,9 @@ The figure below illustrates when you may have epochs of differing lengths recei
    gs.windowOverlap = 0.5 # windows overap by 50%, so for a total len
    baselineSettings = {}
    baselineSettings["baseline"] = IndividualEpochSetting()
-   baselineSettings.splitCheck = False
-   baselineSettings.tmin = 0      # time in seconds to capture samples before trigger
-   baselineSettings.tmax=  10      # time in seconds to capture samples after trigger
+   baselineSettings["baseline"].splitCheck = False
+   baselineSettings["baseline"].tmin = 0      # time in seconds to capture samples before trigger
+   baselineSettings["baseline"].tmax=  10      # time in seconds to capture samples after trigger
    bci = PyBCI(customEpochSettings=baselineSettings, globalEpochSettings=gs)
 
 Highlighting these epochs on some psuedo emg data looks like the following:
