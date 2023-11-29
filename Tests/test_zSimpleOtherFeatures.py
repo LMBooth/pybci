@@ -34,7 +34,11 @@ def test_run_bci():
     markerSettings["Marker1"].tmax=  2      # time in seconds to capture samples after trigger
 
     extractor = GenericFeatureExtractor(featureChoices=features)
-    bci = PyBCI(minimumEpochsRequired = 2, createPseudoDevice= True, customEpochSettings=markerSettings,  streamCustomFeatureExtract={"PyBCIPseudoDataStream":extractor}) 
+
+
+
+    bci = PyBCI(minimumEpochsRequired = 2, createPseudoDevice= True, customEpochSettings=markerSettings,  streamCustomFeatureExtract={"PyBCIPseudoDataStream":extractor},
+                markerStream= "PyBCIPseudoMarkers", dataStreams=["PyBCIPseudoDataStream"]) 
 
     while not bci.connected:
         bci.Connect()
