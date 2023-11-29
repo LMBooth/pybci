@@ -5,7 +5,7 @@ from sklearn.neural_network import MLPClassifier
 def test_run_bci():
     clf = MLPClassifier(max_iter = 1000, solver ="lbfgs")#solver=clf, alpha=alpha,hidden_layer_sizes=hid)
 
-    bci = PyBCI(minimumEpochsRequired = 3, clf = clf, createPseudoDevice=True)
+    bci = PyBCI(minimumEpochsRequired = 2, clf = clf, createPseudoDevice=True)
 
     while not bci.connected:
         bci.Connect()

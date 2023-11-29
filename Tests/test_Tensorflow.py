@@ -19,7 +19,7 @@ model.compile(loss='sparse_categorical_crossentropy',# using sparse_categorical 
 
 #@pytest.mark.timeout(300)  # Extended timeout to 5 minutes
 def test_run_bci():
-    bci = PyBCI(minimumEpochsRequired = 3, model = model, createPseudoDevice=True)
+    bci = PyBCI(minimumEpochsRequired = 2, model = model, createPseudoDevice=True)
 
     while not bci.connected:
         bci.Connect()

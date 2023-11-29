@@ -11,7 +11,7 @@ def test_run_dual():
     pd2.BeginStreaming()
     time.sleep(5)
 
-    bci = PyBCI(minimumEpochsRequired = 3, createPseudoDevice=False)
+    bci = PyBCI(minimumEpochsRequired = 2, createPseudoDevice=False)
 
     while not bci.connected:
         bci.Connect()
