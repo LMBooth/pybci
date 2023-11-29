@@ -65,7 +65,7 @@ jobs:
 
     - name: Generate Report
       run: |
-        coverage run --source=pybci/ --omit='pybci/CliTests/*' -m pytest
+        coverage run --source=pybci/ --omit='pybci/CliTests/*,pybci/cli.py' -m pytest
         coverage xml -i
     #- name: Upload coverage to GitHub Artifacts
     #  uses: actions/upload-artifact@v2
