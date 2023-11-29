@@ -16,7 +16,7 @@ Setting the :py:data:`globalEpochSettings` with the :class:`GlobalEpochSettings(
 Setting Custom Epoch Times
 --------------------------
 
-The figure below illustrates when you may have epochs of differing lengths received on the LSL marker stream. A baseline marker may signify an extended period, in this case 10 seconds, and our motor task is only 1 second long. To account for this set :py:data:`customEpochSettings` and :py:data:`globalEpochSettings` accordingly:
+The figure below illustrates when you may have epochs of differing lengths received on the LSL marker stream. A baseline marker may signify an extended period, in this case 10 seconds, and our motor task is only 1 second long. To account for this set :py:data:`customEpochSettings` and :py:data:`globalEpochSettings` accordingly, note the LSL Marker for baseline should match the key for the :py:data:`customEpochSettings` dict:
 
 .. code-block:: python
 
@@ -26,7 +26,7 @@ The figure below illustrates when you may have epochs of differing lengths recei
    gs.splitCheck = False # splits samples between tmin and tmax
    gs.windowLength = 1 # window length of 1 s
    gs.windowOverlap = 0.5 # windows overap by 50%, so for a total len
-   baselineSettings = IndividualEpochSetting()
+   baselineSettings["baseline"] = IndividualEpochSetting()
    baselineSettings.splitCheck = False
    baselineSettings.tmin = 0      # time in seconds to capture samples before trigger
    baselineSettings.tmax=  10      # time in seconds to capture samples after trigger
