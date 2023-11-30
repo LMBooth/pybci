@@ -37,7 +37,7 @@ Designed to be lightweight and user-friendly, PyBCI emphasizes quick customizati
 
 # State of the Field:
 
-There are a variety of BCI software packages available, each with its own advantages and limitations. Notable packages include solutions like OpenViBE[@OpenViBE] and BCI2000[@BCI2000] that offer ease of use for those without programming expertise. BciPy[@BciPy], another Python-based platform, provides some level of customization but does not allow for the easy integration of popular machine learning libraries. In contrast, PyBCI offers seamless integration with a variety of machine learning libraries and feature extraction tools. This flexibility makes PyBCI a robust choice for researchers seeking a tailored, code-based approach to their BCI experiments.
+There are a variety of BCI software packages available, each with its own advantages and limitations. Notable packages include solutions like OpenViBE [@OpenViBE] and BCI2000 [@BCI2000] that offer ease of use for those without programming expertise. BciPy [@BciPy], another Python-based platform, provides some level of customization but does not allow for the easy integration of popular machine learning libraries. In contrast, PyBCI offers seamless integration with a variety of machine learning libraries and feature extraction tools. This flexibility makes PyBCI a robust choice for researchers seeking a tailored, code-based approach to their BCI experiments.
 
 # Software functionality and performance:
 
