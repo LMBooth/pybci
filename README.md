@@ -42,7 +42,7 @@ pip install git+https://github.com/LMBooth/pybci.git  # For development version
 If you are not using windows then there is a prerequisite stipulated on the [pylsl repository](https://github.com/labstreaminglayer/pylsl) to obtain a liblsl shared library. See the [liblsl repo documentation](https://github.com/sccn/liblsl) for more information. 
 Once the liblsl library has been downloaded ```pip install pybci-package``` should work.
 
-(currently using pybci-package due to pybci having name too similar with another package on pypi, [issue here.](https://github.com/pypi/support/issues/2840))
+(currently using pybci-package due to pybci having name too similar with another package on pypi, [issue here.](https://github.com/pypi/support/issues/2840)) 
 
 There has been issues raised with Linux successfully running all pytests and examples, there is a dockerfile included in the root repository outlining what should be a successful build of ubuntu 22:04.
 
