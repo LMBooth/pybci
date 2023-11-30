@@ -18,9 +18,9 @@ authors:
    orcid: 0000-0002-4780-4458
    affiliation: "1"
 affiliations:
- - name: Faculty of Science and Engineering, University of Hull.
+ - name: Faculty of Science and Engineering, University of Hull, United Kingdom.
    index: 1
- - name: Centre for Anatomical and Human Sciences, Hull York Medical School, University of Hull.
+ - name: Centre for Anatomical and Human Sciences, Hull York Medical School, University of Hull, United Kingdom.
    index: 2
 date: 26 June 2023
 bibliography: paper.bib
