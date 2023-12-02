@@ -1,0 +1,40 @@
+cff-version: "1.2.0"
+authors:
+- family-names: Booth
+  given-names: Liam
+  orcid: "https://orcid.org/0000-0002-8749-9726"
+- family-names: Asghar
+  given-names: Aziz
+  orcid: "https://orcid.org/0000-0002-3735-4449"
+- family-names: Bateson
+  given-names: Anthony
+  orcid: "https://orcid.org/0000-0002-4780-4458"
+doi: 10.5281/zenodo.10245437
+message: If you use this software, please cite our article in the
+  Journal of Open Source Software.
+preferred-citation:
+  authors:
+  - family-names: Booth
+    given-names: Liam
+    orcid: "https://orcid.org/0000-0002-8749-9726"
+  - family-names: Asghar
+    given-names: Aziz
+    orcid: "https://orcid.org/0000-0002-3735-4449"
+  - family-names: Bateson
+    given-names: Anthony
+    orcid: "https://orcid.org/0000-0002-4780-4458"
+  date-published: 2023-12-02
+  doi: 10.21105/joss.05706
+  issn: 2475-9066
+  issue: 92
+  journal: Journal of Open Source Software
+  publisher:
+    name: Open Journals
+  start: 5706
+  title: "PyBCI: A Python Package for Brain-Computer Interface (BCI)
+    Design"
+  type: article
+  url: "https://joss.theoj.org/papers/10.21105/joss.05706"
+  volume: 8
+title: "PyBCI: A Python Package for Brain-Computer Interface (BCI)
+  Design"
