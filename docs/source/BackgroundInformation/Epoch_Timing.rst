@@ -28,7 +28,7 @@ The figure below illustrates when you may have epochs of differing lengths recei
    gs.windowOverlap = 0.5 # windows overap by 50%, so for a total len
    markerSettings = {}
    markerSettings["baseline"] = IndividualEpochSetting()
-   markerSettings["baseline"].splitCheck = True
+   markerSettings["baseline"].splitCheck = False
    markerSettings["baseline"].tmin = 0      # time in seconds to capture samples before trigger
    markerSettings["baseline"].tmax=  10      # time in seconds to capture samples after trigger
    markerSettings["Marker1"] = IndividualEpochSetting()
@@ -49,7 +49,7 @@ Highlighting these epochs on some psuedo emg data looks like the following:
 Overlapping Epoch Windows
 -------------------------
 
-By setting splitCheck to True for :py:data:`baselineSettings.splitCheck` and :py:data:`gs.windowOverlap` to 0 we can turn one marker into 10 epochs, shown below:
+By setting splitCheck to True for :py:data:`markerSettings["baseline"].splitCheck` and :py:data:`gs.windowOverlap` to 0 we can turn one marker into 10 epochs, shown below:
 
 .. _nooverlapExample:
 
