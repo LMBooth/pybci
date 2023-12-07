@@ -41,7 +41,7 @@ def test_run_bci():
         print(markerGuess)
         #guess = [key for key, value in currentMarkers.items() if value[0] == markerGuess]
         in_test_mode = True
-        time.sleep(1) 
+        #time.sleep(1) 
         bci.StopThreads()
         break
         #print("Current marker estimation: " + str(guess), end="           \r")
