@@ -9,6 +9,8 @@ The goal of PyBCI is to enable quick iteration when creating pipelines for testi
 All the  [examples](https://github.com/LMBooth/pybci/tree/main/pybci/Examples) found on the github not in a dedicated folder have a pseudo LSL data generator enabled by default, `createPseudoDevice=True` so the examples can run without the need of LSL capable hardware. Any generic LSLViewer can be used to view the generated data, [example viewers found on this link.](https://labstreaminglayer.readthedocs.io/info/viewers.html)
 
 [Official paper here!](https://joss.theoj.org/papers/10.21105/joss.05706)
+[ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/)      [Examples found here!](https://github.com/LMBooth/pybci/tree/main/pybci/Examples)
+[Examples of supported LSL hardware here!](https://labstreaminglayer.readthedocs.io/info/supported_devices.html)
 
 # Installation
 For stable releases use: ```pip install pybci-package```
@@ -47,10 +49,6 @@ Once the liblsl library has been downloaded ```pip install pybci-package``` shou
 (currently using pybci-package due to pybci having name too similar with another package on pypi, [issue here.](https://github.com/pypi/support/issues/2840)) 
 
 There has been issues raised with Linux successfully running all pytests and examples, there is a dockerfile included in the root repository outlining what should be a successful build of ubuntu 22:04.
-
-[ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/)      [Examples found here!](https://github.com/LMBooth/pybci/tree/main/pybci/Examples)
-
-[Examples of supported LSL hardware here!](https://labstreaminglayer.readthedocs.io/info/supported_devices.html)
 
 ## Dockerfile
 
