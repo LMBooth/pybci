@@ -10,7 +10,7 @@ gs.windowLength = 0.5 #
 gs.windowOverlap = 0.5 # windows overap by 50%, so for a total len
 
 def test_run_bci():
-    bci = PyBCI(minimumEpochsRequired = 2, createPseudoDevice=True, globalEpochSettings=gs, loggingLevel = "TIMING")
+    bci = PyBCI(minimumEpochsRequired = 2, createPseudoDevice=True, globalEpochSettings=gs, loggingLevel = "INFO")
 
     while not bci.connected:
         bci.Connect()
