@@ -8,6 +8,8 @@ The goal of PyBCI is to enable quick iteration when creating pipelines for testi
 
 All the  [examples](https://github.com/LMBooth/pybci/tree/main/pybci/Examples) found on the github not in a dedicated folder have a pseudo LSL data generator enabled by default, `createPseudoDevice=True` so the examples can run without the need of LSL capable hardware. Any generic LSLViewer can be used to view the generated data, [example viewers found on this link.](https://labstreaminglayer.readthedocs.io/info/viewers.html)
 
+If samples have been collected previously and model made the user can set the `clf`, `model`, and `torchModel` to their sklearn, tensorflow or pytorch classifier and immediately set `bci.TestMode()`.
+
 [Official paper here!](https://joss.theoj.org/papers/10.21105/joss.05706)
 
 [ReadTheDocs available here!](https://pybci.readthedocs.io/en/latest/)    
