@@ -32,12 +32,20 @@ def test_run_dual():
                 if accuracy > 0:
                     # set to above 0 to show some accuracy was retruend from model
                     accuracy_achieved = True
-                    
-                    pd1.StopStreaming()
-                    pd2.StopStreaming()
-                    bci.StopThreads()
-                    time.sleep(1)
+                    bci.TestMode()
                     break
             #if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+4:
             #    break
-    assert accuracy_achieved and marker_received
+    while True:
+        markerGuess = bci.CurrentClassifierMarkerGuess() # when in test mode only y_pred returned
+        print(markerGuess)
+        #guess = [key for key, value in currentMarkers.items() if value[0] == markerGuess]
+        in_test_mode = True
+        #time.sleep(1) 
+        pd1.StopStreaming()
+        pd2.StopStreaming()
+        bci.StopThreads()
+        
+        break
+        #print("Current marker estimation: " + str(guess), end="           \r")
+    assert accuracy_achieved and marker_received and in_test_mode
