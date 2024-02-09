@@ -1,6 +1,6 @@
 from pybci import PyBCI
 from pybci.Configuration.FeatureSettings import GeneralFeatureChoices
-from pybci.Configuration.EpochSettings import IndividualEpochSetting
+from pybci.Configuration.EpochSettings import IndividualEpochSetting, GlobalEpochSettings
 from pybci.Utils.FeatureExtractor import GenericFeatureExtractor
 import time
 
@@ -39,7 +39,8 @@ def test_run_bci():
 
     bci = PyBCI(minimumEpochsRequired = 2, createPseudoDevice= True, customEpochSettings=markerSettings,  streamCustomFeatureExtract={"PyBCIPseudoDataStream":extractor},
                 markerStream= "PyBCIPseudoMarkers", dataStreams=["PyBCIPseudoDataStream"]) 
-
+    # set new config settings after instantiation
+    bci.ConfigureEpochWindowSettings(globalEpochSettings = GlobalEpochSettings(), customEpochSettings = markerSettings)
     while not bci.connected:
         bci.Connect()
         time.sleep(1)
