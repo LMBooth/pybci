@@ -65,8 +65,10 @@ def test_run_bci():
             #if min([currentMarkers[key][1] for key in currentMarkers]) > bci.minimumEpochsRequired+4:
             #    break
     while True:
+        
         markerGuess = bci.CurrentClassifierMarkerGuess() # when in test mode only y_pred returned
         print(markerGuess)
+        feats = bci.CurrentFeaturesTargets()
         in_test_mode = True
         time.sleep(1) 
         bci.StopThreads()
