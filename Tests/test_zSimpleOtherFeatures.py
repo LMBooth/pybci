@@ -69,7 +69,7 @@ def test_run_bci():
         
         markerGuess = bci.CurrentClassifierMarkerGuess() # when in test mode only y_pred returned
         print(markerGuess)
-        feats = bci.CurrentFeaturesTargets()
+        bci.CurrentFeaturesTargets()
         in_test_mode = True
         time.sleep(1) 
         bci.StopThreads()
