@@ -7,7 +7,7 @@ The goal of PyBCI is to enable quick iteration when creating pipelines for testi
 
 `Github repo here! <https://github.com/LMBooth/pybci/>`_
 
-
+If samples have been collected previously and model made the user can set the :py:data:`clf`, :py:data:`model`, or :py:data:`torchModel` to their sklearn, tensorflow or pytorch classifier and immediately set :py:data:`bci.TestMode()`.
 
 Check out the :doc:`BackgroundInformation/Getting_Started` section for :ref:`installation` of the project.
 
