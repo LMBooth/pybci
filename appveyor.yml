@@ -70,8 +70,8 @@ install:
           #sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.10 1
           sudo apt-get install -y python3-pip cmake git
           /opt/az/bin/python3.10 -m pip install --upgrade urllib3>=2.0.5
-          /opt/az/bin/python3.10 -m pip install .
           /opt/az/bin/python3.10 -m pip install pytest pytest-timeout ruff
+          /opt/az/bin/python3.10 -m pip install .
           /opt/az/bin/python3.10 -m site
           echo 'export PATH=$PATH:/home/appveyor/.local/bin' >> ~/.bashrc
           source ~/.bashrc
