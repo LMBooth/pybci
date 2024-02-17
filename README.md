@@ -18,6 +18,11 @@ If samples have been collected previously and model made the user can set the `c
 
 [Examples of supported LSL hardware here!](https://labstreaminglayer.readthedocs.io/info/supported_devices.html)
 
+# TODO:
+    - Add LSL outlet configuration for class estimator (either send every classification or send when classification is different) 
+    - Add example showing previously saved models.
+    - Add example showing how feature data can be saved and used to build models so model creation can be done offline whilst data collection and classification can be done online.
+
 # Installation
 For stable releases use: ```pip install pybci-package```
 
