@@ -23,6 +23,7 @@ If samples have been collected previously and model made the user can set the `c
 - Add optional LSL outlet configuration for class estimator (either send every classification or send on classification change - help with reducing spam on classification if estimator time is very short) 
 - Add example showing previously saved models.
 - Add example showing how feature data can be saved and used to build models so model creation can be done offline whilst data collection and classification can be done online.
+- Update and verify via appveyor  for 3.12.
 
 # Installation
 For stable releases use: ```pip install pybci-package```
