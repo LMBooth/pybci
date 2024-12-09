@@ -5,6 +5,10 @@ environment:
   global:
     PYLSL_LIB: /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/liblsl.so
   matrix:
+    - ID: VS2019_Py312
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+      PYTHON: "C:\\Python312-x64"
+      PYTHON_VERSION: "3.12"
     - ID: VS2019_Py311
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python311-x64"
@@ -17,10 +21,6 @@ environment:
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python39-x64"
       PYTHON_VERSION: "3.9"
-    - ID: VS2019_Py312
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PYTHON: "C:\\Python312-x64"
-      PYTHON_VERSION: "3.12"
     - ID: macOS
       APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
       PYTHON: "3.9"
