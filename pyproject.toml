@@ -4,7 +4,6 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pybci-package"
-dynamic = ["version"]
 description = "A Python interface to create a BCI with the Lab Streaming Layer, Pytorch, SciKit-Learn and Tensorflow packages"
 readme = "README.md"
 authors = [
@@ -50,3 +49,6 @@ pybci = "pybci.cli:main"
 
 [tool.setuptools]
 packages = ["pybci"]
+
+[tool.setuptools.dynamic]
+version = {attr = "pybci.version.__version__"}
