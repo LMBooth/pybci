@@ -52,4 +52,4 @@ pybci = "pybci.cli:main"
 packages = ["pybci"]
 
 [tool.setuptools.packages.find]
-where = ["."]
+include = ["pybci", "pybci.*"]
