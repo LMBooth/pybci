@@ -51,6 +51,8 @@ install:
         python -m pip install -e .
         python -m pip install pytest pytest-timeout ruff setuptools
         $env:PYLSL_LIB = "lsl.dll"
+        python -m pip list
+        python -c "import pybci; print(pybci.__file__)"
       }
   - sh: |
       case $APPVEYOR_BUILD_WORKER_IMAGE in
