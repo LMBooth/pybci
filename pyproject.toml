@@ -50,3 +50,6 @@ pybci = "pybci.cli:main"
 
 [tool.setuptools]
 packages = ["pybci"]
+include_package_data = true
+[tool.setuptools.packages.find]
+where = ["."]
