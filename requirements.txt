@@ -1,0 +1,7 @@
+antropy>=0.1.6
+pylsl>=1.16.1
+scikit-learn>=1.6.0
+scipy>=1.14.1
+setuptools>=75.6.0
+tensorflow>=2.18.0
+torch>=2.5.1
