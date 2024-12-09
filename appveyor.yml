@@ -165,9 +165,18 @@ test_script:
           echo 'Pytest failed. Terminating python process.'
           pkill -f /opt/az/bin/python3.10 || echo 'No Python310 process found to terminate.'
         fi
+        echo 'Running Ruff on Ubuntu...'
+        /opt/az/bin/python3.10 -m ruff .
+      elif [[ $APPVEYOR_BUILD_WORKER_IMAGE == "macos-monterey" ]]; then
+        echo 'About to run tests on macOS...'
+        python3.9 --version
+        cd $APPVEYOR_BUILD_FOLDER
+        python3.9 -m pytest -vv -s Tests/
+        echo 'Running Ruff on macOS...'
+        python3.9 -m ruff .
       fi
   - ps: |
-      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -ne "ubuntu2204") {
+      if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2019") {
         $PYTEST_ERRORLEVEL = 0
         pytest -vv -s Tests/ 
         $PYTEST_ERRORLEVEL = $LASTEXITCODE
@@ -177,9 +186,9 @@ test_script:
         } else {
           Write-Host 'Pytest succeeded.'
         }
+        Write-Host 'Running Ruff on Windows...'
+        python -m ruff .
       }
-
-  - "ruff ."
   - "echo 'Finished running tests.'"
   #- ps: if ($LastExitCode -ne 0) { Write-Host "Command exited with code $LastExitCode"; exit $LastExitCode }
   #- sh: if [[ $? != 0 ]]; then echo "Command exited with code $?"; exit $?; fi
