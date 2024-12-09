@@ -23,7 +23,7 @@ If samples have been collected previously and model made the user can set the `c
 - Add optional LSL outlet configuration for class estimator (either send every classification or send on classification change - help with reducing spam on classification if estimator time is very short) 
 - Add example showing previously saved models.
 - Add example showing how feature data can be saved and used to build models so model creation can be done offline whilst data collection and classification can be done online.
-- Update and verify via appveyor  for 3.12+3.13.
+- Update and verify via appveyor  for 3.13 when appveyor provides full support (finally fixed 3.12 so 3.13 will opefully be easier, famous last words).
 
 # Installation
 For stable releases use: ```pip install pybci-package```
@@ -81,7 +81,7 @@ Download the Dockerfile and run
 After installing pybci and downloading and extracting the pybci git repository, navigate to the extracted location and run ```pip install requirements-devel.txt``` to install pytest, then call ```pytest -vv -s Tests\``` to run all the automated tests and ensure all 10 tests pass (should take approximately 15 mins to complete), this will ensure pybci functionality is as desired.
 
 ## Python Package Dependencies Version Minimums
-Tested on Python 3.9, 3.10 & 3.11 ([appveyor.yml](https://github.com/LMBooth/pybci/blob/main/appveyor.yml))
+Tested on Python 3.9, 3.10, 3.11 & 3.12 ([appveyor.yml](https://github.com/LMBooth/pybci/blob/main/appveyor.yml))
 
 The following package versions define the minimum supported by PyBCI, also defined in setup.py:
 
