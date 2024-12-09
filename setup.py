@@ -87,7 +87,7 @@ setup(
         'Programming Language :: Python :: 3.11',
         'Programming Language :: Python :: 3.12',
     ],
-    python_requires='3.9-3.12',
+    python_requires='>=3.9,<=3.12',
     # What does your project relate to?
     keywords='machine-learning tensorflow sklearn pytorch human-computer-interaction bci lsl brain-computer-interface labstreaminglayer',
 
