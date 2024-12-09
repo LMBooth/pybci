@@ -44,7 +44,7 @@ install:
         Write-Host "Current Python from Path"
         Get-Command python
         # Other commands
-        python -m pip install --upgrade pip
+        python -m pip install --upgrade pip setuptools wheel
         python --version
         python -m pip --version
         python -m pip install --upgrade urllib3>=2.0.5
