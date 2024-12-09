@@ -49,6 +49,3 @@ pybci = "pybci.cli:main"
 
 [tool.setuptools]
 packages = ["pybci"]
-
-[tool.setuptools.dynamic]
-version = {attr = "pybci.version.__version__"}
