@@ -85,6 +85,12 @@ install:
           python3.9 -m pip install --upgrade urllib3>=2.0.5
           python3.9 -m pip install -e .
           python3.9 -m pip install pytest pytest-timeout ruff
+          echo "Setting PYTHONPATH..."
+          export PYTHONPATH=$(pwd):$PYTHONPATH
+          echo "PYTHONPATH set to: $PYTHONPATH"
+          echo "Debugging Python environment..."
+          python3.9 -c "import sys; print('Python Path:', sys.path)"
+          python3.9 -c "import pybci; print('pybci located at:', pybci.__file__)" || echo "pybci not found!"
           ;;
       esac
   - "echo 'About to install lsl lib for mac and linux...'"    
