@@ -5,6 +5,10 @@ environment:
   global:
     PYLSL_LIB: /home/appveyor/.local/lib/python3.10/site-packages/pylsl/lib/liblsl.so
   matrix:
+    - ID: macOS
+      APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
+      PYTHON: "3.9"
+      PYTHON_VERSION: "3.9"
     - ID: VS2019_Py312
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python312-x64"
@@ -20,10 +24,6 @@ environment:
     - ID: VS2019_Py39
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python39-x64"
-      PYTHON_VERSION: "3.9"
-    - ID: macOS
-      APPVEYOR_BUILD_WORKER_IMAGE: macos-monterey
-      PYTHON: "3.9"
       PYTHON_VERSION: "3.9"
       
     #- ID: Ubuntu
@@ -83,7 +83,7 @@ install:
           brew update
           brew install python@3.9
           python3.9 -m pip install --upgrade urllib3>=2.0.5
-          python3.9 -m pip install .
+          python3.9 -m pip install -e .
           python3.9 -m pip install pytest pytest-timeout ruff
           ;;
       esac
