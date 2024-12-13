@@ -1,7 +1,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'PyBCI'
-copyright = '2023, Liam Booth'
+copyright = '2025, Liam Booth'
 author = 'Liam Booth'
 
 # The full version, including alpha/beta/rc tags
