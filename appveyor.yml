@@ -10,10 +10,10 @@ environment:
     #  PYTHON: "3.9"
     #  PYTHON_VERSION: "3.9"
     # Waiting on pylsl 3.13 support, won't download via pip atm
-    - ID: VS2019_Py313 
-      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-      PYTHON: "C:\\Python313-x64"
-      PYTHON_VERSION: "3.13"
+    #- ID: VS2019_Py313 
+    #  APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    #  PYTHON: "C:\\Python313-x64"
+    #  PYTHON_VERSION: "3.13"
     - ID: VS2019_Py312
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
       PYTHON: "C:\\Python312-x64"
